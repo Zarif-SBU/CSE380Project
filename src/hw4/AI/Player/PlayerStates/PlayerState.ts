@@ -51,6 +51,19 @@ export default abstract class PlayerState extends State {
         if (this.parent.controller.useItem) {
 
         }
+        if (this.parent.controller.dodge) {
+            let vec = this.parent.controller.moveDir;
+            this.parent.owner.move(new Vec2(vec.x*50, vec.y*50));
+        }
+        if (this.parent.controller.lightAttack) {
+
+        }
+        if (this.parent.controller.heavyAttack) {
+
+        }
+        if (this.parent.controller.block) {
+
+        }
     }
 
     public override handleInput(event: GameEvent): void {
@@ -68,4 +81,5 @@ import Invincible from "./Invincible";
 import Moving from "./Moving";
 import Dead from "./Dead";
 import PlayerActor from "../../../Actors/PlayerActor";
+import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 export { Idle, Invincible, Moving, Dead} 

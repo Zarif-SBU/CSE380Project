@@ -1,7 +1,7 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import Input from "../../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-
+import Timer from "../../../Wolfie2D/Timing/Timer";
 /**
  * Strings used in the key binding for the player
  */
@@ -12,7 +12,11 @@ export enum PlayerInput {
     MOVE_RIGHT = "MOVE_RIGHT",
     ATTACKING = "ATTACKING",
     PICKUP_ITEM = "PICKUP_ITEM",
-    DROP_ITEM = "DROP_ITEM"
+    DROP_ITEM = "DROP_ITEM",
+    LIGHT_ATTACK = "LIGHT_ATTACK",
+    HEAVY_ATTACK = "HEAVY_ATTACK",
+    BLOCK = "BLOCK",
+    DODGE = "DODGE"
 }
 
 /**
@@ -23,11 +27,13 @@ export default class PlayerController {
 
     /** The GameNode that owns the AI */
     protected owner: AnimatedSprite;
+    timer: any;
+    private currentFacingDirection: Vec2 = new Vec2(0, -1);
 
     constructor(owner: AnimatedSprite) {
         this.owner = owner;
+        this.timer = new Timer(2000);
     }
-
     /**
      * Gets the direction the player should move based on input from the keyboard. 
      * @returns a Vec2 indicating the direction the player should move. 
@@ -36,15 +42,36 @@ export default class PlayerController {
         let dir: Vec2 = Vec2.ZERO;
         dir.y = (Input.isPressed(PlayerInput.MOVE_UP) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_DOWN) ? 1 : 0);
 		dir.x = (Input.isPressed(PlayerInput.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_RIGHT) ? 1 : 0);
+        
+        
         return dir.normalize();
     }
 
+    public get dodge(): boolean{
+
+        if(this.timer.isStopped() && Input.isPressed(PlayerInput.DODGE) && !(this.moveDir.x === 0 && this.moveDir.y === 0)){
+            let dir2: Vec2 = Vec2.ZERO;
+            console.log("Dodge");
+            this.timer.start()
+            return true;
+        }
+        return false;
+    }
+
     /** 
-     * Gets the direction the player should be facing based on the position of the
-     * mouse around the player
+     * Gets the direction the player should be facing based on where the player is moving towards
      * @return a Vec2 representing the direction the player should face.
      */
-    public get faceDir(): Vec2 { return this.owner.position.dirTo(Input.getGlobalMousePosition()); }
+    
+    public get faceDir(): Vec2{
+        if(this.moveDir.x === 0 && this.moveDir.y === 0){
+            return this.currentFacingDirection;
+        } 
+        else{
+            this.currentFacingDirection = this.moveDir.normalize();
+            return this.currentFacingDirection;
+        }
+    }
 
     /**
      * Gets the rotation of the players sprite based on the direction the player
@@ -70,5 +97,10 @@ export default class PlayerController {
      * @return true if the player is attempting to drop their held item; false otherwise.
      */
     public get dropping(): boolean { return Input.isJustPressed(PlayerInput.DROP_ITEM); }
+
+
+    public get lightAttack(): boolean { return Input.isJustPressed(PlayerInput.LIGHT_ATTACK); }
+    public get heavyAttack(): boolean { return Input.isJustPressed(PlayerInput.HEAVY_ATTACK); }
+    public get block(): boolean { return Input.isJustPressed(PlayerInput.BLOCK); }
 
 }
