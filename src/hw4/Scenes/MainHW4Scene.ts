@@ -84,7 +84,7 @@ export default class MainHW4Scene extends HW4Scene {
         this.load.spritesheet("RedHealer", "hw4_assets/spritesheets/RedHealer.json");
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/test.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/map.json");
 
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
@@ -107,7 +107,7 @@ export default class MainHW4Scene extends HW4Scene {
         let tilemapLayers = this.add.tilemap("level");
 
         // Get the wall layer
-        this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
+        this.walls = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
 
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.walls.size;
