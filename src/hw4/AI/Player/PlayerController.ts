@@ -2,6 +2,7 @@ import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import Input from "../../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Timer from "../../../Wolfie2D/Timing/Timer";
+
 /**
  * Strings used in the key binding for the player
  */
@@ -29,10 +30,13 @@ export default class PlayerController {
     protected owner: AnimatedSprite;
     timer: any;
     private currentFacingDirection: Vec2 = new Vec2(0, -1);
+    
 
     constructor(owner: AnimatedSprite) {
         this.owner = owner;
         this.timer = new Timer(2000);
+        
+        
     }
     /**
      * Gets the direction the player should move based on input from the keyboard. 
