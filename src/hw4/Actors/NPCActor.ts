@@ -28,8 +28,8 @@ export default class NPCActor extends AnimatedSprite implements Battler, Targeti
 
     // The NPCs battler object
     protected _battler: Battler;
-
-    protected _targeting: TargetingEntity
+    protected _spawnpoint: Vec2;
+    protected _targeting: TargetingEntity;
 
     public constructor(sheet: Spritesheet) {
         super(sheet);
@@ -37,7 +37,6 @@ export default class NPCActor extends AnimatedSprite implements Battler, Targeti
         this._battler = new BasicBattler(this);
         this._targeting = new BasicTargeting(this);
         this.invincibleTimer = new Timer(1000);
-
         this.receiver.subscribe("use-hpack");
     }
 
@@ -68,6 +67,9 @@ export default class NPCActor extends AnimatedSprite implements Battler, Targeti
     public get battleGroup(): number { return this.battler.battleGroup; }
     public set battleGroup(battleGroup: number) { this.battler.battleGroup = battleGroup; }
 
+    public get spawnpoint(): Vec2 { return this._spawnpoint; }
+    public set spawnpoint(spawnpoint: Vec2) { this._spawnpoint = spawnpoint; }
+
     public get maxHealth(): number { return this.battler.maxHealth }
     public set maxHealth(maxHealth: number) { 
         this.battler.maxHealth = maxHealth; 
@@ -84,6 +86,9 @@ export default class NPCActor extends AnimatedSprite implements Battler, Targeti
 
     public get speed(): number { return this.battler.speed; }
     public set speed(speed: number) { this.battler.speed = speed; }
+
+    // public get spawnPosition(): Vec2 { return this.spawnPosition; }
+    // public set spawnPosition(spawnPosition: Vec2) { this.spawnPosition = spawnPosition; }
 
     public override setScene(scene: HW4Scene): void { this.scene = scene; }
     public override getScene(): HW4Scene { return this.scene; }

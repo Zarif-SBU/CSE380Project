@@ -32,6 +32,9 @@ export default interface Battler extends TargetableEntity, Unique {
     get position(): Vec2;
     set position(value: Vec2);
 
+    // get spawnPosition(): Vec2;
+    // set spawnPosition(value: Vec2);
+
     /** Whether the battler is active or not */
     get battlerActive(): boolean;
     set battlerActive(value: boolean);

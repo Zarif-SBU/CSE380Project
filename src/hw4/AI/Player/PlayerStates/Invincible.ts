@@ -6,7 +6,7 @@ import PlayerState, { PlayerStateType } from "./PlayerState";
 
 export default class Invincible extends PlayerState {
 
-    protected timer: Timer;
+    public timer: Timer;
 
     constructor(parent: PlayerAI, owner: PlayerActor) {
         super(parent, owner);

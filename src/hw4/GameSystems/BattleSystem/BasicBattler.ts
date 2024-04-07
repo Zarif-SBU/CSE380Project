@@ -18,12 +18,13 @@ export default class BasicBattler implements Battler {
     protected _battleGroup: number;
     protected _speed: number;
     protected _active: boolean;
+    protected _spawnPosition: Vec2;
 
     public constructor(owner: Unique & Positioned) {
         this._owner = owner;
         this._targetable = new BasicTargetable(owner);
         this.inventory = new Inventory();
-
+        this._spawnPosition = new Vec2(0,0);
         this.maxHealth = 0;
         this.health = 0;
         this.battleGroup = 0;
@@ -35,6 +36,9 @@ export default class BasicBattler implements Battler {
 
     public get position(): Vec2 { return this._targetable.position; }
     public set position(position: Vec2) { this._targetable.position = position; }
+
+    // public get spawnPosition(): Vec2 { return this._spawnPosition; }
+    // public set spawnPosition(spawnPosition: Vec2) { this._spawnPosition = spawnPosition; }
 
     public get relativePosition(): Vec2 {
         return this._targetable.relativePosition;

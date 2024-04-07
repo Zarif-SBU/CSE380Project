@@ -79,12 +79,12 @@ export default class MainHW4Scene extends HW4Scene {
 
         // Load in the enemy sprites
         this.load.spritesheet("BlueEnemy", "hw4_assets/spritesheets/BlueEnemy.json");
-        this.load.spritesheet("RedEnemy", "hw4_assets/spritesheets/RedEnemy.json");
+        this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("BlueHealer", "hw4_assets/spritesheets/BlueHealer.json");
         this.load.spritesheet("RedHealer", "hw4_assets/spritesheets/RedHealer.json");
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/map.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/Mymap.json");
 
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
@@ -107,7 +107,7 @@ export default class MainHW4Scene extends HW4Scene {
         let tilemapLayers = this.add.tilemap("level");
 
         // Get the wall layer
-        this.walls = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
+        this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
 
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.walls.size;
@@ -253,29 +253,29 @@ export default class MainHW4Scene extends HW4Scene {
         // Get the object data for the red enemies
         let red = this.load.getObject("red");
 
-        // Initialize the red healers
-        for (let i = 0; i < red.healers.length; i++) {
-            let npc = this.add.animatedSprite(NPCActor, "RedHealer", "primary");
-            npc.position.set(red.healers[i][0], red.healers[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+        // // Initialize the red healers
+        // for (let i = 0; i < red.healers.length; i++) {
+        //     let npc = this.add.animatedSprite(NPCActor, "RedHealer", "primary");
+        //     npc.position.set(red.healers[i][0], red.healers[i][1]);
+        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
-            npc.battleGroup = 1;
-            npc.speed = 10;
-            npc.health = 10;
-            npc.maxHealth = 10;
-            npc.navkey = "navmesh";
+        //     npc.battleGroup = 1;
+        //     npc.speed = 10;
+        //     npc.health = 10;
+        //     npc.maxHealth = 10;
+        //     npc.navkey = "navmesh";
 
-            // Give the NPC a healthbar
-            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-            this.healthbars.set(npc.id, healthbar);
+        //     // Give the NPC a healthbar
+        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
+        //     this.healthbars.set(npc.id, healthbar);
 
-            npc.addAI(HealerBehavior);
-            npc.animation.play("IDLE");
-            this.battlers.push(npc);
-        }
+        //     npc.addAI(HealerBehavior);
+        //     npc.animation.play("IDLE");
+        //     this.battlers.push(npc);
+        // }
 
         for (let i = 0; i < red.enemies.length; i++) {
-            let npc = this.add.animatedSprite(NPCActor, "RedEnemy", "primary");
+            let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(red.enemies[i][0], red.enemies[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
@@ -286,66 +286,68 @@ export default class MainHW4Scene extends HW4Scene {
             // Set the NPCs stats
             npc.battleGroup = 1
             npc.speed = 10;
-            npc.health = 1;
+            npc.health = 10;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
-
+            npc.spawnpoint = npc.position.clone();
+            console.log("spawn point", npc.spawnpoint);
+            // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
             npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 100});
-
-            // Play the NPCs "IDLE" animation 
+            
+            // Play the NPCs "IDLE" animation
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
         }
 
-        // Get the object data for the blue enemies
-        let blue = this.load.getObject("blue");
+        // // Get the object data for the blue enemies
+        // let blue = this.load.getObject("blue");
 
-        // Initialize the blue enemies
-        for (let i = 0; i < blue.enemies.length; i++) {
-            let npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary");
-            npc.position.set(blue.enemies[i][0], blue.enemies[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+        // // Initialize the blue enemies
+        // for (let i = 0; i < blue.enemies.length; i++) {
+        //     let npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary");
+        //     npc.position.set(blue.enemies[i][0], blue.enemies[i][1]);
+        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
-            // Give the NPCS their healthbars
-            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-            this.healthbars.set(npc.id, healthbar);
+        //     // Give the NPCS their healthbars
+        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
+        //     this.healthbars.set(npc.id, healthbar);
 
-            npc.battleGroup = 2
-            npc.speed = 10;
-            npc.health = 1;
-            npc.maxHealth = 10;
-            npc.navkey = "navmesh";
+        //     npc.battleGroup = 2
+        //     npc.speed = 10;
+        //     npc.health = 1;
+        //     npc.maxHealth = 10;
+        //     npc.navkey = "navmesh";
 
-            // Give the NPCs their AI
-            npc.addAI(GuardBehavior, {target: this.battlers[0], range: 100});
+        //     // Give the NPCs their AI
+        //     npc.addAI(GuardBehavior, {target: this.battlers[0], range: 100});
 
-            // Play the NPCs "IDLE" animation 
-            npc.animation.play("IDLE");
+        //     // Play the NPCs "IDLE" animation 
+        //     npc.animation.play("IDLE");
 
-            this.battlers.push(npc);
-        }
+        //     this.battlers.push(npc);
+        // }
 
         // Initialize the blue healers
-        for (let i = 0; i < blue.healers.length; i++) {
+        // for (let i = 0; i < blue.healers.length; i++) {
             
-            let npc = this.add.animatedSprite(NPCActor, "BlueHealer", "primary");
-            npc.position.set(blue.healers[i][0], blue.healers[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+        //     let npc = this.add.animatedSprite(NPCActor, "BlueHealer", "primary");
+        //     npc.position.set(blue.healers[i][0], blue.healers[i][1]);
+        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
-            npc.battleGroup = 2;
-            npc.speed = 10;
-            npc.health = 1;
-            npc.maxHealth = 10;
-            npc.navkey = "navmesh";
+        //     npc.battleGroup = 2;
+        //     npc.speed = 10;
+        //     npc.health = 1;
+        //     npc.maxHealth = 10;
+        //     npc.navkey = "navmesh";
 
-            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-            this.healthbars.set(npc.id, healthbar);
+        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
+        //     this.healthbars.set(npc.id, healthbar);
 
-            npc.addAI(HealerBehavior);
-            npc.animation.play("IDLE");
-            this.battlers.push(npc);
-        }
+        //     npc.addAI(HealerBehavior);
+        //     npc.animation.play("IDLE");
+        //     this.battlers.push(npc);
+        // }
 
 
     }
@@ -416,8 +418,6 @@ export default class MainHW4Scene extends HW4Scene {
                     this.graph.addEdge(i, i + dim.x);
                     // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + dim.x)})
                 }
-
-
             }
         }
 
@@ -434,6 +434,62 @@ export default class MainHW4Scene extends HW4Scene {
         // Add this navmesh to the navigation manager
         this.navManager.addNavigableEntity("navmesh", navmesh);
     }
+
+    // protected initializeNavmesh(): void {
+        //     // Create the graph
+        //     this.graph = new PositionGraph();
+        
+        //     let dim: Vec2 = this.walls.getDimensions();
+        //     for (let i = 0; i < dim.y; i++) {
+        //         for (let j = 0; j < dim.x; j++) {
+        //             let tile: AABB = this.walls.getTileCollider(j, i);
+        //             this.graph.addPositionedNode(tile.center);
+        //         }
+        //     }
+        
+        //     let rc: Vec2;
+        //     for (let i = 0; i < this.graph.numVertices; i++) {
+        //         rc = this.walls.getTileColRow(i);
+        //         if (!this.walls.isTileCollidable(rc.x, rc.y)) {
+        //             for (let dx = -1; dx <= 1; dx++) {
+        //                 for (let dy = -1; dy <= 1; dy++) {
+        //                     if (dx !== 0 || dy !== 0) { // Exclude the current tile
+        //                         // Skip diagonals if they would intersect with collidable tiles
+        //                         let skipDiagonal = (dx !== 0 && dy !== 0) &&
+        //                             (this.walls.isTileCollidable(rc.x + dx, rc.y) ||
+        //                             this.walls.isTileCollidable(rc.x, rc.y + dy));
+        
+        //                         if (!skipDiagonal) {
+        //                             let neighborX = rc.x + dx;
+        //                             let neighborY = rc.y + dy;
+        //                             if (neighborX >= 0 && neighborX < dim.x && neighborY >= 0 && neighborY < dim.y) {
+        //                                 let neighborIndex = this.walls.getTileIndex(neighborX, neighborY);
+        //                                 if (!this.walls.isTileCollidable(neighborX, neighborY)) {
+        //                                     // Create edge to the neighbor
+        //                                     this.graph.addEdge(i, neighborIndex);
+        //                                 }
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        
+        //     // Set this graph as a navigable entity
+        //     let navmesh = new Navmesh(this.graph);
+            
+        //     // Add different strategies to use for this navmesh
+        //     navmesh.registerStrategy("direct", new DirectStrategy(navmesh));
+        //     navmesh.registerStrategy("astar", new AstarStrategy(navmesh));
+        
+        //     // TODO set the strategy to use A* pathfinding
+        //     navmesh.setStrategy("astar");
+        
+        //     // Add this navmesh to the navigation manager
+        //     this.navManager.addNavigableEntity("navmesh", navmesh);
+        // }
+
 
     public getBattlers(): Battler[] { return this.battlers; }
 

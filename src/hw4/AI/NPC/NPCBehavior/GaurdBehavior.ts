@@ -16,7 +16,7 @@ import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import GoapAction from "../../../../Wolfie2D/AI/Goap/GoapAction";
 import GoapState from "../../../../Wolfie2D/AI/Goap/GoapState";
 import Battler from "../../../GameSystems/BattleSystem/Battler";
-
+import RandomMovement from "../NPCActions/Walkaround";
 
 export default class GuardBehavior extends NPCBehavior {
 
@@ -62,7 +62,7 @@ export default class GuardBehavior extends NPCBehavior {
         let scene = this.owner.getScene();
 
         // A status checking if there are any enemies at target the guard is guarding
-        let enemyBattlerFinder = new BasicFinder<Battler>(null, BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.target, 0, this.range*this.range))
+        let enemyBattlerFinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.target, 0, this.range*this.range))
         let enemyAtGuardPosition = new TargetExists(scene.getBattlers(), enemyBattlerFinder)
         this.addStatus(GuardStatuses.ENEMY_IN_GUARD_POSITION, enemyAtGuardPosition);
 
@@ -70,21 +70,21 @@ export default class GuardBehavior extends NPCBehavior {
         this.addStatus(GuardStatuses.LASERGUN_EXISTS, new TargetExists(scene.getLaserGuns(), new BasicFinder<Item>(null, ItemFilter(LaserGun), VisibleItemFilter())));
         // Add a status to check if the guard has a lasergun
         this.addStatus(GuardStatuses.HAS_WEAPON, new HasItem(this.owner, new BasicFinder(null, ItemFilter(LaserGun))));
-
+        
         // Add the goal status 
         this.addStatus(GuardStatuses.GOAL, new FalseStatus());
     }
 
     protected initializeActions(): void {
-
         let scene = this.owner.getScene();
 
         // An action for shooting an enemy in the guards guard area
         let shootEnemy = new ShootLaserGun(this, this.owner);
         shootEnemy.targets = scene.getBattlers();
-        shootEnemy.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.target, 0, this.range*this.range));
+        shootEnemy.targetFinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], RangeFilter(this.target, 0, this.range*this.range));
         shootEnemy.addPrecondition(GuardStatuses.HAS_WEAPON);
         shootEnemy.addPrecondition(GuardStatuses.ENEMY_IN_GUARD_POSITION);
+        
         shootEnemy.addEffect(GuardStatuses.GOAL);
         shootEnemy.cost = 1;
         this.addState(GuardActions.SHOOT_ENEMY, shootEnemy);
@@ -99,10 +99,10 @@ export default class GuardBehavior extends NPCBehavior {
         this.addState(GuardActions.PICKUP_LASER_GUN, pickupLaserGun);
 
         // An action for guarding the guard's guard location
-        let guard = new Idle(this, this.owner);
+        let guard = new RandomMovement(this, this.owner);
         guard.targets = [this.target];
         guard.targetFinder = new BasicFinder();
-        guard.addPrecondition(GuardStatuses.HAS_WEAPON);
+        // guard.addPrecondition(GuardStatuses.HAS_WEAPON);
         guard.addEffect(GuardStatuses.GOAL);
         guard.cost = 1000;
         this.addState(GuardActions.GUARD, guard);
