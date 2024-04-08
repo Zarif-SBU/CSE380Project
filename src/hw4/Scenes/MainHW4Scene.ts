@@ -16,17 +16,11 @@ import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import NPCActor from "../Actors/NPCActor";
 import PlayerActor from "../Actors/PlayerActor";
 import GuardBehavior from "../AI/NPC/NPCBehavior/GaurdBehavior";
-import HealerBehavior from "../AI/NPC/NPCBehavior/HealerBehavior";
 import PlayerAI from "../AI/Player/PlayerAI";
-import { BattlerEvent, ItemEvent, PlayerEvent } from "../Events";
+import { BattlerEvent, PlayerEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import InventoryHUD from "../GameSystems/HUD/InventoryHUD";
-import Inventory from "../GameSystems/ItemSystem/Inventory";
-import Item from "../GameSystems/ItemSystem/Item";
-import Healthpack from "../GameSystems/ItemSystem/Items/Healthpack";
-import LaserGun from "../GameSystems/ItemSystem/Items/LaserGun";
 import { ClosestPositioned } from "../GameSystems/Searching/HW4Reducers";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import Position from "../GameSystems/Targeting/Position";
@@ -41,7 +35,6 @@ const BattlerGroups = {
 export default class MainHW4Scene extends HW4Scene {
 
     /** GameSystems in the HW4 Scene */
-    private inventoryHud: InventoryHUD;
 
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
@@ -51,8 +44,6 @@ export default class MainHW4Scene extends HW4Scene {
 
     private bases: BattlerBase[];
 
-    private healthpacks: Array<Healthpack>;
-    private laserguns: Array<LaserGun>;
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -65,9 +56,6 @@ export default class MainHW4Scene extends HW4Scene {
 
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
-
-        this.laserguns = new Array<LaserGun>();
-        this.healthpacks = new Array<Healthpack>();
     }
 
     /**
@@ -89,15 +77,6 @@ export default class MainHW4Scene extends HW4Scene {
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
-
-        // Load the healthpack and lasergun loactions
-        this.load.object("healthpacks", "hw4_assets/data/items/healthpacks.json");
-        this.load.object("laserguns", "hw4_assets/data/items/laserguns.json");
-
-        // Load the healthpack, inventory slot, and laser gun sprites
-        this.load.image("healthpack", "hw4_assets/sprites/healthpack.png");
-        this.load.image("inventorySlot", "hw4_assets/sprites/inventory.png");
-        this.load.image("laserGun", "hw4_assets/sprites/laserGun.png");
     }
     /**
      * @see Scene.startScene
@@ -119,7 +98,6 @@ export default class MainHW4Scene extends HW4Scene {
         
         // Create the player
         this.initializePlayer();
-        this.initializeItems();
 
         this.initializeNavmesh();
 
@@ -127,9 +105,6 @@ export default class MainHW4Scene extends HW4Scene {
         this.initializeNPCs();
 
         // Subscribe to relevant events
-        this.receiver.subscribe("healthpack");
-        this.receiver.subscribe("enemyDied");
-        this.receiver.subscribe(ItemEvent.ITEM_REQUEST);
 
         // Add a UI for health
         this.addUILayer("health");
@@ -146,7 +121,6 @@ export default class MainHW4Scene extends HW4Scene {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
-        this.inventoryHud.update(deltaT);
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
     }
 
@@ -156,30 +130,6 @@ export default class MainHW4Scene extends HW4Scene {
      */
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case BattlerEvent.BATTLER_KILLED: {
-                this.handleBattlerKilled(event);
-                break;
-            }
-            case BattlerEvent.BATTLER_RESPAWN: {
-                break;
-            }
-            case ItemEvent.ITEM_REQUEST: {
-                this.handleItemRequest(event.data.get("node"), event.data.get("inventory"));
-                break;
-            }
-            default: {
-                throw new Error(`Unhandled event type "${event.type}" caught in HW4Scene event handler`);
-            }
-        }
-    }
-
-    protected handleItemRequest(node: GameNode, inventory: Inventory): void {
-        let items: Item[] = new Array<Item>(...this.healthpacks, ...this.laserguns).filter((item: Item) => {
-            return item.inventory === null && item.position.distanceTo(node.position) <= 100;
-        });
-
-        if (items.length > 0) {
-            inventory.add(items.reduce(ClosestPositioned(node)));
         }
     }
 
@@ -187,24 +137,11 @@ export default class MainHW4Scene extends HW4Scene {
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
      */
-    protected handleBattlerKilled(event: GameEvent): void {
-        let id: number = event.data.get("id");
-        let battler = this.battlers.find(b => b.id === id);
 
-        if (battler) {
-            battler.battlerActive = false;
-            this.healthbars.get(id).visible = false;
-        }
-        
-    }
 
     /** Initializes the layers in the scene */
     protected initLayers(): void {
         this.addLayer("primary", 10);
-        this.addUILayer("slots");
-        this.addUILayer("items");
-        this.getLayer("slots").setDepth(1);
-        this.getLayer("items").setDepth(2);
     }
 
 
@@ -220,14 +157,6 @@ export default class MainHW4Scene extends HW4Scene {
 
         player.health = 10;
         player.maxHealth = 10;
-
-        player.inventory.onChange = ItemEvent.INVENTORY_CHANGED
-        this.inventoryHud = new InventoryHUD(this, player.inventory, "inventorySlot", {
-            start: new Vec2(232, 24),
-            slotLayer: "slots",
-            padding: 8,
-            itemLayer: "items"
-        });
 
         // Give the player physics
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(8, 8)));
@@ -355,24 +284,7 @@ export default class MainHW4Scene extends HW4Scene {
     /**
      * Initialize the items in the scene (healthpacks and laser guns)
      */
-    protected initializeItems(): void {
-        let laserguns = this.load.getObject("laserguns");
-        this.laserguns = new Array<LaserGun>(laserguns.items.length);
-        for (let i = 0; i < laserguns.items.length; i++) {
-            let sprite = this.add.sprite("laserGun", "primary");
-            let line = <Line>this.add.graphic(GraphicType.LINE, "primary", {start: Vec2.ZERO, end: Vec2.ZERO});
-            this.laserguns[i] = LaserGun.create(sprite, line);
-            this.laserguns[i].position.set(laserguns.items[i][0], laserguns.items[i][1]);
-        }
 
-        let healthpacks = this.load.getObject("healthpacks");
-        this.healthpacks = new Array<Healthpack>(healthpacks.items.length);
-        for (let i = 0; i < healthpacks.items.length; i++) {
-            let sprite = this.add.sprite("healthpack", "primary");
-            this.healthpacks[i] = new Healthpack(sprite);
-            this.healthpacks[i].position.set(healthpacks.items[i][0], healthpacks.items[i][1]);
-        }
-    }
     /**
      * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
      * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
@@ -494,10 +406,6 @@ export default class MainHW4Scene extends HW4Scene {
     public getBattlers(): Battler[] { return this.battlers; }
 
     public getWalls(): OrthogonalTilemap { return this.walls; }
-
-    public getHealthpacks(): Healthpack[] { return this.healthpacks; }
-
-    public getLaserGuns(): LaserGun[] { return this.laserguns; }
 
     /**
      * Checks if the given target position is visible from the given position.

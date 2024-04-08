@@ -60,8 +60,6 @@ export default class PlayerController {
      * Checks if the player is attempting to use a held item or not.
      * @return true if the player is attempting to use a held item; false otherwise
      */
-    public get useItem(): boolean { 
-        return Input.isMouseJustPressed(); 
-    }
+
 }
      

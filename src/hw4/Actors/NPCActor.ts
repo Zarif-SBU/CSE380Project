@@ -3,7 +3,6 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite"
 import NavigationPath from "../../Wolfie2D/Pathfinding/NavigationPath";
 import { BattlerEvent, HudEvent } from "../Events";
-import Inventory from "../GameSystems/ItemSystem/Inventory";
 import HW4Scene from "../Scenes/HW4Scene";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import BasicTargeting from "../GameSystems/Targeting/BasicTargeting";
@@ -100,7 +99,6 @@ export default class NPCActor extends AnimatedSprite implements Battler, Targeti
         return this.scene.getNavigationManager().getPath(this.navkey, to, from);
     }
 
-    public get inventory(): Inventory { return this.battler.inventory; }
 
     /** Protected getters for the different components */
 

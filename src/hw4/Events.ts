@@ -7,15 +7,7 @@ export enum BattlerEvent {
     HIT = "HIT",
 }
 
-export enum ItemEvent {
-    ITEM_REQUEST = "ITEM_REQUEST",
 
-    LASERGUN_FIRED = "LASERGUN_FIRED",
-
-    WEAPON_USED = "WEAPON_USED",
-    CONSUMABLE_USED = "CONSUMABLE_USED",
-    INVENTORY_CHANGED = "INVENTORY_CHANGED",
-}
 
 export enum HudEvent {
     HEALTH_CHANGE = "HEALTH_CHANGE"

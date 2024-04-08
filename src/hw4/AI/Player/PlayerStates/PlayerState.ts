@@ -1,7 +1,6 @@
 import State from "../../../../Wolfie2D/DataTypes/State/State";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
-import { BattlerEvent, HudEvent, ItemEvent } from "../../../Events"
-import Item from "../../../GameSystems/ItemSystem/Item";
+import { BattlerEvent, HudEvent } from "../../../Events"
 import PlayerAI from "../PlayerAI";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
 import Line from "../../../../Wolfie2D/Nodes/Graphics/Line";
@@ -59,19 +58,9 @@ export default abstract class PlayerState extends State {
         this.parent.owner.move(this.parent.controller.moveDir);
 
         // Handle the player trying to pick up an item
-        if (this.parent.controller.pickingUp) {
-            // Request an item from the scene
-            this.emitter.fireEvent(ItemEvent.ITEM_REQUEST, {node: this.owner, inventory: this.owner.inventory});
-        }
 
         // Handle the player trying to drop an item
-        if (this.parent.controller.dropping) {
-            
-        }
 
-        if (this.parent.controller.useItem) {
-
-        }
         if (this.parent.controller.dodge) {
             let vec = this.parent.controller.moveDir;
             

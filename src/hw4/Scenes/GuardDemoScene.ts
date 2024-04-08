@@ -17,13 +17,9 @@ import NPCActor from "../Actors/NPCActor";
 import PlayerActor from "../Actors/PlayerActor";
 import GuardBehavior from "../AI/NPC/NPCBehavior/GaurdBehavior";
 import PlayerAI from "../AI/Player/PlayerAI";
-import { ItemEvent, PlayerEvent, BattlerEvent } from "../Events";
+import { PlayerEvent, BattlerEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import Inventory from "../GameSystems/ItemSystem/Inventory";
-import Item from "../GameSystems/ItemSystem/Item";
-import Healthpack from "../GameSystems/ItemSystem/Items/Healthpack";
-import LaserGun from "../GameSystems/ItemSystem/Items/LaserGun";
 import { ClosestPositioned } from "../GameSystems/Searching/HW4Reducers";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import Position from "../GameSystems/Targeting/Position";
@@ -38,8 +34,6 @@ export default class GuardDemoScene extends HW4Scene {
     /** Healthbars for the battlers */
     private healthbars: Map<number, HealthbarHUD>;
 
-    private healthpacks: Array<Healthpack>;
-    private laserguns: Array<LaserGun>;
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -53,8 +47,6 @@ export default class GuardDemoScene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
 
-        this.laserguns = new Array<LaserGun>();
-        this.healthpacks = new Array<Healthpack>();
     }
 
     /**
@@ -106,7 +98,6 @@ export default class GuardDemoScene extends HW4Scene {
         
         // Create the player
         this.initializePlayer();
-        this.initializeItems();
 
         this.initializeNavmesh();
 
@@ -114,9 +105,7 @@ export default class GuardDemoScene extends HW4Scene {
         this.initializeNPCs();
 
         // Subscribe to relevant events
-        this.receiver.subscribe("healthpack");
         this.receiver.subscribe("enemyDied");
-        this.receiver.subscribe(ItemEvent.ITEM_REQUEST);
 
         // Add a UI for health
         this.addUILayer("health");
@@ -147,33 +136,16 @@ export default class GuardDemoScene extends HW4Scene {
             case BattlerEvent.BATTLER_RESPAWN: {
                 break;
             }
-            case ItemEvent.ITEM_REQUEST: {
-                this.handleItemRequest(event.data.get("node"), event.data.get("inventory"));
-                break;
-            }
             default: {
                 throw new Error(`Unhandled event type "${event.type}" caught in HW4Scene event handler`);
             }
         }
     }
 
-    protected handleItemRequest(node: GameNode, inventory: Inventory): void {
-        let items: Item[] = new Array<Item>(...this.healthpacks, ...this.laserguns).filter((item: Item) => {
-            return item.inventory === null && item.position.distanceTo(node.position) <= 100;
-        });
-
-        if (items.length > 0) {
-            inventory.add(items.reduce(ClosestPositioned(node)));
-        }
-    }
 
     /** Initializes the layers in the scene */
     protected initLayers(): void {
         this.addLayer("primary", 10);
-        this.addUILayer("slots");
-        this.addUILayer("items");
-        this.getLayer("slots").setDepth(1);
-        this.getLayer("items").setDepth(2);
     }
 
     /**
@@ -185,7 +157,6 @@ export default class GuardDemoScene extends HW4Scene {
         player.battleGroup = 2;
         player.health = 10;
         player.maxHealth = 10;
-        player.inventory.onChange = ItemEvent.INVENTORY_CHANGED
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(8, 8)));
         let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(2, 1/2), offset: player.size.clone().scaled(0, -1/2)});
         this.healthbars.set(player.id, healthbar);
@@ -252,16 +223,7 @@ export default class GuardDemoScene extends HW4Scene {
     /**
      * Initialize the items in the scene (healthpacks and laser guns)
      */
-    protected initializeItems(): void {
-        let laserguns = this.load.getObject("laserguns");
-        this.laserguns = new Array<LaserGun>(laserguns.items.length);
-        for (let i = 0; i < laserguns.items.length; i++) {
-            let sprite = this.add.sprite("laserGun", "primary");
-            let line = <Line>this.add.graphic(GraphicType.LINE, "primary", {start: Vec2.ZERO, end: Vec2.ZERO});
-            this.laserguns[i] = LaserGun.create(sprite, line);
-            this.laserguns[i].position.set(laserguns.items[i][0], laserguns.items[i][1]);
-        }
-    }
+
     /**
      * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
      * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
@@ -327,10 +289,6 @@ export default class GuardDemoScene extends HW4Scene {
     public getBattlers(): Battler[] { return this.battlers; }
 
     public getWalls(): OrthogonalTilemap { return this.walls; }
-
-    public getHealthpacks(): Healthpack[] { return this.healthpacks; }
-
-    public getLaserGuns(): LaserGun[] { return this.laserguns; }
 
     public isTargetVisible(position: Vec2, target: Vec2): boolean {
 
