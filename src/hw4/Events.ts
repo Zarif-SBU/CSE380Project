@@ -7,6 +7,12 @@ export enum BattlerEvent {
     HIT = "HIT",
 }
 
+export enum PlayerEvent{
+    LIGHT_ATTACK = "LIGHT_ATTACK",
+    HEAVY_ATTACK = "HEAVY_ATTACK",
+    BLOCK = "BLOCK",
+}
+
 export enum ItemEvent {
     ITEM_REQUEST = "ITEM_REQUEST",
 

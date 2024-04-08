@@ -1,6 +1,6 @@
 import Spritesheet from "../../Wolfie2D/DataTypes/Spritesheet";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { BattlerEvent, ItemEvent } from "../Events";
+import { BattlerEvent, ItemEvent, PlayerEvent } from "../Events";
 import BasicBattler from "../GameSystems/BattleSystem/BasicBattler";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import Inventory from "../GameSystems/ItemSystem/Inventory";
@@ -28,6 +28,7 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
         this.targetable = new BasicTargetable(this);
 
         this.receiver.subscribe(ItemEvent.LASERGUN_FIRED)
+        this.receiver.subscribe(PlayerEvent.LIGHT_ATTACK)
     }
 
     get battlerActive(): boolean {

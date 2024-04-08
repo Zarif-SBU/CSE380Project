@@ -3,11 +3,12 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import PlayerActor from "../../Actors/PlayerActor";
-import { ItemEvent } from "../../Events";
+import { ItemEvent, PlayerEvent } from "../../Events";
 import Inventory from "../../GameSystems/ItemSystem/Inventory";
 import Item from "../../GameSystems/ItemSystem/Item";
 import PlayerController from "./PlayerController";
 import { Idle, Invincible, Moving, Dead, PlayerStateType } from "./PlayerStates/PlayerState";
+import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 
 /**
  * The AI that controls the player. The players AI has been configured as a Finite State Machine (FSM)
@@ -48,6 +49,10 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
+            case PlayerEvent.LIGHT_ATTACK: {
+                this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+                break;
+            }
             case ItemEvent.LASERGUN_FIRED: {
                 this.handleLaserFiredEvent(event.data.get("actorId"), event.data.get("to"), event.data.get("from"));
                 break;
@@ -62,9 +67,22 @@ export default class PlayerAI extends StateMachineAI implements AI {
     protected handleLaserFiredEvent(actorId: number, to: Vec2, from: Vec2): void {
         if (this.owner.id !== actorId && this.owner.collisionShape !== undefined ) {
             if (this.owner.collisionShape.getBoundingRect().intersectSegment(to, from.clone().sub(to)) !== null) {
+                console.log(this.owner.collisionShape.getBoundingRect())
                 this.owner.health -= 1;
             }
         }
+    }
+
+    protected handleLightAttackEvent(start:Vec2, dir: Vec2): void {
+        console.log(start);
+        console.log(dir);
+
+        /*
+        if (this.owner.id !== actorId && this.owner.collisionShape !== undefined ) {
+            if (this.owner.collisionShape.getBoundingRect().intersectSegment(to, from.clone().sub(to)) !== null) {
+                this.owner.health -= 1;
+            }
+        }*/
     }
 
 
