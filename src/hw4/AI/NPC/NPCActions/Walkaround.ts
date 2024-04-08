@@ -16,7 +16,7 @@ export default class RandomMovement extends NPCAction {
         super(parent, actor);
         this.radius = radius;
         this.targetPosition = actor.position.clone();
-        this.timer = new Timer(5000); 
+        this.timer = new Timer(10000); 
     }
 
     public performAction(): void {
@@ -26,8 +26,8 @@ export default class RandomMovement extends NPCAction {
             const randomDistance = Math.random() * this.radius;
             console.log("ddsadsa", this.actor.spawnpoint.clone().add(randomDirection.scaled(randomDistance)));
             this.targetPosition = this.actor.spawnpoint.clone().add(randomDirection.scaled(randomDistance));
-            this.actor.addAI(GuardBehavior, {target: new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)), range: 0});
-            
+            this.actor.addAI(GuardBehavior, {target: new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)), range: 100});
+            // this.actor.setTarget(new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)));
             // Start the timer
             this.timer.start();
         }
@@ -39,4 +39,17 @@ export default class RandomMovement extends NPCAction {
         // If the timer has expired, finish the behavior
 
     }
+
+    //     public update(deltaT: number): void {
+    //     if (this.target !== null && this.path !== null && !this.path.isDone()) {
+    //         if (this.actor.atTarget()) {
+    //             this.performAction(this.target);
+    //             this.finished();
+    //         } else {
+    //             this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
+    //         }
+    //     } else {
+    //         this.finished();
+    //     }
+    // }
 }

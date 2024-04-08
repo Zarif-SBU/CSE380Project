@@ -12,7 +12,9 @@ import GoapAction from "../../../../Wolfie2D/AI/Goap/GoapAction";
 import GoapState from "../../../../Wolfie2D/AI/Goap/GoapState";
 import Battler from "../../../GameSystems/BattleSystem/Battler";
 import RandomMovement from "../NPCActions/Walkaround";
-
+import AttackPlayer from "../NPCActions/AttackPlayer";
+import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
+import Position from "../../../GameSystems/Targeting/Position";
 export default class GuardBehavior extends NPCBehavior {
 
     /** The target the guard should guard */
@@ -23,9 +25,8 @@ export default class GuardBehavior extends NPCBehavior {
     /** Initialize the NPC AI */
     public initializeAI(owner: NPCActor, options: GuardOptions): void {
         super.initializeAI(owner, options);
-
         // Initialize the targetable entity the guard should try to protect and the range to the target
-        this.target = options.target
+        this.target = options.target;
         this.range = options.range;
 
         // Initialize guard statuses
@@ -50,17 +51,26 @@ export default class GuardBehavior extends NPCBehavior {
 
     public update(deltaT: number): void {
         super.update(deltaT);
+        // if(this.owner.position == this.target.position) {
+        //     const randomAngle = Math.random() * Math.PI * 2;
+        //     const randomDirection = new Vec2(Math.cos(randomAngle), Math.sin(randomAngle));
+        //     const randomDistance = Math.random() * 200;
+        //     // console.log("ddsadsa", this.owner.spawnpoint.clone().add(randomDirection.scaled(randomDistance)));
+        //     this.target = this.owner.spawnpoint.clone().add(randomDirection.scaled(randomDistance));
+        // }
     }
 
     protected initializeStatuses(): void {
 
         let scene = this.owner.getScene();
 
-        // A status checking if there are any enemies at target the guard is guarding
-        let enemyBattlerFinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.target, 0, this.range*this.range))
-        let enemyAtGuardPosition = new TargetExists(scene.getBattlers(), enemyBattlerFinder)
+        // A status checking if there are any enemies at the guard
+        let enemyBattlerFinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
+        let enemyAtGuardPosition = new TargetExists(scene.getBattlers(), enemyBattlerFinder);
         this.addStatus(GuardStatuses.ENEMY_IN_GUARD_POSITION, enemyAtGuardPosition);
+        if(enemyAtGuardPosition) {
 
+        }
         // Add a status to check if a lasergun exists in the scene and it's visible
         // Add a status to check if the guard has a lasergun
         
@@ -69,8 +79,18 @@ export default class GuardBehavior extends NPCBehavior {
     }
 
     protected initializeActions(): void {
-        let scene = this.owner.getScene()
+
+        
+        let scene = this.owner.getScene();
+        let attackPlayer = new AttackPlayer(this, this.owner);
+        attackPlayer.targets = [scene.getBattlers()[0]];
+        attackPlayer.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
+        attackPlayer.addPrecondition(GuardStatuses.ENEMY_IN_GUARD_POSITION);
+        attackPlayer.addEffect(GuardStatuses.GOAL);
+        attackPlayer.cost = 1;
+        this.addState(GuardActions.ATTACK_ENEMY, attackPlayer);
         // An action for guarding the guard's guard location
+
         let guard = new RandomMovement(this, this.owner);
         guard.targets = [this.target];
         guard.targetFinder = new BasicFinder();
@@ -99,9 +119,6 @@ export const GuardStatuses = {
 
     ENEMY_IN_GUARD_POSITION: "enemy-at-guard-position",
 
-    HAS_WEAPON: "has-weapon",
-
-    LASERGUN_EXISTS: "laser-gun-exists",
 
     GOAL: "goal"
 
@@ -110,9 +127,7 @@ export const GuardStatuses = {
 export type GuardAction = typeof GuardActions[keyof typeof GuardActions];
 export const GuardActions = {
 
-    PICKUP_LASER_GUN: "pickup-lasergun",
-
-    SHOOT_ENEMY: "shoot-enemy",
+    ATTACK_ENEMY: "attack-enemy",
 
     GUARD: "guard",
 

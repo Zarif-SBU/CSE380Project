@@ -122,6 +122,7 @@ export default class MainHW4Scene extends HW4Scene {
             this.handleEvent(this.receiver.getNextEvent());
         }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
+        // this.handledetections();
     }
 
     /**
@@ -133,6 +134,13 @@ export default class MainHW4Scene extends HW4Scene {
         }
     }
 
+    handledetections() {
+        for(let enemy of this.battlers.slice(1)) {
+            if(MainHW4Scene.checkifDetected(this.battlers[0], enemy)) {
+                enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
+            }
+        }
+    }
     /**
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
@@ -453,5 +461,14 @@ export default class MainHW4Scene extends HW4Scene {
         }
         return true;
 
+    }
+	static checkifDetected(Player: Battler, Enemy: Battler): boolean {
+		// Your code goes here:
+		let distx = Player.position.x - Enemy.position.x;
+        let disty = Player.position.y - Enemy.position.y;
+        if((Math.pow(distx, 2) + Math.pow(disty, 2)) < 5000) {
+            return true
+        }
+		return false;
     }
 }
