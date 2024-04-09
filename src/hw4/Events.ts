@@ -8,6 +8,7 @@ export enum BattlerEvent {
     ATTACK = "ATTACK"
 }
 
+
 export enum PlayerEvent{
     LIGHT_ATTACK = "LIGHT_ATTACK",
     HEAVY_ATTACK = "HEAVY_ATTACK",
