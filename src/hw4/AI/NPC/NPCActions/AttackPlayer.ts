@@ -35,6 +35,7 @@ export default class AttackPlayer extends NPCAction {
 
     public onEnter(options: Record<string, any>): void {
         super.onEnter(options);
+        this.actor.speed = 15;
         // Find a lasergun in the actors inventory
     }
 

@@ -23,7 +23,6 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
         super(sheet);
         this.battler = new BasicBattler(this);
         this.targetable = new BasicTargetable(this);
-
     }
 
     get battlerActive(): boolean {

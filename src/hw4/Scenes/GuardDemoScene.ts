@@ -181,11 +181,11 @@ export default class GuardDemoScene extends HW4Scene {
         let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
         this.healthbars.set(npc.id, healthbar);
         npc.battleGroup = 1
-        npc.speed = 5;
+        npc.speed = 10;
         npc.health = 10;
         npc.maxHealth = 10;
         npc.navkey = "navmesh";
-        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 100});
+        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 0});
         npc.animation.play("IDLE");
         this.battlers.push(npc);
 

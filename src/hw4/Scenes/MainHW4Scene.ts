@@ -63,16 +63,19 @@ export default class MainHW4Scene extends HW4Scene {
      */
     public override loadScene() {
         // Load the player and enemy spritesheets
-        this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
+        // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
+        this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
 
         // Load in the enemy sprites
         this.load.spritesheet("BlueEnemy", "hw4_assets/spritesheets/BlueEnemy.json");
-        this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
+        // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
+        this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
+
         this.load.spritesheet("BlueHealer", "hw4_assets/spritesheets/BlueHealer.json");
         this.load.spritesheet("RedHealer", "hw4_assets/spritesheets/RedHealer.json");
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/Mymap.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/map.json");
 
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
@@ -92,7 +95,7 @@ export default class MainHW4Scene extends HW4Scene {
         let tilemapSize: Vec2 = this.walls.size;
 
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
-        this.viewport.setZoomLevel(2);
+        this.viewport.setZoomLevel(1);
 
         this.initLayers();
         
@@ -160,17 +163,17 @@ export default class MainHW4Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(40, 40);
+        player.position.set(40, 500);
         player.battleGroup = 2;
 
         player.health = 10;
         player.maxHealth = 10;
-
+        player.speed = 20;
         // Give the player physics
-        player.addPhysics(new AABB(Vec2.ZERO, new Vec2(8, 8)));
+        player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
 
         // Give the player a healthbar
-        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(2, 1/2), offset: player.size.clone().scaled(0, -1/2)});
+        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(1, 1/10), offset: player.size.clone().scaled(0, -2/3)});
         this.healthbars.set(player.id, healthbar);
 
         // Give the player PlayerAI
@@ -214,22 +217,22 @@ export default class MainHW4Scene extends HW4Scene {
         for (let i = 0; i < red.enemies.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(red.enemies[i][0], red.enemies[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(30, 30)), null, false);
 
             // Give the NPC a healthbar
-            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
+            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
             this.healthbars.set(npc.id, healthbar);
             
             // Set the NPCs stats
             npc.battleGroup = 1
-            npc.speed = 10;
+            npc.speed = 5;
             npc.health = 10;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
             console.log("spawn point", npc.spawnpoint);
             // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
-            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 100});
+            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 500});
             
             // Play the NPCs "IDLE" animation
             npc.animation.play("IDLE");

@@ -16,7 +16,7 @@ export default class RandomMovement extends NPCAction {
         super(parent, actor);
         this.radius = radius;
         this.targetPosition = actor.position.clone();
-        this.timer = new Timer(10000); 
+        this.timer = new Timer(10000);
     }
 
     public performAction(): void {
@@ -26,7 +26,7 @@ export default class RandomMovement extends NPCAction {
             const randomDistance = Math.random() * this.radius;
             console.log("ddsadsa", this.actor.spawnpoint.clone().add(randomDirection.scaled(randomDistance)));
             this.targetPosition = this.actor.spawnpoint.clone().add(randomDirection.scaled(randomDistance));
-            this.actor.addAI(GuardBehavior, {target: new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)), range: 100});
+            this.actor.addAI(GuardBehavior, {target: new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)), range: 500});
             // this.actor.setTarget(new BasicTargetable(new Position(this.targetPosition.x, this.targetPosition.y)));
             // Start the timer
             this.timer.start();

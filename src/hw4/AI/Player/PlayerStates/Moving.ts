@@ -6,13 +6,14 @@ import PlayerState from "./PlayerState";
 export default class Moving extends PlayerState {
     
     public override onEnter(options: Record<string, any>): void {
-    
+        
     }
 
     public override handleInput(event: GameEvent): void { 
         switch(event.type) {
             default: {
                 super.handleInput(event);
+                
             }
         }
     }

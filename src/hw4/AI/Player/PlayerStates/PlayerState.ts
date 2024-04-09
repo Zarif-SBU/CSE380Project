@@ -55,7 +55,7 @@ export default abstract class PlayerState extends State {
         // Adjust the angle the player is facing 
         this.parent.owner.rotation = this.parent.controller.rotation;
         // Move the player
-        this.parent.owner.move(this.parent.controller.moveDir);
+        this.parent.owner.move(this.parent.controller.moveDir.scale(3));
 
         // Handle the player trying to pick up an item
 
@@ -64,8 +64,8 @@ export default abstract class PlayerState extends State {
         if (this.parent.controller.dodge) {
             let vec = this.parent.controller.moveDir;
             
-            this.parent.owner.move(new Vec2(vec.x*50, vec.y*50));
-            this.owner.tweens.play("dodge");
+            this.parent.owner.move(new Vec2(vec.x*100, vec.y*100));
+            // this.owner.tweens.play("dodge");
             this.system.initializePool(this.owner.getScene(), "primary");
             this.system.startSystem(100, 1, this.owner.position.clone());
             console.log("Shitty animation played")
