@@ -19,7 +19,7 @@ import Debug from "../Debug/Debug";
 import Color from "../Utils/Color";
 import Circle from "../DataTypes/Shapes/Circle";
 import GoapAI from "../DataTypes/Goap/GoapAI";
-
+import Timer from "../Timing/Timer";
 /**
  * The representation of an object in the game world.
  * To construct GameNodes, see the @reference[Scene] documentation.
@@ -53,7 +53,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 	group: number;
 	isPlayer: boolean;
 	isColliding: boolean = false;
-
+	count = 0;
 	/*---------- ACTOR ----------*/
 	_ai: AI | GoapAI;
 	aiActive: boolean;
@@ -77,6 +77,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 	abstract set alpha(a: number);
 
 	abstract get alpha(): number;
+	timer:Timer
 
 	// Constructor docs are ignored, as the user should NOT create new GameNodes with a raw constructor
 	constructor(){
@@ -86,6 +87,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 		this.emitter = new Emitter();
 		this.tweens = new TweenController(this);
 		this.rotation = 0;
+		this.timer = new Timer(200)
 	}
 
 	destroy(){
@@ -153,7 +155,12 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
      * @param velocity The velocity with which to move the object.
      */
 	move(velocity: Vec2): void {
-		if(this.frozen) return;
+
+		if(this.frozen){
+
+			return;
+		}
+		
 		this.moving = true;
 		this._velocity = velocity;
 	};
@@ -179,6 +186,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 			this.path = null;
 			this.pathfinding = false;
 		}
+		
 	}
 
 	// @implemented
