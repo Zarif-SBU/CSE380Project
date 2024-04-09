@@ -1,7 +1,6 @@
 import Positioned from "../../../Wolfie2D/DataTypes/Interfaces/Positioned";
 import Unique from "../../../Wolfie2D/DataTypes/Interfaces/Unique";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
-import Inventory from "../ItemSystem/Inventory";
 import BasicTargetable from "../Targeting/BasicTargetable";
 import { TargetableEntity } from "../Targeting/TargetableEntity";
 import { TargetingEntity } from "../Targeting/TargetingEntity";
@@ -11,19 +10,18 @@ export default class BasicBattler implements Battler {
 
     protected _owner: Unique & Positioned;
     protected _targetable: TargetableEntity;
-    protected _inventory: Inventory;
 
     protected _maxHealth: number;
     protected _health: number;
     protected _battleGroup: number;
     protected _speed: number;
     protected _active: boolean;
+    protected _spawnPosition: Vec2;
 
     public constructor(owner: Unique & Positioned) {
         this._owner = owner;
         this._targetable = new BasicTargetable(owner);
-        this.inventory = new Inventory();
-
+        this._spawnPosition = new Vec2(0,0);
         this.maxHealth = 0;
         this.health = 0;
         this.battleGroup = 0;
@@ -35,6 +33,9 @@ export default class BasicBattler implements Battler {
 
     public get position(): Vec2 { return this._targetable.position; }
     public set position(position: Vec2) { this._targetable.position = position; }
+
+    // public get spawnPosition(): Vec2 { return this._spawnPosition; }
+    // public set spawnPosition(spawnPosition: Vec2) { this._spawnPosition = spawnPosition; }
 
     public get relativePosition(): Vec2 {
         return this._targetable.relativePosition;
@@ -52,8 +53,6 @@ export default class BasicBattler implements Battler {
     public get speed(): number { return this._speed; }
     public set speed(speed: number) { this._speed = speed; }
 
-    public get inventory(): Inventory { return this._inventory; }
-    protected set inventory(inventory: Inventory) { this._inventory = inventory; }
 
     public get battlerActive(): boolean { return this._active; }
     public set battlerActive(value: boolean) { this._active = value; }

@@ -3,13 +3,11 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import PlayerActor from "../../Actors/PlayerActor";
-import { ItemEvent, PlayerEvent } from "../../Events";
-import Inventory from "../../GameSystems/ItemSystem/Inventory";
-import Item from "../../GameSystems/ItemSystem/Item";
+import { PlayerEvent } from "../../Events";
 import PlayerController from "./PlayerController";
 import { Idle, Invincible, Moving, Dead, PlayerStateType } from "./PlayerStates/PlayerState";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
-import Circle from "../../../Wolfie2D/DataTypes/Shapes/Circle";
+
 /**
  * The AI that controls the player. The players AI has been configured as a Finite State Machine (FSM)
  * with 4 states; Idle, Moving, Invincible, and Dead.
@@ -52,9 +50,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
     /** A set of controls for the player */
     public controller: PlayerController;
     /** The inventory object associated with the player */
-    public inventory: Inventory;
     /** The players held item */
-    public item: Item | null;
     
     public initializeAI(owner: PlayerActor, opts: Record<string, any>): void {
         this.owner = owner;
@@ -82,10 +78,6 @@ export default class PlayerAI extends StateMachineAI implements AI {
         switch(event.type) {
             case PlayerEvent.LIGHT_ATTACK: {
                 this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
-                break;
-            }
-            case ItemEvent.LASERGUN_FIRED: {
-                this.handleLaserFiredEvent(event.data.get("actorId"), event.data.get("to"), event.data.get("from"));
                 break;
             }
             default: {

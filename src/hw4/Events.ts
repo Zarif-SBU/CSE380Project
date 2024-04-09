@@ -5,7 +5,9 @@ export enum BattlerEvent {
     BATTLER_CHANGE = "BATTLER_CHANGE",
     CONSUME = "CONSUME",
     HIT = "HIT",
+    ATTACK = "ATTACK"
 }
+
 
 export enum PlayerEvent{
     LIGHT_ATTACK = "LIGHT_ATTACK",
@@ -13,15 +15,7 @@ export enum PlayerEvent{
     BLOCK = "BLOCK",
 }
 
-export enum ItemEvent {
-    ITEM_REQUEST = "ITEM_REQUEST",
 
-    LASERGUN_FIRED = "LASERGUN_FIRED",
-
-    WEAPON_USED = "WEAPON_USED",
-    CONSUMABLE_USED = "CONSUMABLE_USED",
-    INVENTORY_CHANGED = "INVENTORY_CHANGED",
-}
 
 export enum HudEvent {
     HEALTH_CHANGE = "HEALTH_CHANGE"

@@ -18,5 +18,5 @@ export class HasHealth extends GoapState {
     public isSatisfied(): boolean {
         return MathUtils.between(this.min, this.max, this.actor.health, true);
     }
-    
+
 }

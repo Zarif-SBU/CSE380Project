@@ -11,7 +11,7 @@
   "bottomBuffer": 0,
   "animations": [
     {
-      "name": "Idle",
+      "name": "IDLE",
       "repeat": true,
       "frames": [
         {

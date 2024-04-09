@@ -1,15 +1,13 @@
 import Spritesheet from "../../Wolfie2D/DataTypes/Spritesheet";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { BattlerEvent, ItemEvent, PlayerEvent } from "../Events";
+import { BattlerEvent, PlayerEvent } from "../Events";
 import BasicBattler from "../GameSystems/BattleSystem/BasicBattler";
 import Battler from "../GameSystems/BattleSystem/Battler";
-import Inventory from "../GameSystems/ItemSystem/Inventory";
-import HW4Item from "../GameSystems/ItemSystem/Item";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import { TargetableEntity } from "../GameSystems/Targeting/TargetableEntity";
 import { TargetingEntity } from "../GameSystems/Targeting/TargetingEntity";
 import HW4Scene from "../Scenes/HW4Scene";
-
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 
 export default class PlayerActor extends AnimatedSprite implements Battler {
 
@@ -20,15 +18,13 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
     protected battler: Battler;
     protected targetable: TargetableEntity;
 
-    protected heldItem: HW4Item;
 
     constructor(sheet: Spritesheet) {
         super(sheet);
         this.battler = new BasicBattler(this);
         this.targetable = new BasicTargetable(this);
-
-        this.receiver.subscribe(ItemEvent.LASERGUN_FIRED)
         this.receiver.subscribe(PlayerEvent.LIGHT_ATTACK)
+
     }
 
     get battlerActive(): boolean {
@@ -73,7 +69,7 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
     set speed(value: number) {
         this.battler.speed = value;
     }
-    get inventory(): Inventory {
-        return this.battler.inventory;
-    }
+
+    // public get spawnPosition(): Vec2 { return this.spawnPosition; }
+    // public set spawnPosition(spawnPosition: Vec2) { this.spawnPosition = spawnPosition; }
 }

@@ -1,6 +1,5 @@
 import GoapAction from "../../../../Wolfie2D/AI/Goap/GoapAction";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
-import Healthpack from "../../../GameSystems/ItemSystem/Items/Healthpack";
 import NPCActor from "../../../Actors/NPCActor";
 import NPCBehavior from "../NPCBehavior";
 import Finder from "../../../GameSystems/Searching/Finder";

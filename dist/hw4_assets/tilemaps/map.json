@@ -88,6 +88,12 @@
          "id":2,
          "name":"Wall",
          "opacity":1,
+         "properties":[
+            {
+             "name":"Collidable",
+             "type":"bool",
+             "value":true
+            }],
          "type":"tilelayer",
          "visible":true,
          "width":55,

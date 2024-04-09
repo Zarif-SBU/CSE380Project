@@ -3,9 +3,6 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import CharacterActor from "../../Actors/CharacterActor";
-import { ItemEvent } from "../../Events";
-import Inventory from "../../GameSystems/ItemSystem/Inventory";
-import Item from "../../GameSystems/ItemSystem/Item";
 import CharacterController from "./CharacterController";
 import { CharacterStateType, Dead, Idle, Moving } from "./CharacterStates/CharacterState";
 
@@ -20,9 +17,7 @@ export default class CharacterAI extends StateMachineAI implements AI {
     /** A set of controls for the Character */
     public controller: CharacterController;
     /** The inventory object associated with the Character */
-    public inventory: Inventory;
     /** The Characters held item */
-    public item: Item | null;
     
     public initializeAI(owner: CharacterActor, opts: Record<string, any>): void {
         this.owner = owner;
@@ -45,25 +40,8 @@ export default class CharacterAI extends StateMachineAI implements AI {
 
     public destroy(): void {}
 
-    public handleEvent(event: GameEvent): void {
-        switch(event.type) {
-            case ItemEvent.LASERGUN_FIRED: {
-                this.handleLaserFiredEvent(event.data.get("actorId"), event.data.get("to"), event.data.get("from"));
-                break;
-            }
-            default: {
-                super.handleEvent(event);
-                break;
-            }
-        }
-    }
+    public handleEvent(): void {
 
-    protected handleLaserFiredEvent(actorId: number, to: Vec2, from: Vec2): void {
-        if (this.owner.id !== actorId && this.owner.collisionShape !== undefined ) {
-            if (this.owner.collisionShape.getBoundingRect().intersectSegment(to, from.clone().sub(to)) !== null) {
-                this.owner.health -= 1;
-            }
-        }
     }
 
 

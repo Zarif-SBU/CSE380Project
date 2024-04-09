@@ -46,7 +46,7 @@ export default class PlayerController {
         let dir: Vec2 = Vec2.ZERO;
         dir.y = (Input.isPressed(PlayerInput.MOVE_UP) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_DOWN) ? 1 : 0);
 		dir.x = (Input.isPressed(PlayerInput.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_RIGHT) ? 1 : 0);
-        
+
         
         return dir.normalize();
     }
@@ -67,16 +67,27 @@ export default class PlayerController {
      * @return a Vec2 representing the direction the player should face.
      */
     
-    public get faceDir(): Vec2{
-        if(this.moveDir.x === 0 && this.moveDir.y === 0){
-            return this.currentFacingDirection;
-        } 
-        else{
-            this.currentFacingDirection = this.moveDir.normalize();
-            return this.currentFacingDirection;
-        }
+public lastAnimationPlayed: string = "";
+
+public get faceDir(): Vec2 {
+    let animationToPlay = "";
+    if (this.moveDir.x === 0 && this.moveDir.y === 0) {
+        animationToPlay = "IDLE";
+    } else if (this.moveDir.x > 0) {
+        animationToPlay = "WALK_RIGHT";
+    } else if (this.moveDir.x < 0) {
+        animationToPlay = "WALK_LEFT";
+    }
+    
+    if (animationToPlay !== "" && !this.owner.animation.isPlaying(animationToPlay)) {
+        this.owner.animation.play(animationToPlay);
+    }
+    if(animationToPlay !== "IDLE") {
+        this.lastAnimationPlayed = animationToPlay;
     }
 
+    return new Vec2(0);
+}
     /**
      * Gets the rotation of the players sprite based on the direction the player
      * should be facing.
