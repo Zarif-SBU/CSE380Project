@@ -164,7 +164,7 @@ export default class MainHW4Scene extends HW4Scene {
 
         player.health = 10;
         player.maxHealth = 10;
-        player.speed = 30;
+        player.speed = 40;
         // Give the player physics
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
 
