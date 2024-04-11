@@ -3,9 +3,6 @@ import Actor from "../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import GameNode from "../../Wolfie2D/Nodes/GameNode";
-import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
-import Line from "../../Wolfie2D/Nodes/Graphics/Line";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -21,7 +18,6 @@ import { BattlerEvent, PlayerEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import { ClosestPositioned } from "../GameSystems/Searching/HW4Reducers";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import Position from "../GameSystems/Targeting/Position";
 import AstarStrategy from "../Pathfinding/AstarStrategy";
@@ -75,7 +71,7 @@ export default class MainHW4Scene extends HW4Scene {
         this.load.spritesheet("RedHealer", "hw4_assets/spritesheets/RedHealer.json");
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/map.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
 
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
@@ -163,12 +159,12 @@ export default class MainHW4Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(40, 500);
+        player.position.set(200, 1000);
         player.battleGroup = 2;
 
         player.health = 10;
         player.maxHealth = 10;
-        player.speed = 20;
+        player.speed = 30;
         // Give the player physics
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
 
