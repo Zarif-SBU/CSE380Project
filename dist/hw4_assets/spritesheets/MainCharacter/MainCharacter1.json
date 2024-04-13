@@ -1,10 +1,10 @@
 {
     "name": "MainCharacter1",
-    "spriteSheetImage": "smaller_animations.png",
+    "spriteSheetImage": "smaller_animations(1).png",
     "spriteWidth": 128,
     "spriteHeight": 128,
     "columns": 5,
-    "rows": 5,
+    "rows": 6,
     "durationType": "time",
     "animations": [
         {
@@ -25,12 +25,17 @@
         {
             "name": "WALK_RIGHT",
             "repeat": true,
-            "frames": [ {"index": 11, "duration": 12}, {"index": 12, "duration": 12}, {"index": 13, "duration": 12}, {"index": 14, "duration": 12},{"index": 15, "duration": 12}, {"index": 16, "duration": 12} ]
+            "frames": [ {"index": 11, "duration": 14}, {"index": 12, "duration": 14}, {"index": 13, "duration": 14}, {"index": 14, "duration": 14},{"index": 15, "duration": 14}, {"index": 16, "duration": 14} ]
         },
         {
             "name": "WALK_LEFT",
             "repeat": true,
-            "frames": [{"index": 17, "duration": 12}, {"index": 18, "duration": 12} , {"index": 19, "duration": 12} , {"index": 20, "duration": 12} , {"index": 21, "duration": 12}, {"index": 22, "duration": 12}  ]
+            "frames": [{"index": 17, "duration": 14}, {"index": 18, "duration": 14} , {"index": 19, "duration": 14} , {"index": 20, "duration": 14} , {"index": 21, "duration": 14}, {"index": 22, "duration": 14}  ]
+        },
+        {
+            "name": "WALK_FORWARD",
+            "repeat": true,
+            "frames":[{"index": 23, "duration": 17},{"index": 24, "duration": 14},{"index": 25, "duration": 14},{"index": 26, "duration": 14},{"index": 27, "duration": 17},{"index": 28, "duration": 17}]
         }
     ]
 }

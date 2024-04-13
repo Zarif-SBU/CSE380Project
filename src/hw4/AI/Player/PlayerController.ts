@@ -77,6 +77,10 @@ public get faceDir(): Vec2 {
         animationToPlay = "WALK_RIGHT";
     } else if (this.moveDir.x < 0) {
         animationToPlay = "WALK_LEFT";
+    }else if (this.moveDir.y<0 &&  this.moveDir.x === 0){
+        animationToPlay = "WALK_FORWARD"
+    }else if (this.moveDir.y>0 &&  this.moveDir.x === 0){
+        animationToPlay = "WALK_FORWARD"
     }
     
     if (animationToPlay !== "" && !this.owner.animation.isPlaying(animationToPlay)) {
