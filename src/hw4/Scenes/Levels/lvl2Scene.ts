@@ -1,34 +1,34 @@
-import PositionGraph from "../../Wolfie2D/DataTypes/Graphs/PositionGraph";
-import Actor from "../../Wolfie2D/DataTypes/Interfaces/Actor";
-import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
-import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
-import Navmesh from "../../Wolfie2D/Pathfinding/Navmesh";
-import DirectStrategy from "../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
-import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
-import SceneManager from "../../Wolfie2D/Scene/SceneManager";
-import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import MathUtils from "../../Wolfie2D/Utils/MathUtils";
-import NPCActor from "../Actors/NPCActor";
-import PlayerActor from "../Actors/PlayerActor";
-import GuardBehavior from "../AI/NPC/NPCBehavior/GaurdBehavior";
-import PlayerAI from "../AI/Player/PlayerAI";
-import { BattlerEvent, PlayerEvent } from "../Events";
-import Battler from "../GameSystems/BattleSystem/Battler";
-import BattlerBase from "../GameSystems/BattleSystem/BattlerBase";
-import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
-import Position from "../GameSystems/Targeting/Position";
-import AstarStrategy from "../Pathfinding/AstarStrategy";
-import HW4Scene from "./HW4Scene";
+import PositionGraph from "../../../Wolfie2D/DataTypes/Graphs/PositionGraph";
+import Actor from "../../../Wolfie2D/DataTypes/Interfaces/Actor";
+import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
+import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
+import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
+import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
+import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
+import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
+import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
+import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import NPCActor from "../../Actors/NPCActor";
+import PlayerActor from "../../Actors/PlayerActor";
+import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import PlayerAI from "../../AI/Player/PlayerAI";
+import { BattlerEvent, PlayerEvent } from "../../Events";
+import Battler from "../../GameSystems/BattleSystem/Battler";
+import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
+import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
+import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
+import Position from "../../GameSystems/Targeting/Position";
+import AstarStrategy from "../../Pathfinding/AstarStrategy";
+import HW4Scene from "../HW4Scene";
 
 const BattlerGroups = {
     RED: 1,
     BLUE: 2
 } as const;
 
-export default class MainHW4Scene extends HW4Scene {
+export default class lvl2Scene extends HW4Scene {
 
     /** GameSystems in the HW4 Scene */
 
@@ -71,7 +71,7 @@ export default class MainHW4Scene extends HW4Scene {
         this.load.spritesheet("RedHealer", "hw4_assets/spritesheets/RedHealer.json");
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/lvl2.json");
 
         // Load the enemy locations
         this.load.object("red", "hw4_assets/data/enemies/red.json");
@@ -135,7 +135,7 @@ export default class MainHW4Scene extends HW4Scene {
 
     handledetections() {
         for(let enemy of this.battlers.slice(1)) {
-            if(MainHW4Scene.checkifDetected(this.battlers[0], enemy)) {
+            if(lvl2Scene.checkifDetected(this.battlers[0], enemy)) {
                 enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
             }
         }
@@ -159,7 +159,7 @@ export default class MainHW4Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(200, 1000);
+        player.position.set(200, 450);
         player.battleGroup = 2;
 
         player.health = 10;
