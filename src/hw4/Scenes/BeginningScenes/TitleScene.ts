@@ -1,11 +1,11 @@
-import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import Input from "../../Wolfie2D/Input/Input";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
-import Layer from "../../Wolfie2D/Scene/Layer";
-import Scene from "../../Wolfie2D/Scene/Scene";
-import Color from "../../Wolfie2D/Utils/Color";
+import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import Input from "../../../Wolfie2D/Input/Input";
+import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
+import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Layer from "../../../Wolfie2D/Scene/Layer";
+import Scene from "../../../Wolfie2D/Scene/Scene";
+import Color from "../../../Wolfie2D/Utils/Color";
 import MainMenu from "./MainMenu";
 
 export default class TitleScene extends Scene {

@@ -1,12 +1,12 @@
-import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
-import Layer from "../../Wolfie2D/Scene/Layer";
-import Scene from "../../Wolfie2D/Scene/Scene";
-import Color from "../../Wolfie2D/Utils/Color";
-import ControlScene from "./ControlScene";
+import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Layer from "../../../Wolfie2D/Scene/Layer";
+import Scene from "../../../Wolfie2D/Scene/Scene";
+import Color from "../../../Wolfie2D/Utils/Color";
+import ControlScene from "../ControlScene";
 import LevelSelectScene from "./LevelSelectScreen";
-import lvl1Scene from "./Levels/lvl1Scene";
+import Story from "./Story";
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
@@ -66,7 +66,7 @@ export default class MainMenu extends Scene {
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
             case "play": {
-                this.sceneManager.changeToScene(lvl1Scene);
+                this.sceneManager.changeToScene(Story);
                 break;
             }
             case "levels": {

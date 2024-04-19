@@ -1,6 +1,6 @@
 import Game from "./Wolfie2D/Loop/Game";
 import { PlayerInput } from "./hw4/AI/Player/PlayerController";
-import TitleScene from "./hw4/Scenes/TitleScene";
+import TitleScene from "./hw4/Scenes/BeginningScenes/TitleScene";
 
 // The main function is your entrypoint into Wolfie2D. Specify your first scene and any options here.
 (function main(){
