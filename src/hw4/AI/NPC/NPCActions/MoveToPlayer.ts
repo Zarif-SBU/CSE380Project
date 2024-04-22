@@ -12,7 +12,7 @@ import { BattlerEvent, PlayerEvent } from "../../../Events";
 import HW4Scene from "../../../Scenes/HW4Scene";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import { TweenableProperties } from "../../../../Wolfie2D/Nodes/GameNode";
-export default class AttackPlayer extends NPCAction {
+export default class MoveToPlayer extends NPCAction {
     public scene: HW4Scene;
     public range: number;
     protected timer: Timer;
