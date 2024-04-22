@@ -3,9 +3,6 @@ import Actor from "../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import GameNode from "../../Wolfie2D/Nodes/GameNode";
-import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
-import Line from "../../Wolfie2D/Nodes/Graphics/Line";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -17,16 +14,16 @@ import NPCActor from "../Actors/NPCActor";
 import PlayerActor from "../Actors/PlayerActor";
 import GuardBehavior from "../AI/NPC/NPCBehavior/GaurdBehavior";
 import PlayerAI from "../AI/Player/PlayerAI";
-import { PlayerEvent, BattlerEvent } from "../Events";
+import { BattlerEvent, PlayerEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import { ClosestPositioned } from "../GameSystems/Searching/HW4Reducers";
 import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import Position from "../GameSystems/Targeting/Position";
 import AstarStrategy from "../Pathfinding/AstarStrategy";
 import HW4Scene from "./HW4Scene";
 
 export default class GuardDemoScene extends HW4Scene {
+    public level: number;
 
     private player: PlayerActor;
     /** All the battlers in the HW4Scene (including the player) */

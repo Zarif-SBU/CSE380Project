@@ -4,7 +4,7 @@ import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
-import ControlScene from "../ControlScene";
+import ControlScene from "./ControlScene";
 import LevelSelectScene from "./LevelSelectScreen";
 import Story from "./Story";
 
@@ -37,19 +37,19 @@ export default class MainMenu extends Scene {
         play.backgroundColor = Color.TRANSPARENT;
         play.onClickEventId = "play";
 
-        const astar = this.add.uiElement(UIElementType.BUTTON, "mainMenu", {position: new Vec2(center.x, center.y), text: "Level Select"});
-        astar.size.set(200, 50);
-        astar.borderWidth = 2;
-        astar.borderColor = Color.WHITE;
-        astar.backgroundColor = Color.TRANSPARENT;
-        astar.onClickEventId = "levels";
+        const levelSelect = this.add.uiElement(UIElementType.BUTTON, "mainMenu", {position: new Vec2(center.x, center.y), text: "Level Select"});
+        levelSelect.size.set(200, 50);
+        levelSelect.borderWidth = 2;
+        levelSelect.borderColor = Color.WHITE;
+        levelSelect.backgroundColor = Color.TRANSPARENT;
+        levelSelect.onClickEventId = "levels";
 
-        const guard = this.add.uiElement(UIElementType.BUTTON, "mainMenu", {position: new Vec2(center.x, center.y + 100), text: "Controls"});
-        guard.size.set(200, 50);
-        guard.borderWidth = 2;
-        guard.borderColor = Color.WHITE;
-        guard.backgroundColor = Color.TRANSPARENT;
-        guard.onClickEventId = "controls";
+        const control = this.add.uiElement(UIElementType.BUTTON, "mainMenu", {position: new Vec2(center.x, center.y + 100), text: "Controls"});
+        control.size.set(200, 50);
+        control.borderWidth = 2;
+        control.borderColor = Color.WHITE;
+        control.backgroundColor = Color.TRANSPARENT;
+        control.onClickEventId = "controls";
 
         // Subscribe to the button events
         this.receiver.subscribe("play");

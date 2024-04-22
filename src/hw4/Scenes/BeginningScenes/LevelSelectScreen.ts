@@ -39,6 +39,7 @@ export default class LevelSelectScene extends Scene {
         this.createButton("Level 3", new Vec2(center.x , center.y), "level3");
         this.createButton("Level 4", new Vec2(center.x + 230, center.y), "level4");
         this.createButton("Level 5", new Vec2(center.x + 460, center.y), "level5");
+        this.receiver.subscribe("back")
 
     }
 
