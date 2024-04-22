@@ -107,14 +107,17 @@ export default class PlayerAI extends StateMachineAI implements AI {
         for(let enemy of this.owner.getScene().getBattlers().slice(1)){
             let box2:AABB = new AABB(enemy.position, new Vec2(1, 1));
             if(this.intersectAABB(box1, box2)){
+                if(enemy.health == 0){
+                    continue;
+                }
                 console.log("stabbed");
                 enemy.health = enemy.health - 1;
                 //enemy.freeze()
                 console.log(enemy);
                 if(enemy.health == 0){
                     console.log("enemy down");
-                    
-                    this.owner.getScene().getBattlers().splice(this.owner.getScene().getBattlers().indexOf(enemy));
+                    enemy.battlerActive = false;
+                    //this.owner.getScene().getBattlers().splice(this.owner.getScene().getBattlers().indexOf(enemy));
                 }
                 
             }
