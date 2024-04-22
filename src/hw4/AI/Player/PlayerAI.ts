@@ -126,6 +126,12 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 enemy.health = enemy.health - 1;
                 
                 //enemy.freeze()
+                console.log(enemy);
+                if(enemy.health == 0){
+                    console.log("enemy down");
+                    enemy.battlerActive = false;
+                    //this.owner.getScene().getBattlers().splice(this.owner.getScene().getBattlers().indexOf(enemy));
+                }
                 
             }
         }
