@@ -100,7 +100,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
         console.log(start);
         console.log(dir.x);
         console.log(this.owner.getScene().getBattlers());
-        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*30), start.y+(dir.y*30)), new Vec2(150, 150))
+        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*150), start.y+(dir.y*150)), new Vec2(150, 150))
         
         
         
