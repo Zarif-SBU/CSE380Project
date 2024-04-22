@@ -17,6 +17,7 @@ import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import Position from "../../../GameSystems/Targeting/Position";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import SlimeAttack from "../NPCActions/SlimeAttack";
+import MoveToPlayer from "../NPCActions/MoveToPlayer";
 
 export default class GuardBehavior extends NPCBehavior {
 
@@ -93,11 +94,9 @@ export default class GuardBehavior extends NPCBehavior {
    
     protected initializeActions(): void {
 
-
-       
         let scene = this.owner.getScene();
 
-        let move_to_player = new AttackPlayer(this, this.owner);
+        let move_to_player = new MoveToPlayer(this, this.owner);
         move_to_player.range = this.range;
         move_to_player.scene = this.owner.getScene();
         move_to_player.targets = [scene.getBattlers()[0]];
@@ -105,7 +104,7 @@ export default class GuardBehavior extends NPCBehavior {
         move_to_player.addPrecondition(GuardStatuses.ENEMY_IN_GUARD_POSITION);
         move_to_player.addEffect(GuardStatuses.GOAL);
         move_to_player.cost = 1;
-        this.addState(GuardActions.MOVE, move_to_player);
+        this.addState(GuardActions.MOVE_TO_PLAYER, move_to_player);
         // An action for guarding the guard's guard location
 
         // let attack = new SlimeAttack(this, this.owner);
@@ -149,6 +148,7 @@ export interface GuardOptions {
 
 export type GuardStatus = typeof GuardStatuses[keyof typeof GuardStatuses];
 export const GuardStatuses = {
+    ALLY_NEAR: "ALLY_NEAR",
 
     READY_TO_ATTACK: "READY_TO_ATTACK",
 
@@ -162,12 +162,12 @@ export const GuardStatuses = {
 
 export type GuardAction = typeof GuardActions[keyof typeof GuardActions];
 export const GuardActions = {
+    FIND_ALLY: "find-player",
 
-    MOVE: "MOVE",
+    MOVE_TO_PLAYER: "move-to-player",
 
     ATTACK_PLAYER: "attack-player",
 
     GUARD: "guard",
-
 
 } as const;

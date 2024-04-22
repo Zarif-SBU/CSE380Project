@@ -23,45 +23,45 @@ export default class AttackPlayer extends NPCAction {
         super(parent, actor);
         this._target = null;
         this.timer = new Timer(6000);
-        this.timer2 = new Timer(1500);
+        this.timer2 = new Timer(2000);
     }
 
     public performAction(target: TargetableEntity): void {
         // this.timer.isStopped() ? console.log("attacking!") : console.log("done!");
         // If the lasergun is not null and the lasergun is still in the actors inventory; shoot the lasergun
-        if (this.timer.isStopped()) {
-            this.actor.tweens.add("attack", {
-                startDelay: 0,
-                duration: 1500,
-                effects: [
-                    {
-                        property: TweenableProperties.posX,
-                        start: this.actor.position.x,
-                        end: this.actor.position.x + 1.1*(this.target.position.x - this.actor.position.x),
-                        ease: EaseFunctionType.OUT_SINE
-                    },
-                    {
-                        property: TweenableProperties.posY,
-                        start: this.actor.position.y,
-                        end: this.actor.position.y + 1.1*(this.target.position.y - this.actor.position.y),
-                        ease: EaseFunctionType.OUT_SINE
-                    }
-                ]
-            });
-            this.actor.tweens.play("attack");
-            (this.target.position.x - this.actor.position.x) < 0? this.actor.animation.play("Attack_Right") : this.actor.animation.play("Attack_Left");
-            // Send a laser fired event
-            // this.emitter.fireEvent(BattlerEvent.ATTACK, {
-            //     actorId: this.actor.id,
-            // });
-            this.timer.start();
-            // this.timer2.start();
-        }
-        // if(this.timer2.isStopped && !this.actor.animation.isPlaying("IDLE")) {
-        //     this.actor.animation.play("IDLE");
+        // if (this.timer.isStopped()) {
+        //     this.actor.tweens.add("attack", {
+        //         startDelay: 0,
+        //         duration: 1500,
+        //         effects: [
+        //             {
+        //                 property: TweenableProperties.posX,
+        //                 start: this.actor.position.x,
+        //                 end: this.actor.position.x + 1.1*(this.target.position.x - this.actor.position.x),
+        //                 ease: EaseFunctionType.OUT_SINE
+        //             },
+        //             {
+        //                 property: TweenableProperties.posY,
+        //                 start: this.actor.position.y,
+        //                 end: this.actor.position.y + 1.1*(this.target.position.y - this.actor.position.y),
+        //                 ease: EaseFunctionType.OUT_SINE
+        //             }
+        //         ]
+        //     });
+        //     this.actor.tweens.play("attack");
+        //     (this.target.position.x - this.actor.position.x) < 0? this.actor.animation.play("Attack_Right") : this.actor.animation.play("Attack_Left");
+        //     // Send a laser fired event
+        //     // this.emitter.fireEvent(BattlerEvent.ATTACK, {
+        //     //     actorId: this.actor.id,
+        //     // });
+        //     this.timer.start();
+        //     // this.timer2.start();
         // }
-        // Finish the action
-        this.finished();
+        // // if(this.timer2.isStopped && !this.actor.animation.isPlaying("IDLE")) {
+        // //     this.actor.animation.play("IDLE");
+        // // }
+        // // Finish the action
+        // this.finished();
     }
 
 
@@ -88,19 +88,16 @@ export default class AttackPlayer extends NPCAction {
     //     super.update(deltaT);
     // }
     public update(deltaT: number): void {
+        
         if (this.target !== null && this.path !== null && !this.path.isDone()) {
             if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
-                this.performAction(this.target);
-                if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
-                    if(this.checkOverlap() && this.timer2.isStopped()) {
-                        this.scene.getBattlers()[0].health -= 1;
-                        this.timer2.start();
-                    }
-                } else {
-                    if(!this.actor.animation.isPlaying("IDLE") && this.timer2.isStopped()) {
-                        this.actor.animation.play("IDLE");
-                    }
-                }
+                // this.performAction(this.target);
+                // if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
+                //     if(this.checkOverlap() && this.timer2.isStopped()) {
+                //         this.scene.getBattlers()[0].health -= 1;
+                //         this.timer2.start();
+                //     }
+                // }
                 this.finished();
             } else {
                 // console.log(this.target.position.x , "das", this.oldx);
@@ -113,10 +110,6 @@ export default class AttackPlayer extends NPCAction {
                 }
                 // this.path = this.actor.getPath(this.actor.position, this.target.position);
                 if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
-                    // if(!this.actor.animation.isPlaying("IDLE")) {
-                    //     this.actor.animation.play("IDLE");
-                    // }
-                    
                     this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
                 }
             }

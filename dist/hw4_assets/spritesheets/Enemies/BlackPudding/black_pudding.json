@@ -157,8 +157,8 @@
       ]
     },
     {
-      "name": "Attack Left",
-      "repeat": true,
+      "name": "Attack_Left",
+      "repeat": false,
       "frames": [
         {
           "index": 90,
@@ -283,8 +283,8 @@
       ]
     },
     {
-      "name": "Attack Right",
-      "repeat": true,
+      "name": "Attack_Right",
+      "repeat": false,
       "frames": [
         {
           "index": 120,
@@ -409,7 +409,7 @@
       ]
     },
     {
-      "name": "Damaged Left",
+      "name": "DAMAGED_LEFT",
       "repeat": true,
       "frames": [
         {
