@@ -66,8 +66,8 @@ export default abstract class PlayerState extends State {
             
             this.parent.owner.move(new Vec2(vec.x*100, vec.y*100));
             // this.owner.tweens.play("dodge");
-            this.system.initializePool(this.owner.getScene(), "primary");
-            //this.system.startSystem(1000, 0.1, this.owner.position.clone());
+            // this.system.initializePool(this.owner.getScene(), "primary");
+            // this.system.startSystem(1000, 0.1, this.owner.position.clone());
             console.log("Shitty animation played")
             
         }

@@ -17,7 +17,8 @@ export enum PlayerInput {
     LIGHT_ATTACK = "LIGHT_ATTACK",
     HEAVY_ATTACK = "HEAVY_ATTACK",
     BLOCK = "BLOCK",
-    DODGE = "DODGE"
+    DODGE = "DODGE",
+    HIT = "HIT",
 }
 
 /**
@@ -52,7 +53,6 @@ export default class PlayerController {
     }
 
     public get dodge(): boolean{
-
         if(this.timer.isStopped() && Input.isPressed(PlayerInput.DODGE) && !(this.moveDir.x === 0 && this.moveDir.y === 0)){
             let dir2: Vec2 = Vec2.ZERO;
             console.log("Dodge");
@@ -66,7 +66,7 @@ export default class PlayerController {
      * Gets the direction the player should be facing based on where the player is moving towards
      * @return a Vec2 representing the direction the player should face.
      */
-    
+
 public lastAnimationPlayed: string = "";
 
 public get faceDir(): Vec2 {

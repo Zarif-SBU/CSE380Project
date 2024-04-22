@@ -7,7 +7,7 @@ import { PlayerEvent } from "../../Events";
 import PlayerController from "./PlayerController";
 import { Idle, Invincible, Moving, Dead, PlayerStateType } from "./PlayerStates/PlayerState";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
-
+import Timer from "../../../Wolfie2D/Timing/Timer";
 /**
  * The AI that controls the player. The players AI has been configured as a Finite State Machine (FSM)
  * with 4 states; Idle, Moving, Invincible, and Dead.
@@ -44,7 +44,7 @@ export function sign(value: number): number {
     }
   }
 export default class PlayerAI extends StateMachineAI implements AI {
-
+    public timer: Timer;
     /** The GameNode that owns this AI */
     public owner: PlayerActor;
     /** A set of controls for the player */
@@ -53,6 +53,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
     /** The players held item */
     
     public initializeAI(owner: PlayerActor, opts: Record<string, any>): void {
+        this.timer = new Timer(2000);
         this.owner = owner;
         this.controller = new PlayerController(owner);
 
@@ -78,6 +79,15 @@ export default class PlayerAI extends StateMachineAI implements AI {
         switch(event.type) {
             case PlayerEvent.LIGHT_ATTACK: {
                 this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+                break;
+            }
+            case PlayerEvent.HIT: {
+                if(this.timer.isStopped()) {
+                    this.owner.health -= 1;
+                    this.timer.start();
+                    
+                }
+                console.log("breh");
                 break;
             }
             default: {
@@ -111,7 +121,10 @@ export default class PlayerAI extends StateMachineAI implements AI {
                     continue;
                 }
                 console.log("stabbed");
+                // this.emitter.fireEvent(BattlerEvent.BATTLER_KILLED, {id: enemy.id});
+                // enemy.animation.play("IDLE");
                 enemy.health = enemy.health - 1;
+                
                 //enemy.freeze()
                 console.log(enemy);
                 if(enemy.health == 0){
