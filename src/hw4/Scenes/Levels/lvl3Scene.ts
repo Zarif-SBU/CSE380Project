@@ -69,7 +69,7 @@ export default class lvl1Scene extends HW4Scene {
 
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/lvl2.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
 
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
@@ -157,7 +157,7 @@ export default class lvl1Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(200, 420);
+        player.position.set(200, 1000);
         player.battleGroup = 2;
 
         player.health = 10;
