@@ -10,13 +10,13 @@ import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 
-import NPCActor from "../../Actors/NPCActor";
-import PlayerActor from "../../Actors/PlayerActor";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
 import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
+import NPCActor from "../../Actors/NPCActor";
+import PlayerActor from "../../Actors/PlayerActor";
 import { BattlerEvent, PlayerEvent } from "../../Events";
 import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
@@ -73,6 +73,7 @@ export default class lvl3Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
 
 
         // Load the tilemap
@@ -88,6 +89,8 @@ export default class lvl3Scene extends HW4Scene {
      */
     public override startScene() {
         // Add in the tilemap
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+
         let tilemapLayers = this.add.tilemap("level");
         
         // Get the wall layer

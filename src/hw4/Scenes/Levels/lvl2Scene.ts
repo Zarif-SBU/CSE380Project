@@ -3,6 +3,7 @@ import Actor from "../../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -23,7 +24,6 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
-
 const BattlerGroups = {
     RED: 1,
     BLUE: 2
@@ -78,12 +78,15 @@ export default class lvl2Scene extends HW4Scene {
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
     }
     /**
      * @see Scene.startScene
      */
     public override startScene() {
         // Add in the tilemap
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+
         let tilemapLayers = this.add.tilemap("level");
         
         // Get the wall layer
@@ -217,7 +220,7 @@ export default class lvl2Scene extends HW4Scene {
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
 
-        for (let i = 0; i < slime.slimes.length; i++) {
+        for (let i = 0; i < slime.slimesLVL2.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);

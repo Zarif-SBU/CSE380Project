@@ -3,6 +3,7 @@ import Actor from "../../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -65,6 +66,7 @@ export default class lvl5Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
 
         // Load in the enemy sprites
        
@@ -84,6 +86,8 @@ export default class lvl5Scene extends HW4Scene {
      */
     public override startScene() {
         // Add in the tilemap
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+
         let tilemapLayers = this.add.tilemap("level");
         
         // Get the wall layer

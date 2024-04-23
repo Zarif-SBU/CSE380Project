@@ -20,6 +20,7 @@ export default class Story extends Scene {
         let x = this.add.sprite("start", "start_story")
         x.position = new Vec2(center.x, center.y);
         x.scale.set(1,1);
+        
 
 
     }
