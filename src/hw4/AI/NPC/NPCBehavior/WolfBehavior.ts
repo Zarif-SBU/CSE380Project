@@ -2,7 +2,7 @@ import NPCActor from "../../../Actors/NPCActor";
 import NPCBehavior from "../NPCBehavior";
 import Idle from "../NPCActions/GotoAction";
 import BasicFinder from "../../../GameSystems/Searching/BasicFinder";
-import { BattlerActiveFilter, EnemyFilter, RangeFilter } from "../../../GameSystems/Searching/HW4Filters";
+import { BattlerActiveFilter, BattlerGroupFilter, EnemyFilter, RangeFilter } from "../../../GameSystems/Searching/HW4Filters";
 import { ClosestPositioned } from "../../../GameSystems/Searching/HW4Reducers";
 import { TargetableEntity } from "../../../GameSystems/Targeting/TargetableEntity";
 import { TargetExists } from "../NPCStatuses/TargetExists";
@@ -19,7 +19,7 @@ import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import SlimeAttack from "../NPCActions/SlimeAttack";
 import MoveToPlayer from "../NPCActions/MoveToPlayer";
 
-export default class GuardBehavior extends NPCBehavior {
+export default class Wolfbehavior extends NPCBehavior {
 
 
     /** The target the guard should guard */
@@ -29,7 +29,7 @@ export default class GuardBehavior extends NPCBehavior {
 
 
     /** Initialize the NPC AI */
-    public initializeAI(owner: NPCActor, options: GuardOptions): void {
+    public initializeAI(owner: NPCActor, options: DogOptions): void {
         super.initializeAI(owner, options);
         // Initialize the targetable entity the guard should try to protect and the range to the target
         this.target = options.target;
@@ -41,7 +41,7 @@ export default class GuardBehavior extends NPCBehavior {
         // Initialize guard actions
         this.initializeActions();
         // Set the guards goal
-        this.goal = GuardStatuses.GOAL;
+        this.goal = DogStatuses.GOAL;
         
         // Initialize the guard behavior
         this.initialize();
@@ -79,9 +79,12 @@ export default class GuardBehavior extends NPCBehavior {
         // A status checking if there are any enemies at the guard
         
         let enemyBattlerFinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
-        let enemyAtGuardPosition = new TargetExists(scene.getBattlers(), enemyBattlerFinder);
-        this.addStatus(GuardStatuses.ENEMY_IN_GUARD_POSITION, enemyAtGuardPosition);
+        let enemyAtGuardPosition = new TargetExists([scene.getBattlers()[0]], enemyBattlerFinder);
+        this.addStatus(DogStatuses.ENEMY_IN_DOG_POSITION, enemyAtGuardPosition);
 
+        let allyBattlerFinder = new BasicFinder<Battler>(null, BattlerActiveFilter(), BattlerGroupFilter([this.owner.battleGroup]), RangeFilter(scene.getBattlers()[0], 0, 300*300));
+        let allyNearPlayer = new TargetExists([scene.getBattlers()[0]], allyBattlerFinder);
+        this.addStatus(DogStatuses.ALLY_NEAR, allyNearPlayer);
         // let enemyinrangefinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
         // let isClose = new TargetExists(scene.getBattlers(), enemyinrangefinder);
         // this.addStatus(GuardStatuses.READY_TO_ATTACK, isClose);
@@ -89,7 +92,7 @@ export default class GuardBehavior extends NPCBehavior {
         // Add a status to check if the guard has a lasergun
        
         // Add the goal status
-        this.addStatus(GuardStatuses.GOAL, new FalseStatus());
+        this.addStatus(DogStatuses.GOAL, new FalseStatus());
     }
    
     protected initializeActions(): void {
@@ -101,10 +104,10 @@ export default class GuardBehavior extends NPCBehavior {
         move_to_player.scene = this.owner.getScene();
         move_to_player.targets = [scene.getBattlers()[0]];
         move_to_player.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
-        move_to_player.addPrecondition(GuardStatuses.ENEMY_IN_GUARD_POSITION);
-        move_to_player.addEffect(GuardStatuses.GOAL);
+        move_to_player.addPrecondition(DogStatuses.ENEMY_IN_DOG_POSITION);
+        move_to_player.addEffect(DogStatuses.GOAL);
         move_to_player.cost = 1;
-        this.addState(GuardActions.MOVE_TO_PLAYER, move_to_player);
+        this.addState(DogActions.MOVE_TO_PLAYER, move_to_player);
         // An action for guarding the guard's guard location
 
         // let attack = new SlimeAttack(this, this.owner);
@@ -123,36 +126,36 @@ export default class GuardBehavior extends NPCBehavior {
         guard.targetFinder = new BasicFinder();
         guard.range = this.range;
         // guard.addPrecondition(GuardStatuses.HAS_WEAPON);
-        guard.addEffect(GuardStatuses.GOAL);
+        guard.addEffect(DogStatuses.GOAL);
         guard.cost = 1000;
-        this.addState(GuardActions.GUARD, guard);
+        this.addState(DogActions.GUARD, guard);
     }
 
 
-    public override addState(stateName: GuardAction, state: GoapAction): void {
+    public override addState(stateName: DogAction, state: GoapAction): void {
         super.addState(stateName, state);
     }
 
 
-    public override addStatus(statusName: GuardStatus, status: GoapState): void {
+    public override addStatus(statusName: DogStatus, status: GoapState): void {
         super.addStatus(statusName, status);
     }
 }
 
 
-export interface GuardOptions {
+export interface DogOptions {
     target: TargetableEntity
     range: number;
 }
 
 
-export type GuardStatus = typeof GuardStatuses[keyof typeof GuardStatuses];
-export const GuardStatuses = {
+export type DogStatus = typeof DogStatuses[keyof typeof DogStatuses];
+export const DogStatuses = {
     ALLY_NEAR: "ALLY_NEAR",
 
     READY_TO_ATTACK: "READY_TO_ATTACK",
 
-    ENEMY_IN_GUARD_POSITION: "enemy-at-guard-position",
+    ENEMY_IN_DOG_POSITION: "enemy-at-dog-position",
 
     GOAL: "goal"
 
@@ -160,8 +163,8 @@ export const GuardStatuses = {
 } as const;
 
 
-export type GuardAction = typeof GuardActions[keyof typeof GuardActions];
-export const GuardActions = {
+export type DogAction = typeof DogActions[keyof typeof DogActions];
+export const DogActions = {
     FIND_ALLY: "find-player",
 
     MOVE_TO_PLAYER: "move-to-player",

@@ -69,7 +69,7 @@ export default class lvl1Scene extends HW4Scene {
 
 
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/lvl4.json");
 
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
@@ -157,7 +157,7 @@ export default class lvl1Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(200, 1000);
+        player.position.set(2700, 1600);
         player.battleGroup = 2;
 
         player.health = 10;
@@ -211,7 +211,7 @@ export default class lvl1Scene extends HW4Scene {
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(30, 30)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
