@@ -11,7 +11,7 @@ export default class ControlScene2 extends Scene {
 
     public loadScene(){
         this.load.image("controls","/dist/hw4_assets/SceneImages/Controls_Image.png");
-        
+
     }
 
     public startScene(){

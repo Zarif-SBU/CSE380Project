@@ -280,9 +280,9 @@ export default class lvl3Scene extends HW4Scene {
             
             // Set the NPCs stats
             npc.battleGroup = 1;
-            npc.speed = 5;
-            npc.health = 5;
-            npc.maxHealth = 5;
+            npc.speed = 10;
+            npc.health = 3;
+            npc.maxHealth = 3;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
             console.log("spawn point", npc.spawnpoint);

@@ -104,7 +104,7 @@ export default class AttackPlayer extends NPCAction {
                 this.finished();
             } else {
                 // console.log(this.target.position.x , "das", this.oldx);
-                if(Math.pow(this.target.position.x - this.oldx, 2) + Math.pow(this.target.position.y - this.oldy, 2)> 10000) {
+                if(Math.pow(this.target.position.x - this.oldx, 2) + Math.pow(this.target.position.y - this.oldy, 2)> 10000 && Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)< 150000) {
                     // this.target = this.scene.getBattlers()[0];
                     this.actor.setTarget(this.target);
                     this.path = this.actor.getPath(this.actor.position, this.target.position);

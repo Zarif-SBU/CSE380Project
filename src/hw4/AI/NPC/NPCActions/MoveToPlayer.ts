@@ -67,7 +67,7 @@ export default class MoveToPlayer extends NPCAction {
 
     public onEnter(options: Record<string, any>): void {
         super.onEnter(options);
-        this.actor.speed = 15;
+        this.actor.speed = 10;
         this.oldx = this.target.position.x;
         this.oldy = this.target.position.y;
         // Find a lasergun in the actors inventory
@@ -100,6 +100,7 @@ export default class MoveToPlayer extends NPCAction {
                 //         this.timer2.start();
                 //     }
                 // }
+                console.log("breh");
                 this.finished();
             } else {
                 // console.log(this.target.position.x , "das", this.oldx);

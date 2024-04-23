@@ -18,6 +18,7 @@ import Position from "../../../GameSystems/Targeting/Position";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import SlimeAttack from "../NPCActions/SlimeAttack";
 import MoveToPlayer from "../NPCActions/MoveToPlayer";
+import WolfAttack from "../NPCActions/WolfAttack";
 
 export default class Wolfbehavior extends NPCBehavior {
 
@@ -82,9 +83,12 @@ export default class Wolfbehavior extends NPCBehavior {
         let enemyAtGuardPosition = new TargetExists([scene.getBattlers()[0]], enemyBattlerFinder);
         this.addStatus(DogStatuses.ENEMY_IN_DOG_POSITION, enemyAtGuardPosition);
 
-        let allyBattlerFinder = new BasicFinder<Battler>(null, BattlerActiveFilter(), BattlerGroupFilter([this.owner.battleGroup]), RangeFilter(scene.getBattlers()[0], 0, 300*300));
-        let allyNearPlayer = new TargetExists([scene.getBattlers()[0]], allyBattlerFinder);
+        let allyBattlerFinder =new BasicFinder<Battler>(null, BattlerActiveFilter(), BattlerGroupFilter([this.owner.battleGroup]));
+        let allyNearPlayer = new TargetExists(scene.getBattlers(), allyBattlerFinder);
         this.addStatus(DogStatuses.ALLY_NEAR, allyNearPlayer);
+        if(allyNearPlayer) {
+            console.log("cek");
+        }
         // let enemyinrangefinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
         // let isClose = new TargetExists(scene.getBattlers(), enemyinrangefinder);
         // this.addStatus(GuardStatuses.READY_TO_ATTACK, isClose);
@@ -120,12 +124,29 @@ export default class Wolfbehavior extends NPCBehavior {
         // attack.cost = 1;
         // this.addState(GuardActions.ATTACK_PLAYER, attack);
 
-        let guard = new RandomMovement(this, this.owner);
-        guard.scene = this.owner.getScene();
+        // let guard = new RandomMovement(this, this.owner);
+        // guard.scene = this.owner.getScene();
+        // guard.targets = [this.target];
+        // guard.targetFinder = new BasicFinder();
+        // guard.range = this.range;
+        // // guard.addPrecondition(GuardStatuses.HAS_WEAPON);
+        // guard.addEffect(DogStatuses.GOAL);
+        // guard.cost = 1000;
+        // this.addState(DogActions.GUARD, guard);
+
+        let attack = new WolfAttack(this, this.owner);
+        attack.scene = this.owner.getScene();
+        attack.targets = [scene.getBattlers()[0]];
+        attack.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
+        attack.addPrecondition(DogStatuses.ENEMY_IN_DOG_POSITION);
+        attack.addPrecondition(DogStatuses.ALLY_NEAR);
+        attack.addEffect(DogStatuses.GOAL);
+        attack.cost = 1;
+        this.addState(DogActions.ATTACK_PLAYER, attack);
+
+        let guard = new Idle(this, this.owner);
         guard.targets = [this.target];
         guard.targetFinder = new BasicFinder();
-        guard.range = this.range;
-        // guard.addPrecondition(GuardStatuses.HAS_WEAPON);
         guard.addEffect(DogStatuses.GOAL);
         guard.cost = 1000;
         this.addState(DogActions.GUARD, guard);

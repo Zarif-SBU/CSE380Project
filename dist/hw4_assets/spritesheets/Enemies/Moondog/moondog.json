@@ -121,7 +121,7 @@
 			]
 		},
 		{
-			"name": "ATTACKING_LEFT",
+			"name": "Attack_Left",
 			"repeat": true,
 			"frames": [
 				{
@@ -159,7 +159,7 @@
 			]
 		},
 		{
-			"name": "ATTACKING_RIGHT",
+			"name": "Attack_Right",
 			"repeat": true,
 			"frames": [
 				{
