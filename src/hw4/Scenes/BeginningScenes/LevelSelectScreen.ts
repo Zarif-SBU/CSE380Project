@@ -9,6 +9,7 @@ import lvl2Scene from "../Levels/lvl2Scene";
 import lvl3Scene from "../Levels/lvl3Scene";
 import lvl4Scene from "../Levels/lvl4Scene";
 import lvl5Scene from "../Levels/lvl5Scene";
+import lvl6Scene from "../Levels/lvl6Scene";
 import MainMenu from "./MainMenu";
 
 export default class LevelSelectScene extends Scene {
@@ -34,11 +35,13 @@ export default class LevelSelectScene extends Scene {
         back.backgroundColor = Color.TRANSPARENT;
         back.onClickEventId = "back";
         
-        this.createButton("Level 1", new Vec2(center.x - 460, center.y), "level1");
-        this.createButton("Level 2", new Vec2(center.x - 230, center.y), "level2");
-        this.createButton("Level 3", new Vec2(center.x , center.y), "level3");
-        this.createButton("Level 4", new Vec2(center.x + 230, center.y), "level4");
-        this.createButton("Level 5", new Vec2(center.x + 460, center.y), "level5");
+        this.createButton("Level 1", new Vec2(center.x - 300, center.y-100), "level1");
+        this.createButton("Level 2", new Vec2(center.x , center.y-100), "level2");
+        this.createButton("Level 3", new Vec2(center.x +300 , center.y-100), "level3");
+        this.createButton("Level 4", new Vec2(center.x -300, center.y+100), "level4");
+        this.createButton("Level 5", new Vec2(center.x , center.y+100), "level5");
+        this.createButton("Level 6", new Vec2(center.x + 300, center.y+100), "level6");
+        this.receiver.subscribe("back")
 
     }
 
@@ -48,7 +51,7 @@ export default class LevelSelectScene extends Scene {
             text: text
         });
 
-        button.size.set(200, 300);
+        button.size.set(200, 150);
         button.borderWidth = 4;
         button.borderColor = Color.WHITE;
         button.backgroundColor = Color.TRANSPARENT;
@@ -80,7 +83,9 @@ export default class LevelSelectScene extends Scene {
                 this.sceneManager.changeToScene(lvl4Scene);
                 break;
             case "level5":
-            this.sceneManager.changeToScene(lvl5Scene);
+                this.sceneManager.changeToScene(lvl5Scene);
+            case "level6":
+                this.sceneManager.changeToScene(lvl6Scene);
             break;
             default:
                 break;

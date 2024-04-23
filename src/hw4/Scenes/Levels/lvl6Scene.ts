@@ -29,7 +29,7 @@ const BattlerGroups = {
     BLUE: 2
 } as const;
 
-export default class lvl5Scene extends HW4Scene {
+export default class lvl6Scene extends HW4Scene {
     public level: number;
 
     /** GameSystems in the HW4 Scene */
@@ -129,7 +129,7 @@ export default class lvl5Scene extends HW4Scene {
             }else if (event.key === "Escape" && PauseCount % 2 == 0) {
                 PauseCount--;
                 this.resumeGame();
-                //this.sceneManager.changeToScene(lvl5Scene)
+                //this.sceneManager.changeToScene(lvl6Scene)
             }
         });
         
@@ -166,7 +166,7 @@ export default class lvl5Scene extends HW4Scene {
 
     handledetections() {
         for(let enemy of this.battlers.slice(1)) {
-            if(lvl5Scene.checkifDetected(this.battlers[0], enemy)) {
+            if(lvl6Scene.checkifDetected(this.battlers[0], enemy)) {
                 enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
             }
         }

@@ -9,12 +9,12 @@ import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrat
 import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
-import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
-import NPCActor from "../../Actors/NPCActor";
-import PlayerActor from "../../Actors/PlayerActor";
+import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
 import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
+import NPCActor from "../../Actors/NPCActor";
+import PlayerActor from "../../Actors/PlayerActor";
 import { BattlerEvent, PlayerEvent } from "../../Events";
 import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
@@ -30,6 +30,7 @@ const BattlerGroups = {
 } as const;
 
 export default class lvl1Scene extends HW4Scene {
+    public level: number;
 
     /** GameSystems in the HW4 Scene */
 
@@ -38,9 +39,11 @@ export default class lvl1Scene extends HW4Scene {
     /** Healthbars for the battlers */
     private healthbars: Map<number, HealthbarHUD>;
 
-
     private bases: BattlerBase[];
 
+    private player:PlayerActor;
+
+    private enemies: Battler[];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -50,19 +53,21 @@ export default class lvl1Scene extends HW4Scene {
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
-
+        this.level = 1;
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
 
+    private timer: Timer;
+
     /**
      * @see Scene.update()
      */
-    public override loadScene() {
+    public loadScene() {
+        super.loadScene();
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-
         // Load in the enemy sprites
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
@@ -84,47 +89,81 @@ export default class lvl1Scene extends HW4Scene {
     public override startScene() {
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
-
+        
         // Get the wall layer
         this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
-
+        
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.walls.size;
-
+        
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
-
+        
         this.initLayers();
         
         // Create the player
         this.initializePlayer();
-
+        
         this.initializeNavmesh();
-
+        
         // Create the NPCS
         this.initializeNPCs();
-
+        
         // Subscribe to relevant events
-
+        
         // Add a UI for health
         this.addUILayer("health");
-
-
+        
+        
         this.receiver.subscribe(PlayerEvent.PLAYER_KILLED);
         this.receiver.subscribe(BattlerEvent.BATTLER_KILLED);
         this.receiver.subscribe(BattlerEvent.BATTLER_RESPAWN);
+        
+        this.timer = new Timer(10000, ()=>{
+            console.log("Timer ended")
+        },false)
+        
+        let PauseCount = 1;
+        let level=1
+        window.addEventListener('keydown', (event) => {
+            if (event.key === "Escape" && PauseCount % 2 != 0) {
+                PauseCount++;
+                this.pauseGame();
+                super.startScene();
+                
+            }else if (event.key === "Escape" && PauseCount % 2 == 0) {
+                PauseCount--;
+                this.resumeGame();
+    
+            }
+        });
+        
+    }
+
+    private pauseGame(){
+        this.timer.pause();
+        this.player.freeze()
+        //for (let i =0; i<this.enemies.length; i++){
+            
+        //}
+        console.log("game paused")
+    }
+
+    private resumeGame(){
+        this.timer.start()
+        console.log("game resumed")
     }
     /**
      * @see Scene.updateScene
-     */
-    public override updateScene(deltaT: number): void {
-        while (this.receiver.hasNextEvent()) {
-            this.handleEvent(this.receiver.getNextEvent());
-        }
-        this.healthbars.forEach(healthbar => healthbar.update(deltaT));
+    */
+   public override updateScene(deltaT: number): void {
+    while (this.receiver.hasNextEvent()) {
+        this.handleEvent(this.receiver.getNextEvent());
+    }
+    this.healthbars.forEach(healthbar => healthbar.update(deltaT));
         // this.handledetections();
     }
-
+    
     /**
      * Handle events from the rest of the game
      * @param event a game event
@@ -152,9 +191,6 @@ export default class lvl1Scene extends HW4Scene {
         this.addLayer("primary", 10);
     }
 
-
-
-
     /**
      * Initializes the player in the scene
      */
@@ -181,6 +217,7 @@ export default class lvl1Scene extends HW4Scene {
 
         this.battlers.push(player);
         this.viewport.follow(player);
+        this.player=player
     }
     /**
      * Initialize the NPCs 
@@ -191,31 +228,11 @@ export default class lvl1Scene extends HW4Scene {
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
 
-        // // Initialize the red healers
-        // for (let i = 0; i < red.healers.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "RedHealer", "primary");
-        //     npc.position.set(red.healers[i][0], red.healers[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     npc.battleGroup = 1;
-        //     npc.speed = 10;
-        //     npc.health = 10;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     // Give the NPC a healthbar
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.addAI(HealerBehavior);
-        //     npc.animation.play("IDLE");
-        //     this.battlers.push(npc);
-        // }
-
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            //this.enemies.push(slime[i])
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});

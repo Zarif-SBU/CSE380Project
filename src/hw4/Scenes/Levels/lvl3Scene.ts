@@ -9,7 +9,9 @@ import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrat
 import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
+import Timer from "../../../Wolfie2D/Timing/Timer";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
@@ -29,7 +31,8 @@ const BattlerGroups = {
     BLUE: 2
 } as const;
 
-export default class lvl1Scene extends HW4Scene {
+export default class lvl3Scene extends HW4Scene {
+    public level: number;
 
     /** GameSystems in the HW4 Scene */
 
@@ -50,10 +53,12 @@ export default class lvl1Scene extends HW4Scene {
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
-
+        this.level = 1;
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
+
+    private timer: Timer;
 
     /**
      * @see Scene.update()
@@ -84,47 +89,76 @@ export default class lvl1Scene extends HW4Scene {
     public override startScene() {
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
-
+        
         // Get the wall layer
         this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
-
+        
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.walls.size;
-
+        
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
-
+        
         this.initLayers();
         
         // Create the player
         this.initializePlayer();
-
+        
         this.initializeNavmesh();
-
+        
         // Create the NPCS
         this.initializeNPCs();
-
+        
         // Subscribe to relevant events
-
+        
         // Add a UI for health
         this.addUILayer("health");
-
-
+        
+        
         this.receiver.subscribe(PlayerEvent.PLAYER_KILLED);
         this.receiver.subscribe(BattlerEvent.BATTLER_KILLED);
         this.receiver.subscribe(BattlerEvent.BATTLER_RESPAWN);
+        
+        this.timer = new Timer(10000, ()=>{
+            console.log("Timer ended")
+        },false)
+        
+        let PauseCount = 1;
+        let level=1
+        window.addEventListener('keydown', (event) => {
+            if (event.key === "Escape" && PauseCount % 2 != 0) {
+                PauseCount++;
+                this.pauseGame();
+                super.startScene();
+            }else if (event.key === "Escape" && PauseCount % 2 == 0) {
+                PauseCount--;
+                this.resumeGame();
+                //this.sceneManager.changeToScene(lvl1Scene)
+            }
+        });
+        
+    }
+
+    private pauseGame(){
+        this.timer.pause();
+        console.log("game paused")
+    }
+
+    private resumeGame(){
+        this.timer.start()
+        console.log("game resumed")
     }
     /**
      * @see Scene.updateScene
-     */
-    public override updateScene(deltaT: number): void {
-        while (this.receiver.hasNextEvent()) {
+    */
+   public override updateScene(deltaT: number): void {
+       while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
         // this.handledetections();
     }
-
+    
     /**
      * Handle events from the rest of the game
      * @param event a game event
@@ -136,7 +170,7 @@ export default class lvl1Scene extends HW4Scene {
 
     handledetections() {
         for(let enemy of this.battlers.slice(1)) {
-            if(lvl1Scene.checkifDetected(this.battlers[0], enemy)) {
+            if(lvl3Scene.checkifDetected(this.battlers[0], enemy)) {
                 enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
             }
         }
@@ -151,9 +185,6 @@ export default class lvl1Scene extends HW4Scene {
     protected initLayers(): void {
         this.addLayer("primary", 10);
     }
-
-
-
 
     /**
      * Initializes the player in the scene
