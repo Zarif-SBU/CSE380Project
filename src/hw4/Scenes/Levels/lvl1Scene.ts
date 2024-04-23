@@ -3,6 +3,7 @@ import Actor from "../../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -11,7 +12,6 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
-import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -73,6 +73,7 @@ export default class lvl1Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
 
 
         // Load the tilemap
@@ -87,6 +88,7 @@ export default class lvl1Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
         

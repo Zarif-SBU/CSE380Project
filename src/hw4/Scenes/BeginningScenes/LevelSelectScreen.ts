@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
@@ -17,6 +18,7 @@ export default class LevelSelectScene extends Scene {
 
     public loadScene(){
         this.load.image("levels","/dist/hw4_assets/SceneImages/BrownBackground.png");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
         
     }
 
@@ -42,6 +44,7 @@ export default class LevelSelectScene extends Scene {
         this.createButton("Level 5", new Vec2(center.x , center.y+100), "level5");
         this.createButton("Level 6", new Vec2(center.x + 300, center.y+100), "level6");
         this.receiver.subscribe("back")
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
 
@@ -68,23 +71,30 @@ export default class LevelSelectScene extends Scene {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case "back":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             case "level1":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl1Scene);
                 break;
             case "level2":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl2Scene);
                 break;
             case "level3":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl3Scene);
                 break;
             case "level4":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl4Scene);
                 break;
             case "level5":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl5Scene);
             case "level6":
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl6Scene);
             break;
             default:

@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
@@ -11,7 +12,7 @@ export default class ControlScene2 extends Scene {
 
     public loadScene(){
         this.load.image("controls","/dist/hw4_assets/SceneImages/Controls_Image.png");
-        
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
     }
 
     public startScene(){
@@ -30,6 +31,7 @@ export default class ControlScene2 extends Scene {
         back.onClickEventId = "back";
 
         this.receiver.subscribe("back");
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
     public updateScene(){
@@ -39,6 +41,7 @@ export default class ControlScene2 extends Scene {
     }
     public handleEvent(event: GameEvent): void {
         if (event.type === "back"){
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
             this.sceneManager.changeToScene(MainMenu);
         }
     }

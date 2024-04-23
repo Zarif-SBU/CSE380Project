@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Input from "../../../Wolfie2D/Input/Input";
 import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
@@ -31,6 +32,7 @@ export default class TextScene extends Scene {
     }
     public updateScene(){
         if(Input.isMouseJustPressed()){
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
             this.sceneManager.changeToScene(lvl1Scene);
         }
         while(this.receiver.hasNextEvent()){
