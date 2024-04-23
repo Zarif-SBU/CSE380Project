@@ -219,8 +219,8 @@ export default class lvl2Scene extends HW4Scene {
 
         for (let i = 0; i < slime.slimesLVL2.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimesLVL2[i][0], slime.slimesLVL2[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(30, 30)), null, false);
+            npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});

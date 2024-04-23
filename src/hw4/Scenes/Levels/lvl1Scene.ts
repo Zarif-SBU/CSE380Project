@@ -11,6 +11,7 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -71,6 +72,7 @@ export default class lvl1Scene extends HW4Scene {
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
+        this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
 
 
         // Load the tilemap
@@ -78,6 +80,7 @@ export default class lvl1Scene extends HW4Scene {
 
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
+        this.load.object("moondogs", "hw4_assets/data/enemies/moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
     }
     /**
@@ -223,6 +226,7 @@ export default class lvl1Scene extends HW4Scene {
 
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
+        let moondog = this.load.getObject("moondogs");
 
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
@@ -235,7 +239,7 @@ export default class lvl1Scene extends HW4Scene {
             this.healthbars.set(npc.id, healthbar);
             
             // Set the NPCs stats
-            npc.battleGroup = 1
+            npc.battleGroup = 1;
             npc.speed = 5;
             npc.health = 5;
             npc.maxHealth = 5;
@@ -251,6 +255,31 @@ export default class lvl1Scene extends HW4Scene {
             this.battlers.push(npc);
         }
 
+        // for (let i = 0; i < moondog.moondogs.length; i++) {
+        //     let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
+        //     npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
+        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+
+        //     // Give the NPC a healthbar
+        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+        //     this.healthbars.set(npc.id, healthbar);
+            
+        //     // Set the NPCs stats
+        //     npc.battleGroup = 1;
+        //     npc.speed = 5;
+        //     npc.health = 5;
+        //     npc.maxHealth = 5;
+        //     npc.navkey = "navmesh";
+        //     npc.spawnpoint = npc.position.clone();
+        //     console.log("spawn point", npc.spawnpoint);
+        //     // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
+        //     npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+            
+        //     // Play the NPCs "IDLE" animation
+        //     npc.animation.play("IDLE");
+        //     // Add the NPC to the battlers array
+        //     this.battlers.push(npc);
+        // }
         // // Get the object data for the blue enemies
         // let blue = this.load.getObject("blue");
 
