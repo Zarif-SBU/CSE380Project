@@ -217,9 +217,9 @@ export default class lvl2Scene extends HW4Scene {
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
 
-        for (let i = 0; i < slime.slimes.length; i++) {
+        for (let i = 0; i < slime.slimesLVL2.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
+            npc.position.set(slime.slimesLVL2[i][0], slime.slimesLVL2[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(30, 30)), null, false);
 
             // Give the NPC a healthbar
