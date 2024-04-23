@@ -15,11 +15,14 @@ export default class MainMenu extends Scene {
     private mainMenu: Layer;
     private about: Layer;
     private control: Layer;
+    private musicPlaying: boolean = false;
 
     public loadScene(){
         this.load.image("menu","/dist/hw4_assets/SceneImages/Menu_Image.png");
         this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3")
     }
+   
         
     public startScene(){
         this.loadScene();
@@ -58,7 +61,10 @@ export default class MainMenu extends Scene {
         this.receiver.subscribe("play");
         this.receiver.subscribe("levels");
         this.receiver.subscribe("controls");
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        if (!this.musicPlaying) {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+            this.musicPlaying = true;
+        }
     }
 
     public updateScene(){
@@ -71,14 +77,19 @@ export default class MainMenu extends Scene {
         switch(event.type) {
             case "play": {
                 this.sceneManager.changeToScene(Story);
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
             }
             case "levels": {
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(LevelSelectScene);
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
             }
             case "controls": {
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(ControlScene);
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
             }
         }
