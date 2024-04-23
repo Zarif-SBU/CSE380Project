@@ -74,6 +74,7 @@ export default class lvl3Scene extends HW4Scene {
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
         this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
 
 
         // Load the tilemap
@@ -89,6 +90,7 @@ export default class lvl3Scene extends HW4Scene {
      */
     public override startScene() {
         // Add in the tilemap
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
         let tilemapLayers = this.add.tilemap("level");
