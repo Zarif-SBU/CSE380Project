@@ -18,9 +18,10 @@ export default class MainMenu extends Scene {
     private musicPlaying: boolean = false;
     
     public loadScene(){
+        
         this.load.image("menu","/dist/hw4_assets/SceneImages/Menu_Image.png");
         this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3")
+        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
     }
     
     
@@ -63,7 +64,7 @@ export default class MainMenu extends Scene {
         this.receiver.subscribe("levels");
         this.receiver.subscribe("controls");
         this.receiver.subscribe(GameEventType.PLAY_MUSIC);
-        
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
@@ -92,7 +93,6 @@ export default class MainMenu extends Scene {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(ControlScene);
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
-                
                 break;
             }
         }

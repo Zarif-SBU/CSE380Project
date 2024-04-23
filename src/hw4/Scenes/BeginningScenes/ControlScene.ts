@@ -13,6 +13,8 @@ export default class ControlScene2 extends Scene {
     public loadScene(){
         this.load.image("controls","/dist/hw4_assets/SceneImages/Controls_Image.png");
         this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+
     }
 
     public startScene(){
@@ -31,6 +33,7 @@ export default class ControlScene2 extends Scene {
         back.onClickEventId = "back";
 
         this.receiver.subscribe("back");
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
@@ -41,6 +44,7 @@ export default class ControlScene2 extends Scene {
     }
     public handleEvent(event: GameEvent): void {
         if (event.type === "back"){
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
             this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
             this.sceneManager.changeToScene(MainMenu);
         }

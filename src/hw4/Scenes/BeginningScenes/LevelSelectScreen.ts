@@ -18,8 +18,8 @@ export default class LevelSelectScene extends Scene {
 
     public loadScene(){
         this.load.image("levels","/dist/hw4_assets/SceneImages/BrownBackground.png");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
-        
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3");
+        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
     }
 
     public startScene(){
@@ -43,7 +43,8 @@ export default class LevelSelectScene extends Scene {
         this.createButton("Level 4", new Vec2(center.x -300, center.y+100), "level4");
         this.createButton("Level 5", new Vec2(center.x , center.y+100), "level5");
         this.createButton("Level 6", new Vec2(center.x + 300, center.y+100), "level6");
-        this.receiver.subscribe("back")
+        this.receiver.subscribe("back");
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
