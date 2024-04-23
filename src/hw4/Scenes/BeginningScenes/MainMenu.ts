@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
@@ -7,6 +8,7 @@ import Color from "../../../Wolfie2D/Utils/Color";
 import ControlScene from "./ControlScene";
 import LevelSelectScene from "./LevelSelectScreen";
 import Story from "./Story";
+
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
@@ -16,6 +18,7 @@ export default class MainMenu extends Scene {
 
     public loadScene(){
         this.load.image("menu","/dist/hw4_assets/SceneImages/Menu_Image.png");
+        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
     }
         
     public startScene(){
@@ -55,6 +58,7 @@ export default class MainMenu extends Scene {
         this.receiver.subscribe("play");
         this.receiver.subscribe("levels");
         this.receiver.subscribe("controls");
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     public updateScene(){
