@@ -9,8 +9,8 @@ export default class Story extends Scene {
     protected start_story : Layer;
 
     public loadScene(){
-        this.load.image("start","/dist/hw4_assets/SceneImages/StartStory.png");
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.image("start","hw4_assets/SceneImages/StartStory.png");
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
     }
 
     public startScene(){

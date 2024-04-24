@@ -11,9 +11,9 @@ export default class ControlScene2 extends Scene {
     protected Controls : Layer;
 
     public loadScene(){
-        this.load.image("controls","/dist/hw4_assets/SceneImages/Controls_Image.png");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.image("controls","hw4_assets/SceneImages/Controls_Image.png");
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
 
     }
 

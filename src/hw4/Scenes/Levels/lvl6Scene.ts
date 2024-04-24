@@ -65,8 +65,8 @@ export default class lvl6Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
 
         // Load in the enemy sprites
        

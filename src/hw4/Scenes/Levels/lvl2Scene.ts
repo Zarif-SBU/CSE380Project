@@ -73,14 +73,14 @@ export default class lvl1Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3");
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
         // Load the tilemap
         this.load.tilemap("level", "hw4_assets/tilemaps/lvl2.json");
 
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
-        this.load.object("moondogs", "hw4_assets/data/enemies/moondog.json");
+        this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
     }
     /**

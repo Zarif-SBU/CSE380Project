@@ -17,9 +17,9 @@ export default class LevelSelectScene extends Scene {
     protected levelSelect : Layer;
 
     public loadScene(){
-        this.load.image("levels","/dist/hw4_assets/SceneImages/BrownBackground.png");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3");
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.image("levels","hw4_assets/SceneImages/BrownBackground.png");
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
     }
 
     public startScene(){
