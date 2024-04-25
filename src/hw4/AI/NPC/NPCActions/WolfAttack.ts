@@ -89,7 +89,7 @@ export default class WolfAttack extends NPCAction {
     // }
     public update(deltaT: number): void {
         if (this.target !== null && this.path !== null && !this.path.isDone()) {
-            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 35004) {
+            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
                 this.performAction(this.target);
                 if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
                     if(this.checkOverlap() && this.timer2.isStopped()) {
@@ -113,7 +113,7 @@ export default class WolfAttack extends NPCAction {
                     this.oldy = this.target.position.y;
                 }
                 // this.path = this.actor.getPath(this.actor.position, this.target.position);
-                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 35000) {
+                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
                     this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
                 }
                 if(this.target.position.x - this.actor.position.x <0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {

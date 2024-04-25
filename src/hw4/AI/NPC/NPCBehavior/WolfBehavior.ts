@@ -83,7 +83,7 @@ export default class Wolfbehavior extends NPCBehavior {
         let enemyAtGuardPosition = new TargetExists([scene.getBattlers()[0]], enemyBattlerFinder);
         this.addStatus(DogStatuses.ENEMY_IN_DOG_POSITION, enemyAtGuardPosition);
 
-        let allyBattlerFinder = new BasicFinder<Battler>(null, BattlerHealthFilter(0, this.owner.maxHealth), AllyFilter(this.owner), BattlerGroupFilter([this.owner.battleGroup]), RangeFilter(scene.getBattlers()[0], 0, 300*300));
+        let allyBattlerFinder = new BasicFinder<Battler>(null, BattlerHealthFilter(0, this.owner.maxHealth), AllyFilter(this.owner), BattlerGroupFilter([this.owner.battleGroup]), RangeFilter(scene.getBattlers()[0], 0, 450*450));
         let allyNearPlayer = new TargetExists(scene.getBattlers(), allyBattlerFinder);
         this.addStatus(DogStatuses.ALLY_NEAR, allyNearPlayer);
 
