@@ -80,6 +80,16 @@ export default class PlayerAI extends StateMachineAI implements AI {
         switch(event.type) {
             case PlayerEvent.LIGHT_ATTACK: {
                 this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+                console.log("light attacked")
+                break;
+            }
+            case PlayerEvent.HEAVY_ATTACK: {
+                this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
+                console.log("heavy attacked")
+                break;
+            }
+            case PlayerEvent.BLOCK: {
+                this.handleBlockEvent(event.data.get("start"), event.data.get("dir"));
                 break;
             }
             case PlayerEvent.HIT: {
@@ -107,6 +117,36 @@ export default class PlayerAI extends StateMachineAI implements AI {
             }
         }
     }
+    protected handleHeavyAttackEvent(start:Vec2, dir: Vec2): void {
+        console.log(start);
+        console.log(dir);
+        console.log(this.owner.getScene().getBattlers());
+        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*120), start.y+(dir.y*120)), new Vec2(120, 120))
+        for(let enemy of this.owner.getScene().getBattlers().slice(1)){
+            let box2:AABB = new AABB(enemy.position, new Vec2(1, 1));
+            if(this.intersectAABB(box1, box2)){
+                if(enemy.health <= 0){
+                    continue;
+                }
+                //console.log("stabbed");
+                // enemy.animation.play("IDLE");
+                enemy.health = enemy.health - 2;
+                
+                //enemy.freeze()
+                //console.log(enemy);
+                if(enemy.health <= 0){
+                    //console.log("enemy down");
+                    enemy.health = 0;
+                    enemy.battlerActive = false;
+                    //this.owner.getScene().getBattlers().splice(this.owner.getScene().getBattlers().indexOf(enemy));
+                }
+                
+            }
+        }
+    }
+    protected handleBlockEvent(start:Vec2, dir: Vec2): void {
+
+    }
 
     protected handleLightAttackEvent(start:Vec2, dir: Vec2): void {
         console.log(start);
@@ -119,7 +159,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
         for(let enemy of this.owner.getScene().getBattlers().slice(1)){
             let box2:AABB = new AABB(enemy.position, new Vec2(1, 1));
             if(this.intersectAABB(box1, box2)){
-                if(enemy.health == 0){
+                if(enemy.health <= 0){
                     continue;
                 }
                 //console.log("stabbed");
@@ -128,7 +168,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 
                 //enemy.freeze()
                 //console.log(enemy);
-                if(enemy.health == 0){
+                if(enemy.health <= 0){
                     //console.log("enemy down");
                     enemy.battlerActive = false;
                     //this.owner.getScene().getBattlers().splice(this.owner.getScene().getBattlers().indexOf(enemy));

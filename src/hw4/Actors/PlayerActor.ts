@@ -23,6 +23,8 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
         this.battler = new BasicBattler(this);
         this.targetable = new BasicTargetable(this);
         this.receiver.subscribe(PlayerEvent.LIGHT_ATTACK)
+        this.receiver.subscribe(PlayerEvent.HEAVY_ATTACK)
+        this.receiver.subscribe(PlayerEvent.BLOCK)
 
     }
 

@@ -25,12 +25,14 @@ export default abstract class PlayerState extends State {
     protected parent: PlayerAI;
     protected owner: PlayerActor;
     lightTimer: any;
+    heavyTimer: any;
     protected _smoke: Line
     protected system: ParticleSystem
     public constructor(parent: PlayerAI, owner: PlayerActor) {
         super(parent);
         this.owner = owner;
         this.lightTimer = new Timer(500)
+        this.heavyTimer = new Timer(2000)
         this.system = new ParticleSystem(100, new Vec2((5 * 32), (10 * 32)), 2000, 3, 1, 100);
         
         this.owner.tweens.add("dodge", {
@@ -84,6 +86,14 @@ export default abstract class PlayerState extends State {
             
         }
         if (this.parent.controller.heavyAttack) {
+            if(this.heavyTimer.isStopped()){
+                console.log("Heavy Attack");
+                this.heavyTimer.start()
+                this.emitter.fireEvent(PlayerEvent.HEAVY_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.moveDir.clone()});
+            }
+            else{
+                console.log("Heavy Attack on cooldown");
+            }
 
         }
         if (this.parent.controller.block) {
