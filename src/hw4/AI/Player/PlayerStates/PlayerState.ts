@@ -31,7 +31,7 @@ export default abstract class PlayerState extends State {
     public constructor(parent: PlayerAI, owner: PlayerActor) {
         super(parent);
         this.owner = owner;
-        this.lightTimer = new Timer(500)
+        this.lightTimer = new Timer(1000)
         this.heavyTimer = new Timer(2000)
         this.system = new ParticleSystem(100, new Vec2((5 * 32), (10 * 32)), 2000, 3, 1, 100);
         

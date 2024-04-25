@@ -76,7 +76,7 @@ public lastAnimationPlayed: string = "";
 public get faceDir(): Vec2 {
     //console.log(this.owner)
     let animationToPlay = "";
-    if((Input.isPressed(PlayerInput.LIGHT_ATTACK) || Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x > 0){
+    if((Input.isPressed(PlayerInput.LIGHT_ATTACK) || Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x >= 0){
         animationToPlay = "ATTACK_RIGHT";
         this.attackrighttimer.start();
     }
