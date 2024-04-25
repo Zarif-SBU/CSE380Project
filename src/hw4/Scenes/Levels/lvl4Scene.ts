@@ -39,7 +39,7 @@ export default class lvl4Scene extends HW4Scene {
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
-    private healthbars: Map<number, HealthbarHUD>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
 
     private bases: BattlerBase[];
@@ -154,12 +154,8 @@ export default class lvl4Scene extends HW4Scene {
     /**
      * @see Scene.updateScene
     */
-   public override updateScene(deltaT: number): void {
-       while (this.receiver.hasNextEvent()) {
-            this.handleEvent(this.receiver.getNextEvent());
-        }
-        this.healthbars.forEach(healthbar => healthbar.update(deltaT));
-        // this.handledetections();
+    public updateScene(deltaT: number): void {
+        super.updateScene(deltaT);
     }
     
     /**

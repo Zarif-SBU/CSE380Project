@@ -3,6 +3,7 @@ import Actor from "../../../Wolfie2D/DataTypes/Interfaces/Actor";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
@@ -23,7 +24,6 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
-import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 const BattlerGroups = {
     RED: 1,
     BLUE: 2
@@ -37,7 +37,7 @@ export default class lvl6Scene extends HW4Scene {
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
-    private healthbars: Map<number, HealthbarHUD>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
 
     private bases: BattlerBase[];
@@ -151,12 +151,8 @@ export default class lvl6Scene extends HW4Scene {
     /**
      * @see Scene.updateScene
     */
-   public override updateScene(deltaT: number): void {
-       while (this.receiver.hasNextEvent()) {
-            this.handleEvent(this.receiver.getNextEvent());
-        }
-        this.healthbars.forEach(healthbar => healthbar.update(deltaT));
-        // this.handledetections();
+    public updateScene(deltaT: number): void {
+        super.updateScene(deltaT);
     }
     
     /**

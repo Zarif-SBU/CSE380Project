@@ -1,13 +1,13 @@
 import StateMachineAI from "../../../Wolfie2D/AI/StateMachineAI";
 import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
+import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import Timer from "../../../Wolfie2D/Timing/Timer";
 import PlayerActor from "../../Actors/PlayerActor";
 import { PlayerEvent } from "../../Events";
 import PlayerController from "./PlayerController";
-import { Idle, Invincible, Moving, Dead, PlayerStateType } from "./PlayerStates/PlayerState";
-import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
-import Timer from "../../../Wolfie2D/Timing/Timer";
+import { Dead, Idle, Invincible, Moving, PlayerStateType } from "./PlayerStates/PlayerState";
 /**
  * The AI that controls the player. The players AI has been configured as a Finite State Machine (FSM)
  * with 4 states; Idle, Moving, Invincible, and Dead.
@@ -71,6 +71,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     public update(deltaT: number): void {
         super.update(deltaT);
+        
     }
 
     public destroy(): void {}
@@ -95,6 +96,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 break;
             }
         }
+        
     }
 
     protected handleLaserFiredEvent(actorId: number, to: Vec2, from: Vec2): void {
@@ -121,7 +123,6 @@ export default class PlayerAI extends StateMachineAI implements AI {
                     continue;
                 }
                 console.log("stabbed");
-                // this.emitter.fireEvent(BattlerEvent.BATTLER_KILLED, {id: enemy.id});
                 // enemy.animation.play("IDLE");
                 enemy.health = enemy.health - 1;
                 

@@ -23,6 +23,7 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
+import lvl2Scene from "./lvl2Scene";
 
 const BattlerGroups = {
     RED: 1,
@@ -37,13 +38,17 @@ export default class lvl1Scene extends HW4Scene {
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
-    private healthbars: Map<number, HealthbarHUD>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
     private bases: BattlerBase[];
 
-    private player:PlayerActor;
+    protected player:PlayerActor;
 
-    private enemies: Battler[];
+    protected TotalEnemies: 1;
+    private enemies: Battler[]
+
+    protected nextLevel:lvl2Scene;
+    
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -87,6 +92,7 @@ export default class lvl1Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
@@ -105,6 +111,7 @@ export default class lvl1Scene extends HW4Scene {
         
         // Create the player
         this.initializePlayer();
+        
         
         this.initializeNavmesh();
         
@@ -158,12 +165,8 @@ export default class lvl1Scene extends HW4Scene {
     /**
      * @see Scene.updateScene
     */
-   public override updateScene(deltaT: number): void {
-    while (this.receiver.hasNextEvent()) {
-        this.handleEvent(this.receiver.getNextEvent());
-    }
-    this.healthbars.forEach(healthbar => healthbar.update(deltaT));
-        // this.handledetections();
+    public updateScene(deltaT: number): void {
+        super.updateScene(deltaT);
     }
     
     /**
@@ -235,6 +238,10 @@ export default class lvl1Scene extends HW4Scene {
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
             //this.enemies.push(slime[i])
+            if (i!=0){
+                this.TotalEnemies +=1;
+                console.log(this.enemies)
+            }
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});

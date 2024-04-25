@@ -17,11 +17,15 @@ export enum PlayerEvent{
 }
 
 
-
 export enum HudEvent {
     HEALTH_CHANGE = "HEALTH_CHANGE"
 }
 
 export enum PlayerEvent {
     PLAYER_KILLED = "PLAYER_KILLED"
+}
+
+export enum LevelEvent{
+    PLAYER_ENTERED_LEVEL_END = "PlayerEnteredLevelEnd",
+    
 }

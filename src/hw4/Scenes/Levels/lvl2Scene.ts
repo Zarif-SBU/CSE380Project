@@ -29,7 +29,7 @@ const BattlerGroups = {
     BLUE: 2
 } as const;
 
-export default class lvl1Scene extends HW4Scene {
+export default class lvl2Scene extends HW4Scene {
     public level: number;
 
     /** GameSystems in the HW4 Scene */
@@ -37,11 +37,11 @@ export default class lvl1Scene extends HW4Scene {
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
-    private healthbars: Map<number, HealthbarHUD>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
     private bases: BattlerBase[];
 
-    private player:PlayerActor;
+    protected player:PlayerActor;
 
     private enemies: Battler[];
 
@@ -158,12 +158,8 @@ export default class lvl1Scene extends HW4Scene {
     /**
      * @see Scene.updateScene
     */
-   public override updateScene(deltaT: number): void {
-    while (this.receiver.hasNextEvent()) {
-        this.handleEvent(this.receiver.getNextEvent());
-    }
-    this.healthbars.forEach(healthbar => healthbar.update(deltaT));
-        // this.handledetections();
+    public updateScene(deltaT: number): void {
+        super.updateScene(deltaT);
     }
     
     /**
@@ -177,7 +173,7 @@ export default class lvl1Scene extends HW4Scene {
 
     handledetections() {
         for(let enemy of this.battlers.slice(1)) {
-            if(lvl1Scene.checkifDetected(this.battlers[0], enemy)) {
+            if(lvl2Scene.checkifDetected(this.battlers[0], enemy)) {
                 enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
             }
         }

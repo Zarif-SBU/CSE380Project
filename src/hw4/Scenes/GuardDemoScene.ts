@@ -25,11 +25,11 @@ import HW4Scene from "./HW4Scene";
 export default class GuardDemoScene extends HW4Scene {
     public level: number;
 
-    private player: PlayerActor;
+    protected player: PlayerActor;
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
-    private healthbars: Map<number, HealthbarHUD>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
 
     // The wall layer of the tilemap
