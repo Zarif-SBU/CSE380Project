@@ -110,9 +110,9 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     protected handleLightAttackEvent(start:Vec2, dir: Vec2): void {
         console.log(start);
-        console.log(dir.x);
+        console.log(dir);
         console.log(this.owner.getScene().getBattlers());
-        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*150), start.y+(dir.y*150)), new Vec2(150, 150))
+        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*120), start.y+(dir.y*120)), new Vec2(120, 120))
         
         
         
