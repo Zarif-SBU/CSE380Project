@@ -11,7 +11,7 @@ export default class ControlScene extends Scene {
     protected Controls : Layer;
 
     public loadScene(){
-        this.load.image("controls","/dist/hw4_assets/SceneImages/Controls_Image.png");
+        this.load.image("controls","hw4_assets/SceneImages/Controls_Image.png");
         
     }
 

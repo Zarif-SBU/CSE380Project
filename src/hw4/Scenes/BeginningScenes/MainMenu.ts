@@ -19,9 +19,9 @@ export default class MainMenu extends Scene {
     
     public loadScene(){
         
-        this.load.image("menu","/dist/hw4_assets/SceneImages/Menu_Image.png");
-        this.load.audio("level_music", "/dist/hw4_assets/Audio/FillerMusic.mp3")
-        this.load.audio("select", "/dist/hw4_assets/Audio/select.mp3");
+        this.load.image("menu","hw4_assets/SceneImages/Menu_Image.png");
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("select", "hw4_assets/Audio/select.mp3");
     }
     
     

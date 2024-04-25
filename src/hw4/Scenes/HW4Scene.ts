@@ -34,7 +34,7 @@ export default abstract class HW4Scene extends Scene {
     public abstract isTargetVisible(position: Vec2, target: Vec2): boolean;
     
     public loadScene() {
-        this.load.image("test", "/dist/hw4_assets/SceneImages/BrownBackground.png");
+        this.load.image("test", "hw4_assets/SceneImages/BrownBackground.png");
         this.receiver.subscribe("quit")
     }
     public startScene() {

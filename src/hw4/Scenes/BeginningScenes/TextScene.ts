@@ -13,7 +13,7 @@ export default class TextScene extends Scene {
     protected text_scene : Layer;
 
     public loadScene(){
-        this.load.image("text","/dist/hw4_assets/SceneImages/StoryContinued.png");
+        this.load.image("text","hw4_assets/SceneImages/StoryContinued.png");
         
     }
 

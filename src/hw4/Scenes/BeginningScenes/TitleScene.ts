@@ -12,7 +12,7 @@ export default class TitleScene extends Scene {
     protected splash_screen : Layer;
 
     public loadScene(){
-        this.load.image("splash","/dist/hw4_assets/SceneImages/Splash.png");
+        this.load.image("splash","hw4_assets/SceneImages/Splash.png");
         
     }
 
