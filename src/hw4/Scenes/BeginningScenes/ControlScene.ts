@@ -34,7 +34,7 @@ export default class ControlScene2 extends Scene {
 
         this.receiver.subscribe("back");
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
     public updateScene(){
@@ -45,7 +45,7 @@ export default class ControlScene2 extends Scene {
     public handleEvent(event: GameEvent): void {
         if (event.type === "back"){
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+            //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
             this.sceneManager.changeToScene(MainMenu);
         }
     }

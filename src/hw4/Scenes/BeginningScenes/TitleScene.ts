@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Input from "../../../Wolfie2D/Input/Input";
 import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
@@ -13,11 +14,13 @@ export default class TitleScene extends Scene {
 
     public loadScene(){
         this.load.image("splash","hw4_assets/SceneImages/Splash.png");
-        
+        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
     }
 
     public startScene(){
         this.loadScene();
+        this.receiver.subscribe(GameEventType.PLAY_MUSIC);
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         const center = this.viewport.getCenter();
         this.splash_screen = this.addUILayer("splash_screen")
         let x = this.add.sprite("splash", "splash_screen")

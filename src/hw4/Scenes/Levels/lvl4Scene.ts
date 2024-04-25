@@ -77,7 +77,7 @@ export default class lvl4Scene extends HW4Scene {
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
-        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
 
@@ -96,7 +96,7 @@ export default class lvl4Scene extends HW4Scene {
         this.nextLevel=lvl5Scene;
         this.LevelEnd = [new Vec2(2587, 768), new Vec2(2734, 768)]
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");

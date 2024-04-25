@@ -73,7 +73,7 @@ export default class lvl6Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
-        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
+        //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
         // Load the tilemap
         this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
