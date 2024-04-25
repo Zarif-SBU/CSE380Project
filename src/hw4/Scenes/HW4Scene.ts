@@ -8,10 +8,7 @@ import Color from "../../Wolfie2D/Utils/Color";
 import { BattlerEvent, LevelEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import ControlScene2 from "./BeginningScenes/ControlScene";
-import LevelSelectScene from "./BeginningScenes/LevelSelectScreen";
 import MainMenu from "./BeginningScenes/MainMenu";
-
-
 
 export default abstract class HW4Scene extends Scene {
     public level: number;
@@ -19,13 +16,16 @@ export default abstract class HW4Scene extends Scene {
 
     protected player
     protected healthbars;
-    protected TotalEnemies:number;
+    protected TotalEnemies:number = 0;
 
-    protected enemies_killed: number;
+    protected enemies;
+    protected enemies_killed: number = 0;
     protected LevelEnd: [Vec2, Vec2];
-    protected nextLevel;
+    protected nextLevel: new (...args: any) => HW4Scene;
+    protected currentLevel: new (...args: any) => HW4Scene;
 
-    
+
+    //setTileAtRowCol
     public abstract getBattlers(): Battler[];
 
     public abstract getWalls(): OrthogonalTilemap;
@@ -39,7 +39,8 @@ export default abstract class HW4Scene extends Scene {
     }
     public startScene() {
         this.enemies_killed =0;
-
+        
+        this.subscribeToEvents();
         const center = this.viewport.getCenter();
         this.PauseMenu = this.addUILayer("PauseMenu")
         let x = this.add.sprite("test", "PauseMenu")
@@ -49,9 +50,10 @@ export default abstract class HW4Scene extends Scene {
         this.createButton("Restart", new Vec2(600,250), "restart");
         this.createButton("Controls", new Vec2(600, 350), "controls");
         this.createButton("Quit", new Vec2(600, 450), "quit");
+        console.log("enemies from hw4",this.enemies)
         
     }
-
+    
     /*
     private getLevel(levelNumber: number) {
         switch (levelNumber) {
@@ -60,9 +62,42 @@ export default abstract class HW4Scene extends Scene {
                 this.sceneManager.changeToScene(lvl1Scene);
             default:
                 break;
+            }
+        }
+        */
+       protected subscribeToEvents(){
+           this.receiver.subscribe([
+               BattlerEvent.BATTLER_KILLED,
+               LevelEvent.PLAYER_ENTERED_LEVEL_END
+            ]);
+        }
+        protected handleEnemiesKilled() {
+            this.enemies = this.enemies.filter(enemy => {
+                if (enemy.health === 0) {
+                    this.enemies_killed++;
+                    console.log("enemy number", enemy, "health: ", enemy.health);
+                    console.log("enemies killed ", this.enemies_killed);
+                    return false; // Filter out the enemy with zero health
+                }
+                return true; // Keep enemies with non-zero health
+            });
+        
+            if (this.enemies_killed === this.TotalEnemies){
+
+                this.PlayerAtDoor();
+                
+            }
+            
+        }
+        protected PlayerAtDoor(){
+            if (
+                this.player.position.y === this.LevelEnd[0].y &&
+                (this.player.position.x >= this.LevelEnd[0].x && this.player.position.x <= this.LevelEnd[1].x)
+        ) {
+            this.sceneManager.changeToScene(this.nextLevel);
+            console.log("player reached end");
         }
     }
-    */
 
     private createButton(text: string, position: Vec2, eventId: string): void {
         const button = this.add.uiElement(UIElementType.BUTTON, "PauseMenu", {
@@ -82,23 +117,14 @@ export default abstract class HW4Scene extends Scene {
     }
 
     public updateScene(deltaT: number): void {
-        //console.log("Player position:", this.player.position.x, this.player.position.y);
-        
-        if (
-            this.player.position.y === this.LevelEnd[0].y &&
-            (this.player.position.x >= this.LevelEnd[0].x && this.player.position.x <= this.LevelEnd[1].x)
-        ) {
-            // Only execute these statements if the player is at the end of the level
-            this.emitter.fireEvent(LevelEvent.PLAYER_ENTERED_LEVEL_END);
-            console.log("player reached end");
-        }
-
+        this.handleEnemiesKilled()
+        console.log("Player position:", this.player.position.x, this.player.position.y);
         while (this.receiver.hasNextEvent()) {
             let event = this.receiver.getNextEvent();
             switch (event.type) {
                 case "restart":
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-                    this.sceneManager.changeToScene(LevelSelectScene);
+                    this.sceneManager.changeToScene(this.currentLevel);
                     console.log("restart button pressed")
                     break;
                 case "controls":
@@ -110,18 +136,6 @@ export default abstract class HW4Scene extends Scene {
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                     this.sceneManager.changeToScene(MainMenu);
                     console.log("quit button pressed")
-                    break;
-                case BattlerEvent.BATTLER_KILLED:
-                    this.enemies_killed++;
-                    if (this.enemies_killed == this.TotalEnemies){
-                        
-                    }
-                    console.log("enemies killed", this.enemies_killed.toString())
-                    break;
-                case LevelEvent.PLAYER_ENTERED_LEVEL_END:
-                    if (this.enemies_killed == this.TotalEnemies){
-                        this.sceneManager.changeToScene(this.nextLevel);
-                    }
                     break;
                 default:
                     break;

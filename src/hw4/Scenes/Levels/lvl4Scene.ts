@@ -25,6 +25,7 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
+import lvl5Scene from "./lvl5Scene";
 
 const BattlerGroups = {
     RED: 1,
@@ -44,6 +45,10 @@ export default class lvl4Scene extends HW4Scene {
 
     private bases: BattlerBase[];
 
+    protected player:PlayerActor;
+
+    protected TotalEnemies: 0;
+    protected enemies:Battler[] = [];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -87,6 +92,9 @@ export default class lvl4Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.currentLevel = lvl4Scene;
+        this.nextLevel=lvl5Scene;
+        this.LevelEnd = [new Vec2(2587, 768), new Vec2(2734, 768)]
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
@@ -211,6 +219,7 @@ export default class lvl4Scene extends HW4Scene {
 
         this.battlers.push(player);
         this.viewport.follow(player);
+        this.player = player;
     }
     /**
      * Initialize the NPCs 
@@ -245,12 +254,14 @@ export default class lvl4Scene extends HW4Scene {
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
+            
         }
 
         for (let i = 0; i < moondog.moondogslvl4.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
             npc.position.set(moondog.moondogslvl4[i][0], moondog.moondogslvl4[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            this.TotalEnemies +=1;
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
@@ -271,6 +282,7 @@ export default class lvl4Scene extends HW4Scene {
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
+            this.enemies.push(npc)
         }
 
     }

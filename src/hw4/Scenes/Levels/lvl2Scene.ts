@@ -23,6 +23,7 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
+import lvl3Scene from "./lvl3Scene";
 
 const BattlerGroups = {
     RED: 1,
@@ -43,7 +44,8 @@ export default class lvl2Scene extends HW4Scene {
 
     protected player:PlayerActor;
 
-    private enemies: Battler[];
+    protected TotalEnemies: 0;
+    protected enemies:Battler[] = [];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -53,7 +55,6 @@ export default class lvl2Scene extends HW4Scene {
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
-        this.level = 1;
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
@@ -79,7 +80,7 @@ export default class lvl2Scene extends HW4Scene {
         this.load.tilemap("level", "hw4_assets/tilemaps/lvl2.json");
 
         // Load the enemy locations
-        this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
+        this.load.object("slimeslvl2", "hw4_assets/data/enemies/slime.json");
         this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
     }
@@ -87,6 +88,9 @@ export default class lvl2Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.currentLevel = lvl2Scene;
+        this.nextLevel=lvl3Scene;
+        this.LevelEnd = [new Vec2(2587, 768), new Vec2(2734, 768)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
@@ -105,6 +109,7 @@ export default class lvl2Scene extends HW4Scene {
         
         // Create the player
         this.initializePlayer();
+        
         
         this.initializeNavmesh();
         
@@ -126,7 +131,7 @@ export default class lvl2Scene extends HW4Scene {
         },false)
         
         let PauseCount = 1;
-        let level=1
+        
         window.addEventListener('keydown', (event) => {
             if (event.key === "Escape" && PauseCount % 2 != 0) {
                 PauseCount++;
@@ -223,14 +228,14 @@ export default class lvl2Scene extends HW4Scene {
     protected initializeNPCs(): void {
 
         // Get the object data for the red enemies
-        let slime = this.load.getObject("slimes");
+        let slime = this.load.getObject("slimeslvl2");
         let moondog = this.load.getObject("moondogs");
 
-        for (let i = 0; i < slime.slimes.length; i++) {
+        for (let i = 0; i < slime.slimeslvl2.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
+            npc.position.set(slime.slimeslvl2[i][0], slime.slimeslvl2[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-            //this.enemies.push(slime[i])
+            this.TotalEnemies +=1;
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
@@ -251,7 +256,9 @@ export default class lvl2Scene extends HW4Scene {
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
+            this.enemies.push(npc)
         }
+        //console.log("enemies in level 1",this.enemies)
 
         // for (let i = 0; i < moondog.moondogs.length; i++) {
         //     let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");

@@ -7,7 +7,6 @@ import BasicTargetable from "../GameSystems/Targeting/BasicTargetable";
 import { TargetableEntity } from "../GameSystems/Targeting/TargetableEntity";
 import { TargetingEntity } from "../GameSystems/Targeting/TargetingEntity";
 import HW4Scene from "../Scenes/HW4Scene";
-import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 
 export default class PlayerActor extends AnimatedSprite implements Battler {
 
@@ -59,7 +58,7 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
     }
     set health(value: number) {
         this.battler.health = value;
-        if (this.health <= 0) {
+        if (this.health == 0) {
             this.emitter.fireEvent(BattlerEvent.BATTLER_KILLED, {id: this.id});
         }
     }

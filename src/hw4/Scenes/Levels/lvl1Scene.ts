@@ -44,11 +44,8 @@ export default class lvl1Scene extends HW4Scene {
 
     protected player:PlayerActor;
 
-    protected TotalEnemies: 1;
-    private enemies: Battler[]
-
-    protected nextLevel:lvl2Scene;
-    
+    protected TotalEnemies: 0;
+    protected enemies:Battler[] = [];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -58,7 +55,6 @@ export default class lvl1Scene extends HW4Scene {
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
-        this.level = 1;
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
@@ -92,7 +88,9 @@ export default class lvl1Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
-        this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//where the door is
+        this.currentLevel = lvl1Scene;
+        this.nextLevel=lvl2Scene;
+        this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
@@ -133,7 +131,7 @@ export default class lvl1Scene extends HW4Scene {
         },false)
         
         let PauseCount = 1;
-        let level=1
+        
         window.addEventListener('keydown', (event) => {
             if (event.key === "Escape" && PauseCount % 2 != 0) {
                 PauseCount++;
@@ -237,11 +235,7 @@ export default class lvl1Scene extends HW4Scene {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-            //this.enemies.push(slime[i])
-            if (i!=0){
-                this.TotalEnemies +=1;
-                console.log(this.enemies)
-            }
+            this.TotalEnemies +=1;
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
@@ -262,7 +256,9 @@ export default class lvl1Scene extends HW4Scene {
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
+            this.enemies.push(npc)
         }
+        //console.log("enemies in level 1",this.enemies)
 
         // for (let i = 0; i < moondog.moondogs.length; i++) {
         //     let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");

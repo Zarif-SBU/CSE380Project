@@ -25,6 +25,7 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
+import lvl4Scene from "./lvl4Scene";
 
 const BattlerGroups = {
     RED: 1,
@@ -40,10 +41,12 @@ export default class lvl3Scene extends HW4Scene {
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
     protected healthbars: Map<number, HealthbarHUD>;
-
-
     private bases: BattlerBase[];
 
+    protected player:PlayerActor;
+
+    protected TotalEnemies: 0;
+    protected enemies:Battler[] = [];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -89,6 +92,9 @@ export default class lvl3Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.currentLevel = lvl3Scene;
+        this.nextLevel=lvl4Scene;
+        this.LevelEnd = [new Vec2(2076, 192), new Vec2(2214, 192)];
         // Add in the tilemap
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
@@ -129,20 +135,21 @@ export default class lvl3Scene extends HW4Scene {
         },false)
         
         let PauseCount = 1;
-        let level=1
+        
         window.addEventListener('keydown', (event) => {
             if (event.key === "Escape" && PauseCount % 2 != 0) {
                 PauseCount++;
                 this.pauseGame();
                 super.startScene();
+                
             }else if (event.key === "Escape" && PauseCount % 2 == 0) {
                 PauseCount--;
                 this.resumeGame();
-                //this.sceneManager.changeToScene(lvl1Scene)
+    
             }
         });
-        
     }
+    
 
     private pauseGame(){
         this.timer.pause();
@@ -213,6 +220,7 @@ export default class lvl3Scene extends HW4Scene {
 
         this.battlers.push(player);
         this.viewport.follow(player);
+        this.player=player
     }
     /**
      * Initialize the NPCs 
@@ -223,57 +231,11 @@ export default class lvl3Scene extends HW4Scene {
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
 
-        // // Initialize the red healers
-        // for (let i = 0; i < red.healers.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "RedHealer", "primary");
-        //     npc.position.set(red.healers[i][0], red.healers[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     npc.battleGroup = 1;
-        //     npc.speed = 10;
-        //     npc.health = 10;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     // Give the NPC a healthbar
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.addAI(HealerBehavior);
-        //     npc.animation.play("IDLE");
-        //     this.battlers.push(npc);
-        // }
-
-        // for (let i = 0; i < slime.slimes.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-        //     npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-
-        //     // Give the NPC a healthbar
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
-        //     this.healthbars.set(npc.id, healthbar);
-            
-        //     // Set the NPCs stats
-        //     npc.battleGroup = 1;
-        //     npc.speed = 5;
-        //     npc.health = 5;
-        //     npc.maxHealth = 5;
-        //     npc.navkey = "navmesh";
-        //     npc.spawnpoint = npc.position.clone();
-        //     console.log("spawn point", npc.spawnpoint);
-        //     // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
-        //     npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
-            
-        //     // Play the NPCs "IDLE" animation
-        //     npc.animation.play("IDLE");
-        //     // Add the NPC to the battlers array
-        //     this.battlers.push(npc);
-        // }
-
         for (let i = 0; i < moondog.moondogs.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
             npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            this.TotalEnemies +=1;
 
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
@@ -294,124 +256,12 @@ export default class lvl3Scene extends HW4Scene {
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
+            this.enemies.push(npc)
         }
-        // // Get the object data for the blue enemies
-        // let blue = this.load.getObject("blue");
-
-        // // Initialize the blue enemies
-        // for (let i = 0; i < blue.enemies.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary");
-        //     npc.position.set(blue.enemies[i][0], blue.enemies[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     // Give the NPCS their healthbars
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.battleGroup = 2
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     // Give the NPCs their AI
-        //     npc.addAI(GuardBehavior, {target: this.battlers[0], range: 100});
-
-        //     // Play the NPCs "IDLE" animation 
-        //     npc.animation.play("IDLE");
-
-        //     this.battlers.push(npc);
-        // }
-
-        // Initialize the blue healers
-        // for (let i = 0; i < blue.healers.length; i++) {
-            
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueHealer", "primary");
-        //     npc.position.set(blue.healers[i][0], blue.healers[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     npc.battleGroup = 2;
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.addAI(HealerBehavior);
-        //     npc.animation.play("IDLE");
-        //     this.battlers.push(npc);
-        // }
-
 
     }
 
-    /**
-     * Initialize the items in the scene (healthpacks and laser guns)
-     */
-
-    /**
-     * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
-     * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
-     * go for it.
-     * 
-     * - Peter
-     */
-    // protected initializeNavmesh(): void {
-        // Create the graph
-    //     this.graph = new PositionGraph();
-
-    //     let dim: Vec2 = this.walls.getDimensions();
-    //     for (let i = 0; i < dim.y; i++) {
-    //         for (let j = 0; j < dim.x; j++) {
-    //             let tile: AABB = this.walls.getTileCollider(j, i);
-    //             this.graph.addPositionedNode(tile.center);
-    //         }
-    //     }
-
-    //     let rc: Vec2;
-    //     for (let i = 0; i < this.graph.numVertices; i++) {
-    //         rc = this.walls.getTileColRow(i);
-    //         if (!this.walls.isTileCollidable(rc.x, rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1))
-
-    //         ) {
-    //             // Create edge to the left
-    //             rc = this.walls.getTileColRow(i + 1);
-    //             if ((i + 1) % dim.x !== 0 && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + 1);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + 1)})
-    //             }
-    //             // Create edge below
-    //             rc = this.walls.getTileColRow(i + dim.x);
-    //             if (i + dim.x < this.graph.numVertices && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + dim.x);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + dim.x)})
-    //             }
-    //         }
-    //     }
-
-    //     // Set this graph as a navigable entity
-    //     let navmesh = new Navmesh(this.graph);
-        
-    //     // Add different strategies to use for this navmesh
-    //     navmesh.registerStrategy("direct", new DirectStrategy(navmesh));
-    //     navmesh.registerStrategy("astar", new AstarStrategy(navmesh));
-
-    //     // TODO set the strategy to use A* pathfinding
-    //     navmesh.setStrategy("astar");
-
-    //     // Add this navmesh to the navigation manager
-    //     this.navManager.addNavigableEntity("navmesh", navmesh);
-    // }
+    
 
     protected initializeNavmesh(): void {
             // Create the graph
