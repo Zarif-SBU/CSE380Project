@@ -20,7 +20,7 @@ export default class MainMenu extends Scene {
     public loadScene(){
         
         this.load.image("menu","hw4_assets/SceneImages/Menu_Image.png");
-        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
     }
     
@@ -65,8 +65,7 @@ export default class MainMenu extends Scene {
         this.receiver.subscribe("controls");
         this.receiver.subscribe(GameEventType.PLAY_MUSIC);
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
-
+        
     }
     
     public updateScene(){
@@ -84,13 +83,13 @@ export default class MainMenu extends Scene {
                 break;
             }
             case "levels": {
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(LevelSelectScene);
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
             }
             case "controls": {
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(ControlScene);
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;

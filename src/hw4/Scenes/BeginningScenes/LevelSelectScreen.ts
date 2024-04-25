@@ -45,7 +45,7 @@ export default class LevelSelectScene extends Scene {
         this.createButton("Level 6", new Vec2(center.x + 300, center.y+100), "level6");
         this.receiver.subscribe("back");
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
 
     }
 
@@ -72,27 +72,27 @@ export default class LevelSelectScene extends Scene {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case "back":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             case "level1":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl1Scene);
                 break;
             case "level2":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl2Scene);
                 break;
             case "level3":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl3Scene);
                 break;
             case "level4":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl4Scene);
                 break;
             case "level5":
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+                //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl5Scene);
             case "level6":
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});

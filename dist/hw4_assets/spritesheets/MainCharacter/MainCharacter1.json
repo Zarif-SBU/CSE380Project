@@ -43,7 +43,7 @@
             "frames":[{"index": 29, "duration": 17},{"index": 30, "duration": 14},{"index": 31, "duration": 14},{"index": 32, "duration": 14},{"index": 33, "duration": 17}]
         },
         {
-            "name": "BOOST_LEFT",
+            "name": "BOOST_RIGHT",
             "repeat": false,
             "frames":[{"index": 34, "duration": 17},{"index": 35, "duration": 14},{"index": 36, "duration": 14},{"index": 37, "duration": 14},{"index": 38, "duration": 17}]
         },
