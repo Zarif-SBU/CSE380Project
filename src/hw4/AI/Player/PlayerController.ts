@@ -30,12 +30,16 @@ export default class PlayerController {
     /** The GameNode that owns the AI */
     protected owner: AnimatedSprite;
     timer: any;
+    attackrighttimer : any;
+    attacklefttimer : any;
     private currentFacingDirection: Vec2 = new Vec2(0, -1);
     
 
     constructor(owner: AnimatedSprite) {
         this.owner = owner;
         this.timer = new Timer(2000);
+        this.attackrighttimer = new Timer(1000);
+        this.attacklefttimer = new Timer(1000);
         
         
     }
@@ -70,8 +74,23 @@ export default class PlayerController {
 public lastAnimationPlayed: string = "";
 
 public get faceDir(): Vec2 {
+    //console.log(this.owner)
     let animationToPlay = "";
-    if (this.moveDir.x === 0 && this.moveDir.y === 0) {
+    if((Input.isPressed(PlayerInput.LIGHT_ATTACK) || Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x > 0){
+        animationToPlay = "ATTACK_RIGHT";
+        this.attackrighttimer.start();
+    }
+    else if (!this.attackrighttimer.isStopped()) {
+        animationToPlay = "ATTACK_RIGHT";
+    }
+    else if((Input.isPressed(PlayerInput.LIGHT_ATTACK)|| Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x < 0){
+        animationToPlay = "ATTACK_LEFT";
+        this.attacklefttimer.start();
+    }
+    else if (!this.attacklefttimer.isStopped()) {
+        animationToPlay = "ATTACK_LEFT";
+    }
+    else if (this.moveDir.x === 0 && this.moveDir.y === 0) {
         animationToPlay = "IDLE";
     } else if (this.moveDir.x > 0) {
         animationToPlay = "WALK_RIGHT";
