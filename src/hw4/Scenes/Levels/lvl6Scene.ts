@@ -91,7 +91,7 @@ export default class lvl6Scene extends HW4Scene {
         this.nextLevel=lvl6Scene;
         this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
         
