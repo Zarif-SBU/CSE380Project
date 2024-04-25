@@ -88,7 +88,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
                     this.timer.start();
                     
                 }
-                console.log("breh");
+                // console.log("breh");
                 break;
             }
             default: {

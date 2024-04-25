@@ -246,7 +246,7 @@ export default class lvl4Scene extends HW4Scene {
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            console.log("spawn point", npc.spawnpoint);
+            // console.log("spawn point", npc.spawnpoint);
             // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
             npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 500});
             
@@ -274,7 +274,7 @@ export default class lvl4Scene extends HW4Scene {
             npc.maxHealth = 3;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            console.log("spawn point", npc.spawnpoint);
+            // console.log("spawn point", npc.spawnpoint);
             // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
             npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             

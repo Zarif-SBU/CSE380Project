@@ -2,7 +2,7 @@ import NPCActor from "../../../Actors/NPCActor";
 import NPCBehavior from "../NPCBehavior";
 import Idle from "../NPCActions/GotoAction";
 import BasicFinder from "../../../GameSystems/Searching/BasicFinder";
-import { BattlerActiveFilter, BattlerGroupFilter, EnemyFilter, RangeFilter } from "../../../GameSystems/Searching/HW4Filters";
+import { AllyFilter, BattlerActiveFilter, BattlerGroupFilter, BattlerHealthFilter, EnemyFilter, RangeFilter } from "../../../GameSystems/Searching/HW4Filters";
 import { ClosestPositioned } from "../../../GameSystems/Searching/HW4Reducers";
 import { TargetableEntity } from "../../../GameSystems/Targeting/TargetableEntity";
 import { TargetExists } from "../NPCStatuses/TargetExists";
@@ -83,12 +83,10 @@ export default class Wolfbehavior extends NPCBehavior {
         let enemyAtGuardPosition = new TargetExists([scene.getBattlers()[0]], enemyBattlerFinder);
         this.addStatus(DogStatuses.ENEMY_IN_DOG_POSITION, enemyAtGuardPosition);
 
-        let allyBattlerFinder =new BasicFinder<Battler>(null, BattlerActiveFilter(), BattlerGroupFilter([this.owner.battleGroup]));
+        let allyBattlerFinder = new BasicFinder<Battler>(null, BattlerHealthFilter(0, this.owner.maxHealth), AllyFilter(this.owner), BattlerGroupFilter([this.owner.battleGroup]), RangeFilter(scene.getBattlers()[0], 0, 300*300));
         let allyNearPlayer = new TargetExists(scene.getBattlers(), allyBattlerFinder);
         this.addStatus(DogStatuses.ALLY_NEAR, allyNearPlayer);
-        if(allyNearPlayer) {
-            console.log("cek");
-        }
+
         // let enemyinrangefinder = new BasicFinder<Battler>(() => scene.getBattlers()[0], EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
         // let isClose = new TargetExists(scene.getBattlers(), enemyinrangefinder);
         // this.addStatus(GuardStatuses.READY_TO_ATTACK, isClose);
@@ -110,19 +108,10 @@ export default class Wolfbehavior extends NPCBehavior {
         move_to_player.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
         move_to_player.addPrecondition(DogStatuses.ENEMY_IN_DOG_POSITION);
         move_to_player.addEffect(DogStatuses.GOAL);
-        move_to_player.cost = 1;
+        move_to_player.cost = 2;
         this.addState(DogActions.MOVE_TO_PLAYER, move_to_player);
         // An action for guarding the guard's guard location
 
-        // let attack = new SlimeAttack(this, this.owner);
-        // attack.scene = this.owner.getScene();
-        // attack.targets = [scene.getBattlers()[0]];
-        // attack.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
-        // attack.addPrecondition(GuardStatuses.ENEMY_IN_GUARD_POSITION);
-        // attack.addPrecondition(GuardStatuses.READY_TO_ATTACK);
-        // attack.addEffect(GuardStatuses.GOAL);
-        // attack.cost = 1;
-        // this.addState(GuardActions.ATTACK_PLAYER, attack);
 
         // let guard = new RandomMovement(this, this.owner);
         // guard.scene = this.owner.getScene();
@@ -135,11 +124,12 @@ export default class Wolfbehavior extends NPCBehavior {
         // this.addState(DogActions.GUARD, guard);
 
         let attack = new WolfAttack(this, this.owner);
+        attack.range = this.range;
         attack.scene = this.owner.getScene();
         attack.targets = [scene.getBattlers()[0]];
-        attack.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, 30000));
-        attack.addPrecondition(DogStatuses.ENEMY_IN_DOG_POSITION);
+        attack.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerActiveFilter(), EnemyFilter(this.owner), RangeFilter(this.owner, 0, this.range*this.range));
         attack.addPrecondition(DogStatuses.ALLY_NEAR);
+        attack.addPrecondition(DogStatuses.ENEMY_IN_DOG_POSITION);
         attack.addEffect(DogStatuses.GOAL);
         attack.cost = 1;
         this.addState(DogActions.ATTACK_PLAYER, attack);
@@ -148,7 +138,7 @@ export default class Wolfbehavior extends NPCBehavior {
         guard.targets = [this.target];
         guard.targetFinder = new BasicFinder();
         guard.addEffect(DogStatuses.GOAL);
-        guard.cost = 1000;
+        guard.cost = 3;
         this.addState(DogActions.GUARD, guard);
     }
 

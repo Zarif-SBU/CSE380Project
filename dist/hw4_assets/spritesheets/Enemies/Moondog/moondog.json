@@ -122,7 +122,7 @@
 		},
 		{
 			"name": "Attack_Left",
-			"repeat": true,
+			"repeat": false,
 			"frames": [
 				{
 					"index": 0,
@@ -160,7 +160,7 @@
 		},
 		{
 			"name": "Attack_Right",
-			"repeat": true,
+			"repeat": false,
 			"frames": [
 				{
 					"index": 9,
