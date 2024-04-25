@@ -40,22 +40,22 @@
         {
             "name": "BOOST_LEFT",
             "repeat": false,
-            "frames":[{"index": 29, "duration": 17},{"index": 30, "duration": 14},{"index": 31, "duration": 14},{"index": 32, "duration": 14},{"index": 33, "duration": 17}]
+            "frames":[{"index": 29, "duration": 8},{"index": 30, "duration": 8},{"index": 31, "duration": 8},{"index": 32, "duration": 8},{"index": 33, "duration": 8}]
         },
         {
             "name": "BOOST_RIGHT",
             "repeat": false,
-            "frames":[{"index": 34, "duration": 17},{"index": 35, "duration": 14},{"index": 36, "duration": 14},{"index": 37, "duration": 14},{"index": 38, "duration": 17}]
+            "frames":[{"index": 34, "duration": 8},{"index": 35, "duration": 8},{"index": 36, "duration": 8},{"index": 37, "duration": 8},{"index": 38, "duration": 8}]
         },
         {
             "name": "ATTACK_LEFT",
             "repeat": false,
-            "frames":[{"index": 39, "duration": 17},{"index": 40, "duration": 14},{"index": 41, "duration": 14},{"index": 42, "duration": 14},{"index": 43, "duration": 17},{"index": 44, "duration": 17},{"index": 45, "duration": 17},{"index": 46, "duration": 17},{"index": 47, "duration": 17}]
+            "frames":[{"index": 39, "duration": 5},{"index": 40, "duration": 5},{"index": 41, "duration": 5},{"index": 42, "duration": 8},{"index": 43, "duration": 8},{"index": 44, "duration": 8},{"index": 45, "duration": 8},{"index": 46, "duration": 8},{"index": 47, "duration": 8}]
         },
         {
             "name": "ATTACK_RIGHT",
             "repeat": false,
-            "frames":[{"index": 48, "duration": 17},{"index": 49, "duration": 14},{"index": 50, "duration": 14},{"index": 51, "duration": 14},{"index": 52, "duration": 17},{"index": 53, "duration": 17},{"index": 54, "duration": 17},{"index": 55, "duration": 17},{"index": 56, "duration": 17}]
+            "frames":[{"index": 48, "duration": 5},{"index": 49, "duration": 5},{"index": 50, "duration": 5},{"index": 51, "duration": 8},{"index": 52, "duration": 8},{"index": 53, "duration": 8},{"index": 54, "duration": 8},{"index": 55, "duration": 8},{"index": 56, "duration": 8}]
         },
         {
             "name": "DYING_LEFT",
