@@ -77,15 +77,10 @@ export default abstract class PlayerState extends State {
             //console.log(this.owner.position);
             if(this.lightTimer.isStopped()){
                 //console.log("Light Attack");
-<<<<<<< HEAD
-                this.lightTimer.start();
-                this.emitter.fireEvent(PlayerEvent.LIGHT_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.faceDir.clone()});
-=======
                 this.lightTimer.start()
                 
 
                 this.emitter.fireEvent(PlayerEvent.LIGHT_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.moveDir.clone()});
->>>>>>> 8db9dd0a83d10038f0a5f5a5473d54ce83bb48e7
             }
             else{
                 console.log("Light Attack on cooldown");
