@@ -75,7 +75,7 @@ export default abstract class PlayerState extends State {
             //console.log(this.owner.position);
             if(this.lightTimer.isStopped()){
                 //console.log("Light Attack");
-                this.lightTimer.start()
+                this.lightTimer.start();
                 this.emitter.fireEvent(PlayerEvent.LIGHT_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.faceDir.clone()});
             }
             else{

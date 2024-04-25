@@ -32,18 +32,18 @@ export default class WolfAttack extends NPCAction {
         if (this.timer.isStopped()) {
             this.actor.tweens.add("attack", {
                 startDelay: 0,
-                duration: 1000,
+                duration: 1500,
                 effects: [
                     {
                         property: TweenableProperties.posX,
                         start: this.actor.position.x,
-                        end: this.actor.position.x + 1.1*(this.target.position.x - this.actor.position.x),
+                        end: this.actor.position.x + 1.5*(this.target.position.x - this.actor.position.x),
                         ease: EaseFunctionType.OUT_SINE
                     },
                     {
                         property: TweenableProperties.posY,
                         start: this.actor.position.y,
-                        end: this.actor.position.y + 1.1*(this.target.position.y - this.actor.position.y),
+                        end: this.actor.position.y + 1.5*(this.target.position.y - this.actor.position.y),
                         ease: EaseFunctionType.OUT_SINE
                     }
                 ]
@@ -89,7 +89,7 @@ export default class WolfAttack extends NPCAction {
     // }
     public update(deltaT: number): void {
         if (this.target !== null && this.path !== null && !this.path.isDone()) {
-            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
+            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 80004) {
                 this.performAction(this.target);
                 if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
                     if(this.checkOverlap() && this.timer2.isStopped()) {
@@ -113,7 +113,7 @@ export default class WolfAttack extends NPCAction {
                     this.oldy = this.target.position.y;
                 }
                 // this.path = this.actor.getPath(this.actor.position, this.target.position);
-                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
+                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 80000) {
                     this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
                 }
                 if(this.target.position.x - this.actor.position.x <0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {
@@ -134,6 +134,9 @@ export default class WolfAttack extends NPCAction {
     }
 
     protected checkOverlap() {
+        if(this.actor == null || this.actor.position == null) {
+            return false;
+        }
 		let distx = this.actor.position.x - this.target.position.x;
         let disty = this.actor.position.y - this.target.position.y;
         if(Math.abs(distx) > this.actor.collisionShape.hw + 32) {
