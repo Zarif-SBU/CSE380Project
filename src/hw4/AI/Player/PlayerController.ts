@@ -32,6 +32,8 @@ export default class PlayerController {
     timer: any;
     attackrighttimer : any;
     attacklefttimer : any;
+    dodgetimer : any;
+    dodgelefttimer : any;
     private currentFacingDirection: Vec2 = new Vec2(0, -1);
     
 
@@ -40,6 +42,8 @@ export default class PlayerController {
         this.timer = new Timer(2000);
         this.attackrighttimer = new Timer(1000);
         this.attacklefttimer = new Timer(1000);
+        this.dodgetimer= new Timer(500);
+        this.dodgelefttimer= new Timer(500);
         
         
     }
@@ -89,6 +93,20 @@ public get faceDir(): Vec2 {
     }
     else if (!this.attacklefttimer.isStopped()) {
         animationToPlay = "ATTACK_LEFT";
+    }
+    else if (Input.isPressed(PlayerInput.DODGE) && this.moveDir.x >= 0){
+        animationToPlay = "BOOST_RIGHT"
+        this.dodgetimer.start();
+    }
+    else if (!this.dodgetimer.isStopped()) {
+        animationToPlay = "BOOST_RIGHT";
+    }
+    else if (Input.isPressed(PlayerInput.DODGE)&& this.moveDir.x < 0){
+        animationToPlay = "BOOST_LEFT"
+        this.dodgelefttimer.start();
+    }
+    else if (!this.dodgelefttimer.isStopped()) {
+        animationToPlay = "BOOST_LEFT";
     }
     else if (this.moveDir.x === 0 && this.moveDir.y === 0) {
         animationToPlay = "IDLE";
