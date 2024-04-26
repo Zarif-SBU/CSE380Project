@@ -57,7 +57,7 @@ export default abstract class PlayerState extends State {
         // Adjust the angle the player is facing 
         this.parent.owner.rotation = this.parent.controller.rotation;
         // Move the player
-        this.parent.owner.move(this.parent.controller.moveDir.scale(3));
+        this.parent.owner.move(this.parent.controller.moveDir.scale(5));
 
         // Handle the player trying to pick up an item
 
