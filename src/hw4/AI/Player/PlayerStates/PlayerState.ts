@@ -66,7 +66,7 @@ export default abstract class PlayerState extends State {
         if (this.parent.controller.dodge) {
             let vec = this.parent.controller.moveDir;
             
-            this.parent.owner.move(new Vec2(vec.x*100, vec.y*100));
+            this.parent.owner.move(new Vec2(vec.x*200, vec.y*200));
             // this.owner.tweens.play("dodge");
             // this.system.initializePool(this.owner.getScene(), "primary");
             // this.system.startSystem(1000, 0.1, this.owner.position.clone());
