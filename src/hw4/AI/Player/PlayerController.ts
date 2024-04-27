@@ -25,7 +25,7 @@ export enum PlayerInput {
  * The PlayerController class handles processing the input recieved from the user and exposes  
  * a set of methods to make dealing with the user input a bit simpler.
  */
-export default class PlayerController {
+export default class PlayerController{
 
     /** The GameNode that owns the AI */
     protected owner: AnimatedSprite;
@@ -45,7 +45,6 @@ export default class PlayerController {
         this.dodgetimer= new Timer(500);
         this.dodgelefttimer= new Timer(500);
         
-        
     }
     /**
      * Gets the direction the player should move based on input from the keyboard. 
@@ -64,6 +63,7 @@ export default class PlayerController {
         if(this.timer.isStopped() && Input.isPressed(PlayerInput.DODGE) && !(this.moveDir.x === 0 && this.moveDir.y === 0)){
             let dir2: Vec2 = Vec2.ZERO;
             console.log("Dodge");
+            
             this.timer.start()
             return true;
         }
@@ -100,6 +100,7 @@ public get faceDir(): Vec2 {
     }
     else if (!this.dodgetimer.isStopped()) {
         animationToPlay = "BOOST_RIGHT";
+        
     }
     else if (Input.isPressed(PlayerInput.DODGE)&& this.moveDir.x < 0){
         animationToPlay = "BOOST_LEFT"
