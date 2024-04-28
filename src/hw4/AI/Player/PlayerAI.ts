@@ -3,7 +3,6 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import PlayerActor from "../../Actors/PlayerActor";
 import { PlayerEvent } from "../../Events";
@@ -58,7 +57,6 @@ export default class PlayerAI extends StateMachineAI implements AI {
         this.timer = new Timer(2000);
         this.owner = owner;
         this.controller = new PlayerController(owner);
-        this.receiver.subscribe(GameEventType.PLAY_MUSIC)
 
         // Add the players states to it's StateMachine
         this.addState(PlayerStateType.IDLE, new Idle(this, this.owner));
@@ -85,14 +83,13 @@ export default class PlayerAI extends StateMachineAI implements AI {
             case PlayerEvent.LIGHT_ATTACK: {
                 this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
                 console.log("light attacked")
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
-                
+                            
                 break;
             }
             case PlayerEvent.HEAVY_ATTACK: {
                 this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
                 console.log("heavy attacked")
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "heavy", loop: false, holdReference: false})
+                
                 break;
             }
             case PlayerEvent.BLOCK: {

@@ -118,7 +118,7 @@ export default abstract class HW4Scene extends Scene {
 
     public updateScene(deltaT: number): void {
         this.handleEnemiesKilled()
-        // console.log("Player position:", this.player.position.x, this.player.position.y);
+        console.log("Player position:", this.player.position.x, this.player.position.y);
         while (this.receiver.hasNextEvent()) {
             let event = this.receiver.getNextEvent();
             switch (event.type) {
