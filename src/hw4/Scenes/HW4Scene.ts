@@ -131,6 +131,10 @@ export default abstract class HW4Scene extends Scene {
     protected handleEnemiesKilled() {
         this.enemies = this.enemies.filter(enemy => {
             if (enemy.health === 0) {
+                const healthbar = this.healthbars.get(enemy.id);
+                if (healthbar) {
+                    healthbar.visible = false;
+                }
                 this.enemies_killed++;
                 console.log("enemy number", enemy, "health: ", enemy.health);
                 console.log("enemies killed ", this.enemies_killed);
@@ -141,7 +145,6 @@ export default abstract class HW4Scene extends Scene {
 
         if (this.enemies_killed === this.TotalEnemies) {
             this.changeDoorTiles();
-            
             while (this.door == false){
                 const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });
                 doorOpen.textColor = Color.WHITE;
