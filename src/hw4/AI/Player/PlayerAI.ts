@@ -8,6 +8,7 @@ import Timer from "../../../Wolfie2D/Timing/Timer";
 import PlayerActor from "../../Actors/PlayerActor";
 import { PlayerEvent } from "../../Events";
 import PlayerController from "./PlayerController";
+import Dodge from "./PlayerStates/Dodge";
 import { Dead, Idle, Invincible, Moving, PlayerStateType } from "./PlayerStates/PlayerState";
 /**
  * The AI that controls the player. The players AI has been configured as a Finite State Machine (FSM)
@@ -28,8 +29,10 @@ export function abs(value: number): number {
   }
 export function sign(value: number): number {
     return value < 0 ? -1 : 1;
-  }
+}
+
  class Hit {
+    
     public collider: Collider;
     public pos: Point;
     public delta: Point;
@@ -59,13 +62,13 @@ export default class PlayerAI extends StateMachineAI implements AI {
         this.owner = owner;
         this.controller = new PlayerController(owner);
         this.receiver.subscribe(GameEventType.PLAY_MUSIC)
-
+        
         // Add the players states to it's StateMachine
         this.addState(PlayerStateType.IDLE, new Idle(this, this.owner));
         this.addState(PlayerStateType.INVINCIBLE, new Invincible(this, this.owner));
         this.addState(PlayerStateType.MOVING, new Moving(this, this.owner));
         this.addState(PlayerStateType.DEAD, new Dead(this, this.owner));
-        
+        this.addState(PlayerStateType.DODGE, new Dodge(this, this.owner));
         
         // Initialize the players state to Idle
         this.initialize(PlayerStateType.IDLE);
@@ -82,19 +85,19 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
-            case PlayerEvent.LIGHT_ATTACK: {
-                this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
-                console.log("light attacked")
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
+            // case PlayerEvent.LIGHT_ATTACK: {
+            //     this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+            //     console.log("light attacked")
+            //     // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
                 
-                break;
-            }
-            case PlayerEvent.HEAVY_ATTACK: {
-                this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
-                console.log("heavy attacked")
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "heavy", loop: false, holdReference: false})
-                break;
-            }
+            //     break;
+            // }
+            // case PlayerEvent.HEAVY_ATTACK: {
+            //     this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
+            //     console.log("heavy attacked")
+            //     // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "heavy", loop: false, holdReference: false})
+            //     break;
+            // }
             case PlayerEvent.BLOCK: {
                 this.handleBlockEvent(event.data.get("start"), event.data.get("dir"));
                 break;
@@ -159,7 +162,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
         console.log(start);
         console.log(dir);
         console.log(this.owner.getScene().getBattlers());
-        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*120), start.y+(dir.y*120)), new Vec2(120, 120))
+        let box1:AABB = new AABB(new Vec2(start.x+(dir.x*120), start.y+(dir.y*120)), new Vec2(60, 60))
         
         
         
@@ -221,6 +224,4 @@ export default class PlayerAI extends StateMachineAI implements AI {
         }
         return hit;
       }
-
-
 }

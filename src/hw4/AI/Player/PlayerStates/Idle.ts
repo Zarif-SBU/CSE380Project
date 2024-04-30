@@ -20,6 +20,9 @@ export default class Idle extends PlayerState {
 
     public override update(deltaT: number): void {
         super.update(deltaT);
+        if(!this.inAction()) {
+            this.owner.animation.playIfNotAlready("IDLE", true);
+        }
         if (!this.parent.controller.moveDir.equals(Vec2.ZERO)) {
             this.finished(PlayerStateType.MOVING);
         }

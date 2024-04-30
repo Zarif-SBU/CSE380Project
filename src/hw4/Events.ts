@@ -13,7 +13,8 @@ export enum PlayerEvent{
     LIGHT_ATTACK = "LIGHT_ATTACK",
     HEAVY_ATTACK = "HEAVY_ATTACK",
     BLOCK = "BLOCK",
-    HIT = "HIT"
+    HIT = "HIT",
+    PLAYER_MOVE = "PLAYER_MOVE"
 }
 
 

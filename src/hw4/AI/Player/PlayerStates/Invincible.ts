@@ -26,6 +26,7 @@ export default class Invincible extends PlayerState {
 
     public override onEnter(options: Record<string, any>): void {
         this.timer.start();
+        
     }
 
     public override onExit(): Record<string, any> { 

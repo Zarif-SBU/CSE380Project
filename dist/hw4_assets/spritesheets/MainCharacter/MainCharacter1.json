@@ -45,7 +45,7 @@
         {
             "name": "BOOST_RIGHT",
             "repeat": false,
-            "frames":[{"index": 34, "duration": 8},{"index": 35, "duration": 8},{"index": 36, "duration": 8},{"index": 37, "duration": 8},{"index": 38, "duration": 8}]
+            "frames":[{"index": 34, "duration": 12},{"index": 35, "duration": 11},{"index": 36, "duration": 10},{"index": 37, "duration": 9},{"index": 38, "duration": 8}]
         },
         {
             "name": "ATTACK_LEFT",

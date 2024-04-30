@@ -69,6 +69,7 @@ export default class lvl1Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
         // Load in the enemy sprites
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");

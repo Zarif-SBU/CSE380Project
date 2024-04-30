@@ -2,6 +2,7 @@ import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import Input from "../../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Timer from "../../../Wolfie2D/Timing/Timer";
+import PlayerState from "./PlayerStates/PlayerState";
 
 /**
  * Strings used in the key binding for the player
@@ -52,9 +53,11 @@ export default class PlayerController{
      */
     public get moveDir(): Vec2 { 
         let dir: Vec2 = Vec2.ZERO;
+        if(this.owner.animation.isPlaying("ATTACK_RIGHT")) {
+            return dir.normalize();
+        }
         dir.y = (Input.isPressed(PlayerInput.MOVE_UP) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_DOWN) ? 1 : 0);
 		dir.x = (Input.isPressed(PlayerInput.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(PlayerInput.MOVE_RIGHT) ? 1 : 0);
-
         
         return dir.normalize();
     }
@@ -79,54 +82,54 @@ public lastAnimationPlayed: string = "";
 
 public get faceDir(): Vec2 {
     //console.log(this.owner)
-    let animationToPlay = "";
-    if((Input.isPressed(PlayerInput.LIGHT_ATTACK) || Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x >= 0){
-        animationToPlay = "ATTACK_RIGHT";
-        this.attackrighttimer.start();
-    }
-    else if (!this.attackrighttimer.isStopped()) {
-        animationToPlay = "ATTACK_RIGHT";
-    }
-    else if((Input.isPressed(PlayerInput.LIGHT_ATTACK)|| Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x < 0){
-        animationToPlay = "ATTACK_LEFT";
-        this.attacklefttimer.start();
-    }
-    else if (!this.attacklefttimer.isStopped()) {
-        animationToPlay = "ATTACK_LEFT";
-    }
-    else if (Input.isPressed(PlayerInput.DODGE) && this.moveDir.x >= 0){
-        animationToPlay = "BOOST_RIGHT"
-        this.dodgetimer.start();
-    }
-    else if (!this.dodgetimer.isStopped()) {
-        animationToPlay = "BOOST_RIGHT";
+    // let animationToPlay = "";
+    // if((Input.isPressed(PlayerInput.LIGHT_ATTACK) || Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x >= 0){
+    //     animationToPlay = "ATTACK_RIGHT";
+    //     this.attackrighttimer.start();
+    // }
+    // else if (!this.attackrighttimer.isStopped()) {
+    //     animationToPlay = "ATTACK_RIGHT";
+    // }
+    // else if((Input.isPressed(PlayerInput.LIGHT_ATTACK)|| Input.isPressed(PlayerInput.HEAVY_ATTACK)) && this.moveDir.x < 0){
+    //     animationToPlay = "ATTACK_LEFT";
+    //     this.attacklefttimer.start();
+    // }
+    // else if (!this.attacklefttimer.isStopped()) {
+    //     animationToPlay = "ATTACK_LEFT";
+    // }
+    // else if (Input.isPressed(PlayerInput.DODGE) && this.moveDir.x >= 0){
+    //     animationToPlay = "BOOST_RIGHT"
+    //     this.dodgetimer.start();
+    // }
+    // else if (!this.dodgetimer.isStopped()) {
+    //     animationToPlay = "BOOST_RIGHT";
         
-    }
-    else if (Input.isPressed(PlayerInput.DODGE)&& this.moveDir.x < 0){
-        animationToPlay = "BOOST_LEFT"
-        this.dodgelefttimer.start();
-    }
-    else if (!this.dodgelefttimer.isStopped()) {
-        animationToPlay = "BOOST_LEFT";
-    }
-    else if (this.moveDir.x === 0 && this.moveDir.y === 0) {
-        animationToPlay = "IDLE";
-    } else if (this.moveDir.x > 0) {
-        animationToPlay = "WALK_RIGHT";
-    } else if (this.moveDir.x < 0) {
-        animationToPlay = "WALK_LEFT";
-    }else if (this.moveDir.y<0 &&  this.moveDir.x === 0){
-        animationToPlay = "WALK_FORWARD"
-    }else if (this.moveDir.y>0 &&  this.moveDir.x === 0){
-        animationToPlay = "WALK_FORWARD"
-    }
+    // }
+    // else if (Input.isPressed(PlayerInput.DODGE)&& this.moveDir.x < 0){
+    //     animationToPlay = "BOOST_LEFT"
+    //     this.dodgelefttimer.start();
+    // }
+    // else if (!this.dodgelefttimer.isStopped()) {
+    //     animationToPlay = "BOOST_LEFT";
+    // }
+    // else if (this.moveDir.x === 0 && this.moveDir.y === 0) {
+    //     animationToPlay = "IDLE";
+    // } else if (this.moveDir.x > 0) {
+    //     animationToPlay = "WALK_RIGHT";
+    // } else if (this.moveDir.x < 0) {
+    //     animationToPlay = "WALK_LEFT";
+    // }else if (this.moveDir.y<0 &&  this.moveDir.x === 0){
+    //     animationToPlay = "WALK_FORWARD"
+    // }else if (this.moveDir.y>0 &&  this.moveDir.x === 0){
+    //     animationToPlay = "WALK_FORWARD"
+    // }
     
-    if (animationToPlay !== "" && !this.owner.animation.isPlaying(animationToPlay)) {
-        this.owner.animation.play(animationToPlay);
-    }
-    if(animationToPlay !== "IDLE") {
-        this.lastAnimationPlayed = animationToPlay;
-    }
+    // if (animationToPlay !== "" && !this.owner.animation.isPlaying(animationToPlay)) {
+    //     this.owner.animation.play(animationToPlay);
+    // }
+    // if(animationToPlay !== "IDLE") {
+    //     this.lastAnimationPlayed = animationToPlay;
+    // }
 
     return new Vec2(0);
 }
