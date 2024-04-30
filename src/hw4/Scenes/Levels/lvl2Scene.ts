@@ -44,6 +44,7 @@ export default class lvl2Scene extends HW4Scene {
     private bases: BattlerBase[];
 
     protected player:PlayerActor;
+    protected door = false;
 
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];

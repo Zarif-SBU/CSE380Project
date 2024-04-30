@@ -46,6 +46,7 @@ export default class lvl3Scene extends HW4Scene {
 
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];
+    protected door = false;
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;

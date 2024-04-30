@@ -39,6 +39,7 @@ export default class lvl6Scene extends HW4Scene {
     /** Healthbars for the battlers */
     protected healthbars: Map<number, HealthbarHUD>;
 
+    protected door = false;
     private bases: BattlerBase[];
 
     protected player:PlayerActor;

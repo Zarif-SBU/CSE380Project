@@ -24,6 +24,7 @@ export default abstract class HW4Scene extends Scene {
     protected TotalEnemies: number = 0;
     protected timer: Timer;
     protected pauseCount = 0;
+    protected door;
 
     protected enemies;
     protected enemies_killed: number = 0;
@@ -140,9 +141,15 @@ export default abstract class HW4Scene extends Scene {
 
         if (this.enemies_killed === this.TotalEnemies) {
             this.changeDoorTiles();
-            const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });
-            doorOpen.textColor = Color.WHITE;
-            doorOpen.font = "Georgia";
+            
+            while (this.door == false){
+                const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });
+                doorOpen.textColor = Color.WHITE;
+                doorOpen.font = "Georgia";
+                this.door = true;
+
+            }
+        
             if (this.PlayerAtDoor()) {
                 this.sceneManager.changeToScene(this.nextLevel);
             };
@@ -230,12 +237,14 @@ export default abstract class HW4Scene extends Scene {
             i++;
             position.y -= 64;
         }
+        
         if (!this.doorAudioPlayed) {
             console.log(this.doorAudioPlayed);
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: "door", loop: false });
             this.doorAudioPlayed = true;
             console.log(this.doorAudioPlayed);
         }
+        
     }
 
     private createButton(text: string, position: Vec2, eventId: string): any {
