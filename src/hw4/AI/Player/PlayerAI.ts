@@ -3,7 +3,6 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
-import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import PlayerActor from "../../Actors/PlayerActor";
 import { PlayerEvent } from "../../Events";
@@ -61,8 +60,7 @@ export default class PlayerAI extends StateMachineAI implements AI {
         this.timer = new Timer(2000);
         this.owner = owner;
         this.controller = new PlayerController(owner);
-        this.receiver.subscribe(GameEventType.PLAY_MUSIC)
-        
+
         // Add the players states to it's StateMachine
         this.addState(PlayerStateType.IDLE, new Idle(this, this.owner));
         this.addState(PlayerStateType.INVINCIBLE, new Invincible(this, this.owner));

@@ -78,7 +78,7 @@ export default class MainMenu extends Scene {
         switch(event.type) {
             case "play": {
                 this.sceneManager.changeToScene(Story);
-                console.log("Playing select sound for 'play'");
+                
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
             }

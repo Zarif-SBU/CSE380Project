@@ -1,9 +1,9 @@
-import Tilemap from "../Tilemap";
+import AABB from "../../DataTypes/Shapes/AABB";
+import { TiledLayerData, TiledTilemapData } from "../../DataTypes/Tilesets/TiledData";
 import Vec2 from "../../DataTypes/Vec2";
-import { TiledTilemapData, TiledLayerData } from "../../DataTypes/Tilesets/TiledData";
 import Debug from "../../Debug/Debug";
 import Color from "../../Utils/Color";
-import AABB from "../../DataTypes/Shapes/AABB";
+import Tilemap from "../Tilemap";
 
 /**
  * The representation of an orthogonal tilemap - i.e. a top down or platformer tilemap
@@ -28,6 +28,37 @@ export default class OrthogonalTilemap extends Tilemap {
         let y = row * this.tileSize.y * this.scale.y;
         return new Vec2(x, y);
     }
+
+    setTile(index: number, type: number): void {
+        this.data[index] = type;
+    }
+    
+    getTileAtWorldPosition(worldCoords: Vec2): number {
+        let localCoords = this.getColRowAt(worldCoords);
+        return this.getTileAtRowCol(localCoords);
+    }
+    
+    getTileAtRowCol(rowCol: Vec2): number {
+        if(rowCol.x < 0 || rowCol.x >= this.numCols || rowCol.y < 0 || rowCol.y >= this.numRows){
+            return -1;
+        }
+
+        return this.data[rowCol.y * this.numCols + rowCol.x];
+    }
+
+    setTileAtRowCol(rowCol: Vec2, type: number): void {
+        let index = rowCol.y * this.numCols + rowCol.x;
+        this.setTile(index, type);
+    }
+
+    getColRowAt(worldCoords: Vec2): Vec2 {
+        let col = Math.floor(worldCoords.x / this.tileSize.x / this.scale.x);
+        let row = Math.floor(worldCoords.y / this.tileSize.y / this.scale.y);
+
+        return new Vec2(col, row);
+    }
+
+    
 
     public override getTileCollider(col: number, row: number): AABB {
         let tileSize = this.getScaledTileSize();
@@ -70,6 +101,7 @@ export default class OrthogonalTilemap extends Tilemap {
             }
         }
     }
+    
 
     // @override
     update(deltaT: number): void {}

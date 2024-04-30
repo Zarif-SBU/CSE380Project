@@ -8,6 +8,7 @@ import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilema
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
 import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
+import Layer from "../../../Wolfie2D/Scene/Layer";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
@@ -43,12 +44,16 @@ export default class lvl2Scene extends HW4Scene {
     private bases: BattlerBase[];
 
     protected player:PlayerActor;
+    protected door = false;
 
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
+    protected doorAudioPlayed;
+    protected lvlScene: Layer;
+    
 
     // The position graph for the navmesh
     private graph: PositionGraph;
@@ -58,8 +63,8 @@ export default class lvl2Scene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
-
-    private timer: Timer;
+    
+    protected timer: Timer;
 
     /**
      * @see Scene.update()
@@ -89,12 +94,16 @@ export default class lvl2Scene extends HW4Scene {
      */
     public override startScene() {
         this.currentLevel = lvl2Scene;
+        this.doorAudioPlayed = false;
         this.nextLevel=lvl3Scene;
-        this.LevelEnd = [new Vec2(2587, 768), new Vec2(2734, 768)];//range of where the door is
+        this.lvlScene = this.addUILayer("lvlScene")
+        this.LevelEnd = [new Vec2(2593, 768), new Vec2(2734, 768)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
+
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
+        this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
         
         // Get the wall layer
         this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
@@ -129,37 +138,19 @@ export default class lvl2Scene extends HW4Scene {
         this.timer = new Timer(10000, ()=>{
             console.log("Timer ended")
         },false)
-        
-        let PauseCount = 1;
-        
+    
+        let pauseCount = 0
         window.addEventListener('keydown', (event) => {
-            if (event.key === "Escape" && PauseCount % 2 != 0) {
-                PauseCount++;
-                this.pauseGame();
+            if (event.key === "Escape" ) {
+                pauseCount++;
                 super.startScene();
                 
-            }else if (event.key === "Escape" && PauseCount % 2 == 0) {
-                PauseCount--;
-                this.resumeGame();
-    
             }
         });
         
+        
     }
 
-    private pauseGame(){
-        this.timer.pause();
-        this.player.freeze()
-        //for (let i =0; i<this.enemies.length; i++){
-            
-        //}
-        console.log("game paused")
-    }
-
-    private resumeGame(){
-        this.timer.start()
-        console.log("game resumed")
-    }
     /**
      * @see Scene.updateScene
     */
@@ -240,6 +231,7 @@ export default class lvl2Scene extends HW4Scene {
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
             this.healthbars.set(npc.id, healthbar);
+
             
             // Set the NPCs stats
             npc.battleGroup = 1;
