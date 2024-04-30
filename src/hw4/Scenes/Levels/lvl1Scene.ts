@@ -46,9 +46,11 @@ export default class lvl1Scene extends HW4Scene {
 
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];
+    
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
+    protected doorAudioPlayed: boolean;
 
     // The position graph for the navmesh
     private graph: PositionGraph;
@@ -58,8 +60,7 @@ export default class lvl1Scene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
     }
-
-    private timer: Timer;
+    protected timer: Timer;
 
     /**
      * @see Scene.update()
@@ -70,13 +71,13 @@ export default class lvl1Scene extends HW4Scene {
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
         // Load in the enemy sprites
-       
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
         
         //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
+        this.load.audio("lvl1music", "hw4_assets/Audio/lvl1.mp3");
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/heavy_attack.mp3") 
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/light_attack.mp3") 
 
@@ -92,13 +93,18 @@ export default class lvl1Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
+        this.emitter.fireEvent(GameEventType.PLAY_MUSIC,{key:"lvl1music", loop: true, holdReference: true})
+        this.doorAudioPlayed = false;
         this.currentLevel = lvl1Scene;
         this.nextLevel=lvl2Scene;
+        this.lvlScene = this.addUILayer("lvlScene")
         this.LevelEnd = [new Vec2(3878, 384), new Vec2(4008, 384)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
+        this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
         
         // Get the wall layer
         this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
@@ -134,36 +140,18 @@ export default class lvl1Scene extends HW4Scene {
             console.log("Timer ended")
         },false)
         
-        let PauseCount = 1;
         
+        let pauseCount = 0
         window.addEventListener('keydown', (event) => {
-            if (event.key === "Escape" && PauseCount % 2 != 0) {
-                PauseCount++;
-                this.pauseGame();
+            if (event.key === "Escape" ) {
+                pauseCount++;
                 super.startScene();
                 
-            }else if (event.key === "Escape" && PauseCount % 2 == 0) {
-                PauseCount--;
-                this.resumeGame();
-    
             }
         });
         
     }
 
-    private pauseGame(){
-        this.timer.pause();
-        this.player.freeze()
-        //for (let i =0; i<this.enemies.length; i++){
-            
-        //}
-        console.log("game paused")
-    }
-
-    private resumeGame(){
-        this.timer.start()
-        console.log("game resumed")
-    }
     /**
      * @see Scene.updateScene
     */

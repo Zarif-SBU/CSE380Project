@@ -59,7 +59,7 @@ export default class lvl5Scene extends HW4Scene {
         this.healthbars = new Map<number, HealthbarHUD>();
     }
 
-    private timer: Timer;
+    protected timer: Timer;
 
     /**
      * @see Scene.update()
@@ -90,11 +90,13 @@ export default class lvl5Scene extends HW4Scene {
     public override startScene() {
         this.currentLevel = lvl5Scene;
         this.nextLevel=lvl6Scene;
+        this.lvlScene = this.addUILayer("lvlScene")
         this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
+        this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
         
         // Get the wall layer
         this.walls = <OrthogonalTilemap>tilemapLayers[1].getItems()[0];
@@ -130,36 +132,18 @@ export default class lvl5Scene extends HW4Scene {
             console.log("Timer ended")
         },false)
         
-        let PauseCount = 1;
-        
+        let pauseCount = 0
         window.addEventListener('keydown', (event) => {
-            if (event.key === "Escape" && PauseCount % 2 != 0) {
-                PauseCount++;
-                this.pauseGame();
+            if (event.key === "Escape" ) {
+                pauseCount++;
                 super.startScene();
                 
-            }else if (event.key === "Escape" && PauseCount % 2 == 0) {
-                PauseCount--;
-                this.resumeGame();
-    
             }
         });
         
+        
     }
 
-    private pauseGame(){
-        this.timer.pause();
-        this.player.freeze()
-        //for (let i =0; i<this.enemies.length; i++){
-            
-        //}
-        console.log("game paused")
-    }
-
-    private resumeGame(){
-        this.timer.start()
-        console.log("game resumed")
-    }
     /**
      * @see Scene.updateScene
     */
