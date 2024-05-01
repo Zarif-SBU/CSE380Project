@@ -8,6 +8,7 @@ import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilema
 import Navmesh from "../../../Wolfie2D/Pathfinding/Navmesh";
 import DirectStrategy from "../../../Wolfie2D/Pathfinding/Strategies/DirectStrategy";
 import RenderingManager from "../../../Wolfie2D/Rendering/RenderingManager";
+import Layer from "../../../Wolfie2D/Scene/Layer";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
@@ -19,6 +20,7 @@ import { BattlerEvent, PlayerEvent } from "../../Events";
 import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
+import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
@@ -33,12 +35,15 @@ const BattlerGroups = {
 export default class lvl3Scene extends HW4Scene {
     public level: number;
 
+    protected healthSprite:any;
+    protected Health:Layer;
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
     protected healthbars: Map<number, HealthbarHUD>;
+    protected StaticHealthbars: Map<number, StaticHealthbarHUD>;
 
     private bases: BattlerBase[];
 
@@ -59,6 +64,7 @@ export default class lvl3Scene extends HW4Scene {
         super(viewport, sceneManager, renderingManager, options);
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
+        this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
     }
 
     protected timer: Timer;
@@ -97,7 +103,8 @@ export default class lvl3Scene extends HW4Scene {
         this.doorAudioPlayed = false;
         this.currentLevel = lvl3Scene;
         this.nextLevel=lvl4Scene;
-        this.LevelEnd = [new Vec2(2076, 192), new Vec2(2214, 192)];//range of where the door is
+        this.lvlScene = this.addUILayer("lvlScene")
+        this.LevelEnd = [new Vec2(2398, 1472), new Vec2(2523, 1472)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
@@ -112,6 +119,10 @@ export default class lvl3Scene extends HW4Scene {
         
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
+
+        this.Health = this.addUILayer("Health");
+        this.healthSprite = this.add.sprite("health", "Health")
+        this.healthSprite.position.set(220,70);
         
         this.initLayers();
         
@@ -189,7 +200,7 @@ export default class lvl3Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(2200, 1950);
+        player.position.set(264, 319);
         player.battleGroup = 2;
 
         player.health = 10;
@@ -199,8 +210,8 @@ export default class lvl3Scene extends HW4Scene {
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
 
         // Give the player a healthbar
-        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(1, 1/10), offset: player.size.clone().scaled(0, -2/3)});
-        this.healthbars.set(player.id, healthbar);
+        let healthbar = new StaticHealthbarHUD(this, player, "lvlScene",  {size:new Vec2(300,30), location: new Vec2 (246,68)});
+        this.StaticHealthbars.set(player.id, healthbar);
 
         // Give the player PlayerAI
         player.addAI(PlayerAI);

@@ -20,6 +20,7 @@ import { BattlerEvent, PlayerEvent } from "../../Events";
 import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
+import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
@@ -34,12 +35,15 @@ const BattlerGroups = {
 export default class lvl2Scene extends HW4Scene {
     public level: number;
 
+    protected healthSprite:any;
+    protected Health:Layer;
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
     private battlers: (Battler & Actor)[];
     /** Healthbars for the battlers */
     protected healthbars: Map<number, HealthbarHUD>;
+    protected StaticHealthbars: Map<number, StaticHealthbarHUD>;
 
     private bases: BattlerBase[];
 
@@ -62,6 +66,7 @@ export default class lvl2Scene extends HW4Scene {
         super(viewport, sceneManager, renderingManager, options);
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
+        this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
     }
     
     protected timer: Timer;
@@ -113,6 +118,10 @@ export default class lvl2Scene extends HW4Scene {
         
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
+
+        this.Health = this.addUILayer("Health");
+        this.healthSprite = this.add.sprite("health", "Health")
+        this.healthSprite.position.set(220,70);
         
         this.initLayers();
         
@@ -200,8 +209,8 @@ export default class lvl2Scene extends HW4Scene {
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
 
         // Give the player a healthbar
-        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(1, 1/10), offset: player.size.clone().scaled(0, -2/3)});
-        this.healthbars.set(player.id, healthbar);
+        let healthbar = new StaticHealthbarHUD(this, player, "lvlScene",  {size:new Vec2(300,30), location: new Vec2 (246,68)});
+        this.StaticHealthbars.set(player.id, healthbar);
 
         // Give the player PlayerAI
         player.addAI(PlayerAI);
