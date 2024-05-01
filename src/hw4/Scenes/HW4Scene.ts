@@ -147,6 +147,7 @@ export default abstract class HW4Scene extends Scene {
             }
         
             if (this.PlayerAtDoor()) {
+                //this.levelTransitionScreen.tweens.play("fadeIn");
                 this.sceneManager.changeToScene(this.nextLevel);
             };
 
@@ -294,7 +295,7 @@ export default abstract class HW4Scene extends Scene {
                     break;
             }
         }
-        if (this.player.health<0){
+        if (this.player.health<=0){
             this.sceneManager.changeToScene(DeathScene);
         }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));

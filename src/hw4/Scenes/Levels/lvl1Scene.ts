@@ -85,7 +85,7 @@ export default class lvl1Scene extends HW4Scene {
         
         //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
-        this.load.audio("lvl1music", "hw4_assets/Audio/lvl1.mp3");
+        this.load.audio("level_music", "hw4_assets/Audio/lvl1.mp3");
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/heavy_attack.mp3") 
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/light_attack.mp3") 
 
@@ -104,7 +104,7 @@ export default class lvl1Scene extends HW4Scene {
      */
     public override startScene() {
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
-        this.emitter.fireEvent(GameEventType.PLAY_MUSIC,{key:"lvl1music", loop: true, holdReference: true})
+        this.emitter.fireEvent(GameEventType.PLAY_MUSIC,{key:"level_music", loop: true, holdReference: true})
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         
         this.currentLevel = lvl1Scene;

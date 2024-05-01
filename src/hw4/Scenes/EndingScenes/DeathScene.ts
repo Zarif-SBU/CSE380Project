@@ -12,13 +12,14 @@ export default class DeathScene extends Scene {
 
     public loadScene(){
         this.load.image("death","hw4_assets/SceneImages/DeathScreen.png");
-        this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3")
+        this.load.audio("death_music", "hw4_assets/Audio/deathMusic.mp3")
     }
 
     public startScene(){
         this.loadScene();
         this.receiver.subscribe(GameEventType.PLAY_MUSIC);
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key:"level_music"});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "death_music", loop: false, holdReference: true});
         const center = this.viewport.getCenter();
         this.death_screen = this.addUILayer("death_screen")
         let x = this.add.sprite("death", "death_screen")
