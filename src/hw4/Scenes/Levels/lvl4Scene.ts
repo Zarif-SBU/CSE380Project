@@ -104,7 +104,7 @@ export default class lvl4Scene extends HW4Scene {
         this.currentLevel = lvl4Scene;
         this.nextLevel=lvl5Scene;
         this.lvlScene = this.addUILayer("lvlScene")
-        this.LevelEnd = [new Vec2(2595, 576), new Vec2(2725, 576)];//range of where the door is
+        this.LevelEnd = [new Vec2(1817, 192), new Vec2(1967, 192)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
@@ -199,7 +199,7 @@ export default class lvl4Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(2700, 1600);
+        player.position.set(811, 3165);
         player.battleGroup = 2;
 
         player.health = 10;

@@ -97,6 +97,9 @@ export default class lvl1Scene extends HW4Scene {
         this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
 
+        //load items
+        this.load.object("chests", "hw4_assets/data/items/healthItems.json")
+
        
     }
     /**
@@ -242,7 +245,31 @@ export default class lvl1Scene extends HW4Scene {
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
+        
+        //level slime boss
+        let bossSlime = this.add.animatedSprite(NPCActor, "Slime", "primary");
+        bossSlime.position.set(3970, 901);
+        bossSlime.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        this.TotalEnemies += 1; 
 
+        // Give the boss slime NPC a healthbar
+        let bossHealthbar = new HealthbarHUD(this, bossSlime, "primary", { size: bossSlime.size.clone().scaled(2, 2 / 10), offset: bossSlime.size.clone().scaled(0, -2 / 3) });
+        this.healthbars.set(bossSlime.id, bossHealthbar);
+
+        // Set the boss slime NPC's stats
+        bossSlime.battleGroup = 1;
+        bossSlime.speed = 5;
+        bossSlime.health = 10
+        bossSlime.maxHealth = 10
+        bossSlime.scale.set(2,2)
+        bossSlime.navkey = "navmesh";
+        bossSlime.spawnpoint = bossSlime.position.clone();
+        bossSlime.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossSlime.position.x, bossSlime.position.y)), range: 300 });
+        this.battlers.push(bossSlime);
+        this.enemies.push(bossSlime);
+
+// Play the boss slime NPC's "IDLE" animation
+bossSlime.animation.play("IDLE");
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
@@ -270,150 +297,26 @@ export default class lvl1Scene extends HW4Scene {
             this.battlers.push(npc);
             this.enemies.push(npc)
         }
-        //console.log("enemies in level 1",this.enemies)
-
-        // for (let i = 0; i < moondog.moondogs.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
-        //     npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-
-        //     // Give the NPC a healthbar
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
-        //     this.healthbars.set(npc.id, healthbar);
-            
-        //     // Set the NPCs stats
-        //     npc.battleGroup = 1;
-        //     npc.speed = 5;
-        //     npc.health = 5;
-        //     npc.maxHealth = 5;
-        //     npc.navkey = "navmesh";
-        //     npc.spawnpoint = npc.position.clone();
-        //     console.log("spawn point", npc.spawnpoint);
-        //     // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
-        //     npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
-            
-        //     // Play the NPCs "IDLE" animation
-        //     npc.animation.play("IDLE");
-        //     // Add the NPC to the battlers array
-        //     this.battlers.push(npc);
-        // }
-        // // Get the object data for the blue enemies
-        // let blue = this.load.getObject("blue");
-
-        // // Initialize the blue enemies
-        // for (let i = 0; i < blue.enemies.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary");
-        //     npc.position.set(blue.enemies[i][0], blue.enemies[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     // Give the NPCS their healthbars
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.battleGroup = 2
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     // Give the NPCs their AI
-        //     npc.addAI(GuardBehavior, {target: this.battlers[0], range: 100});
-
-        //     // Play the NPCs "IDLE" animation 
-        //     npc.animation.play("IDLE");
-
-        //     this.battlers.push(npc);
-        // }
-
-        // Initialize the blue healers
-        // for (let i = 0; i < blue.healers.length; i++) {
-            
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueHealer", "primary");
-        //     npc.position.set(blue.healers[i][0], blue.healers[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     npc.battleGroup = 2;
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.addAI(HealerBehavior);
-        //     npc.animation.play("IDLE");
-        //     this.battlers.push(npc);
-        // }
-
 
     }
 
     /**
-     * Initialize the items in the scene (healthpacks and laser guns)
+     * Initialize the items in the scene (chests and potions)
      */
+    protected initializeItems(): void {
+        // Get the object data for the red enemies
+        let chest = this.load.getObject("chests");
 
-    /**
-     * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
-     * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
-     * go for it.
-     * 
-     * - Peter
-     */
-    // protected initializeNavmesh(): void {
-        // Create the graph
-    //     this.graph = new PositionGraph();
+        /*for (let i = 0; i < chest.slimes.length; i++) {
+            let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
+            npc.position.set(chest.slimes[i][0], chest.slimes[i][1]);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            this.TotalEnemies +=1;
+        }
+    */
+    }
 
-    //     let dim: Vec2 = this.walls.getDimensions();
-    //     for (let i = 0; i < dim.y; i++) {
-    //         for (let j = 0; j < dim.x; j++) {
-    //             let tile: AABB = this.walls.getTileCollider(j, i);
-    //             this.graph.addPositionedNode(tile.center);
-    //         }
-    //     }
-
-    //     let rc: Vec2;
-    //     for (let i = 0; i < this.graph.numVertices; i++) {
-    //         rc = this.walls.getTileColRow(i);
-    //         if (!this.walls.isTileCollidable(rc.x, rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1))
-
-    //         ) {
-    //             // Create edge to the left
-    //             rc = this.walls.getTileColRow(i + 1);
-    //             if ((i + 1) % dim.x !== 0 && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + 1);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + 1)})
-    //             }
-    //             // Create edge below
-    //             rc = this.walls.getTileColRow(i + dim.x);
-    //             if (i + dim.x < this.graph.numVertices && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + dim.x);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + dim.x)})
-    //             }
-    //         }
-    //     }
-
-    //     // Set this graph as a navigable entity
-    //     let navmesh = new Navmesh(this.graph);
-        
-    //     // Add different strategies to use for this navmesh
-    //     navmesh.registerStrategy("direct", new DirectStrategy(navmesh));
-    //     navmesh.registerStrategy("astar", new AstarStrategy(navmesh));
-
-    //     // TODO set the strategy to use A* pathfinding
-    //     navmesh.setStrategy("astar");
-
-    //     // Add this navmesh to the navigation manager
-    //     this.navManager.addNavigableEntity("navmesh", navmesh);
-    // }
+    
 
     protected initializeNavmesh(): void {
             // Create the graph

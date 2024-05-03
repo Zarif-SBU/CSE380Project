@@ -154,7 +154,7 @@ export default abstract class HW4Scene extends Scene {
         } else {
             if (this.PlayerAtDoor()) {
                 if (this.gate_label == null) {
-                    const doorClosed = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "Kill All Enemies to Open the Gate" });
+                    const doorClosed = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(700, 50), text: "Kill All Enemies to Open the Gate" });
                     doorClosed.visible = true;
                     doorClosed.textColor = Color.WHITE;
                     doorClosed.font = "Georgia";
@@ -264,7 +264,7 @@ export default abstract class HW4Scene extends Scene {
 
     public updateScene(deltaT: number): void {
         this.handleEnemiesKilled();
-        //console.log("Player position:", this.player.position.x, this.player.position.y);
+        console.log("Player position:", this.player.position.x, this.player.position.y);
         while (this.receiver.hasNextEvent()) {
             let event = this.receiver.getNextEvent();
             switch (event.type) {

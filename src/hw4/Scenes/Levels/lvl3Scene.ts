@@ -232,6 +232,28 @@ export default class lvl3Scene extends HW4Scene {
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
 
+        //level moondog boss
+        let bossdog = this.add.animatedSprite(NPCActor,"Moondog", "primary");
+        bossdog.position.set(2435, 1774);
+        bossdog.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        this.TotalEnemies += 1; 
+
+        // Give the boss dog NPC a healthbar
+        let bossHealthbar = new HealthbarHUD(this, bossdog, "primary", { size: bossdog.size.clone().scaled(2, 2 / 10), offset: bossdog.size.clone().scaled(0, -2 / 3) });
+        this.healthbars.set(bossdog.id, bossHealthbar);
+
+        // Set the boss dog NPC's stats
+        bossdog.battleGroup = 1;
+        bossdog.speed = 5;
+        bossdog.health = 10
+        bossdog.maxHealth = 10
+        bossdog.scale.set(2,2)
+        bossdog.navkey = "navmesh";
+        bossdog.spawnpoint = bossdog.position.clone();
+        bossdog.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
+        this.battlers.push(bossdog);
+        this.enemies.push(bossdog);
+
         for (let i = 0; i <moondog.moondogs.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
             npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
