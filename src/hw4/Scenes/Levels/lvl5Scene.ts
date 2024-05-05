@@ -34,6 +34,7 @@ const BattlerGroups = {
 
 export default class lvl5Scene extends HW4Scene {
     public level: number;
+    protected levelNumber: number = 5;
 
     protected healthSprite:any;
     protected Health:Layer;
@@ -230,11 +231,54 @@ export default class lvl5Scene extends HW4Scene {
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
+
+        let bossSlime = this.add.animatedSprite(NPCActor, "Slime", "primary");
+        bossSlime.position.set(3474, 1558);
+        bossSlime.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        this.TotalEnemies += 1; 
+
+        // Give the boss slime NPC a healthbar
+        let bossHealthbar = new HealthbarHUD(this, bossSlime, "primary", { size: bossSlime.size.clone().scaled(2, 2 / 10), offset: bossSlime.size.clone().scaled(0, -2 / 3) });
+        this.healthbars.set(bossSlime.id, bossHealthbar);
+
+        // Set the boss slime NPC's stats
+        bossSlime.battleGroup = 1;
+        bossSlime.speed = 5;
+        bossSlime.health = 10
+        bossSlime.maxHealth = 10
+        bossSlime.scale.set(2,2)
+        bossSlime.navkey = "navmesh";
+        bossSlime.spawnpoint = bossSlime.position.clone();
+        bossSlime.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossSlime.position.x, bossSlime.position.y)), range: 300 });
+        this.battlers.push(bossSlime);
+        this.enemies.push(bossSlime);
+        bossSlime.animation.play("IDLE");
+
+        let bossdog = this.add.animatedSprite(NPCActor,"Moondog", "primary");
+        bossdog.position.set(3496, 753);
+        bossdog.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        this.TotalEnemies += 1; 
+
+        // Give the boss dog NPC a healthbar
+        let bossHealthbar2 = new HealthbarHUD(this, bossdog, "primary", { size: bossdog.size.clone().scaled(2, 2 / 10), offset: bossdog.size.clone().scaled(0, -2 / 3) });
+        this.healthbars.set(bossdog.id, bossHealthbar2);
+
+        // Set the boss dog NPC's stats
+        bossdog.battleGroup = 1;
+        bossdog.speed = 5;
+        bossdog.health = 10
+        bossdog.maxHealth = 10
+        bossdog.scale.set(2,2)
+        bossdog.navkey = "navmesh";
+        bossdog.spawnpoint = bossdog.position.clone();
+        bossdog.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
+        this.battlers.push(bossdog);
+        this.enemies.push(bossdog);
     
         // Initialize Slime NPCs
-        for (let i = 0; i < slime.slimeslvl4.length; i++) {
+        for (let i = 0; i < slime.slimeslvl5.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimeslvl4[i][0], slime.slimeslvl4[i][1]);
+            npc.position.set(slime.slimeslvl5[i][0], slime.slimeslvl5[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
             this.TotalEnemies += 1;
     
@@ -259,9 +303,9 @@ export default class lvl5Scene extends HW4Scene {
         }
     
         // Initialize Moondog NPCs
-        for (let i = 0; i < moondog.moondogslvl4.length; i++) {
+        for (let i = 0; i < moondog.moondogslvl5.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
-            npc.position.set(moondog.moondogslvl4[i][0], moondog.moondogslvl4[i][1]);
+            npc.position.set(moondog.moondogslvl5[i][0], moondog.moondogslvl5[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
             this.TotalEnemies += 1;
     

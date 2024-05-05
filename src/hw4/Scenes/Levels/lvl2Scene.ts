@@ -34,6 +34,7 @@ const BattlerGroups = {
 
 export default class lvl2Scene extends HW4Scene {
     public level: number;
+    protected levelNumber: number = 2;
 
     protected healthSprite:any;
     protected Health:Layer;

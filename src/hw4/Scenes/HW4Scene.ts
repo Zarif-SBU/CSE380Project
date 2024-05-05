@@ -17,6 +17,7 @@ export default abstract class HW4Scene extends Scene {
     protected lvlScene: Layer;
     protected Controls: Layer;
     protected controlsSprite: any;
+    protected levelNumber;
     
     protected gate_label: Label;
     protected player;
@@ -56,6 +57,7 @@ export default abstract class HW4Scene extends Scene {
     }
 
     public startScene() {
+        console.log("level number: ",this.levelNumber)
         this.enemies_killed = 0;
         this.Controls = this.addUILayer("Controls");
         this.PauseMenu = this.addUILayer("PauseMenu");
@@ -136,7 +138,7 @@ export default abstract class HW4Scene extends Scene {
             return true;
         });
 
-        if (this.enemies_killed === this.TotalEnemies) {
+        if (this.enemies_killed === this.TotalEnemies && this.levelNumber !=6) {
             this.changeDoorTiles();
             while (this.door == false){
                 const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });
@@ -151,7 +153,7 @@ export default abstract class HW4Scene extends Scene {
                 this.sceneManager.changeToScene(this.nextLevel);
             };
 
-        } else {
+        } else if((this.enemies_killed != this.TotalEnemies)) {
             if (this.PlayerAtDoor()) {
                 if (this.gate_label == null) {
                     const doorClosed = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(700, 50), text: "Kill All Enemies to Open the Gate" });
@@ -167,6 +169,10 @@ export default abstract class HW4Scene extends Scene {
                     this.gate_label.visible = false;
                 }
             }
+        }else if(this.enemies_killed === this.TotalEnemies && this.levelNumber == 6){
+            console.log("end of lvl6")
+        }else{
+            console.log("error pls solve")
         }
 
     }

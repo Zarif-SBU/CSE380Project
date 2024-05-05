@@ -34,6 +34,7 @@ const BattlerGroups = {
 
 export default class lvl1Scene extends HW4Scene {
     public level: number;
+    protected levelNumber:number= 1;
 
     protected healthSprite:any;
     protected Health:Layer;
@@ -267,9 +268,8 @@ export default class lvl1Scene extends HW4Scene {
         bossSlime.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossSlime.position.x, bossSlime.position.y)), range: 300 });
         this.battlers.push(bossSlime);
         this.enemies.push(bossSlime);
+        bossSlime.animation.play("IDLE");
 
-// Play the boss slime NPC's "IDLE" animation
-bossSlime.animation.play("IDLE");
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
