@@ -50,12 +50,12 @@
         {
             "name": "ATTACK_LEFT",
             "repeat": false,
-            "frames":[{"index": 39, "duration": 17},{"index": 40, "duration": 14},{"index": 41, "duration": 14},{"index": 42, "duration": 14},{"index": 43, "duration": 14},{"index": 44, "duration": 14},{"index": 45, "duration": 14},{"index": 46, "duration": 14},{"index": 47, "duration": 14}]
+            "frames":[{"index": 39, "duration": 17},{"index": 40, "duration": 10},{"index": 41, "duration": 10},{"index": 42, "duration": 10},{"index": 43, "duration": 10},{"index": 44, "duration": 10},{"index": 45, "duration": 10},{"index": 46, "duration": 10},{"index": 47, "duration": 10}]
         },
         {
             "name": "ATTACK_RIGHT",
             "repeat": false,
-            "frames":[{"index": 48, "duration": 17},{"index": 49, "duration": 14},{"index": 50, "duration": 14},{"index": 51, "duration": 14},{"index": 52, "duration": 14},{"index": 53, "duration": 14},{"index": 54, "duration": 14},{"index": 55, "duration": 14},{"index": 56, "duration": 14}]
+            "frames":[{"index": 48, "duration": 17},{"index": 49, "duration": 10},{"index": 50, "duration": 10},{"index": 51, "duration": 10},{"index": 52, "duration": 10},{"index": 53, "duration": 10},{"index": 54, "duration": 10},{"index": 55, "duration": 10},{"index": 56, "duration": 10}]
         },
         {
             "name": "DYING_LEFT",

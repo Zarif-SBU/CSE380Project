@@ -37,7 +37,6 @@ export default class lvl5Scene extends HW4Scene {
 
     protected healthSprite:any;
     protected Health:Layer;
-
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
@@ -56,6 +55,7 @@ export default class lvl5Scene extends HW4Scene {
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
+    protected doorAudioPlayed: boolean;
 
     // The position graph for the navmesh
     private graph: PositionGraph;
@@ -82,10 +82,15 @@ export default class lvl5Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
+        
         //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
+        this.load.audio("heavy","hw4_assets/Audio/SoundEffects/heavy_attack.mp3") 
+        this.load.audio("heavy","hw4_assets/Audio/SoundEffects/light_attack.mp3") 
+        this.load.audio("level_music5", "hw4_assets/Audio/lvl2.mp3");
+
         // Load the tilemap
-        this.load.tilemap("level", "hw4_assets/tilemaps/lvl1.json");
+        this.load.tilemap("level", "hw4_assets/tilemaps/lvl5.json");
 
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
@@ -96,12 +101,13 @@ export default class lvl5Scene extends HW4Scene {
      * @see Scene.startScene
      */
     public override startScene() {
+        this.doorAudioPlayed = false;
         this.currentLevel = lvl5Scene;
         this.nextLevel=lvl6Scene;
         this.lvlScene = this.addUILayer("lvlScene")
-        this.LevelEnd = [new Vec2(2913, 832), new Vec2(3055, 832)];//range of where the door is
+        this.LevelEnd = [new Vec2(3422, 384), new Vec2(3566, 384)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music5", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
         this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
@@ -114,6 +120,7 @@ export default class lvl5Scene extends HW4Scene {
         
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
+
         this.Health = this.addUILayer("Health");
         this.healthSprite = this.add.sprite("health", "Health")
         this.healthSprite.position.set(220,70);
@@ -151,7 +158,6 @@ export default class lvl5Scene extends HW4Scene {
                 
             }
         });
-        
         
     }
 
@@ -194,7 +200,7 @@ export default class lvl5Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(200, 1000);
+        player.position.set(1320, 272);
         player.battleGroup = 2;
 
         player.health = 10;
@@ -221,17 +227,17 @@ export default class lvl5Scene extends HW4Scene {
      * Initialize the NPCs 
      */
     protected initializeNPCs(): void {
-
         // Get the object data for the red enemies
         let slime = this.load.getObject("slimes");
         let moondog = this.load.getObject("moondogs");
-
-        for (let i = 0; i < slime.slimes.length; i++) {
+    
+        // Initialize Slime NPCs
+        for (let i = 0; i < slime.slimeslvl4.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
+            npc.position.set(slime.slimeslvl4[i][0], slime.slimeslvl4[i][1]);
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-            this.TotalEnemies +=1;
-
+            this.TotalEnemies += 1;
+    
             // Give the NPC a healthbar
             let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
             this.healthbars.set(npc.id, healthbar);
@@ -243,94 +249,43 @@ export default class lvl5Scene extends HW4Scene {
             npc.maxHealth = 5;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            // console.log("spawn point", npc.spawnpoint);
-            // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
             npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             
             // Play the NPCs "IDLE" animation
             npc.animation.play("IDLE");
             // Add the NPC to the battlers array
             this.battlers.push(npc);
-            this.enemies.push(npc)
+            this.enemies.push(npc);
         }
-        //console.log("enemies in level 1",this.enemies)
-
-        // for (let i = 0; i < moondog.moondogs.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
-        //     npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-
-        //     // Give the NPC a healthbar
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
-        //     this.healthbars.set(npc.id, healthbar);
+    
+        // Initialize Moondog NPCs
+        for (let i = 0; i < moondog.moondogslvl4.length; i++) {
+            let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
+            npc.position.set(moondog.moondogslvl4[i][0], moondog.moondogslvl4[i][1]);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            this.TotalEnemies += 1;
+    
+            // Give the NPC a healthbar
+            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+            this.healthbars.set(npc.id, healthbar);
             
-        //     // Set the NPCs stats
-        //     npc.battleGroup = 1;
-        //     npc.speed = 5;
-        //     npc.health = 5;
-        //     npc.maxHealth = 5;
-        //     npc.navkey = "navmesh";
-        //     npc.spawnpoint = npc.position.clone();
-        //     console.log("spawn point", npc.spawnpoint);
-        //     // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
-        //     npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+            // Set the NPCs stats
+            npc.battleGroup = 1;
+            npc.speed = 5;
+            npc.health = 5;
+            npc.maxHealth = 5;
+            npc.navkey = "navmesh";
+            npc.spawnpoint = npc.position.clone();
+            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             
-        //     // Play the NPCs "IDLE" animation
-        //     npc.animation.play("IDLE");
-        //     // Add the NPC to the battlers array
-        //     this.battlers.push(npc);
-        // }
-        // // Get the object data for the blue enemies
-        // let blue = this.load.getObject("blue");
-
-        // // Initialize the blue enemies
-        // for (let i = 0; i < blue.enemies.length; i++) {
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary");
-        //     npc.position.set(blue.enemies[i][0], blue.enemies[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     // Give the NPCS their healthbars
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.battleGroup = 2
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     // Give the NPCs their AI
-        //     npc.addAI(GuardBehavior, {target: this.battlers[0], range: 100});
-
-        //     // Play the NPCs "IDLE" animation 
-        //     npc.animation.play("IDLE");
-
-        //     this.battlers.push(npc);
-        // }
-
-        // Initialize the blue healers
-        // for (let i = 0; i < blue.healers.length; i++) {
-            
-        //     let npc = this.add.animatedSprite(NPCActor, "BlueHealer", "primary");
-        //     npc.position.set(blue.healers[i][0], blue.healers[i][1]);
-        //     npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
-
-        //     npc.battleGroup = 2;
-        //     npc.speed = 10;
-        //     npc.health = 1;
-        //     npc.maxHealth = 10;
-        //     npc.navkey = "navmesh";
-
-        //     let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(2, 1/2), offset: npc.size.clone().scaled(0, -1/2)});
-        //     this.healthbars.set(npc.id, healthbar);
-
-        //     npc.addAI(HealerBehavior);
-        //     npc.animation.play("IDLE");
-        //     this.battlers.push(npc);
-        // }
-
-
+            // Play the NPCs "IDLE" animation
+            npc.animation.play("IDLE");
+            // Add the NPC to the battlers array
+            this.battlers.push(npc);
+            this.enemies.push(npc);
+        }
     }
+    
 
     /**
      * Initialize the items in the scene (healthpacks and laser guns)

@@ -87,6 +87,7 @@ export default class lvl3Scene extends HW4Scene {
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/heavy_attack.mp3") 
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/light_attack.mp3") 
+        this.load.audio("level_music3", "hw4_assets/Audio/lvl1.mp3");
 
         // Load the tilemap
         this.load.tilemap("level", "hw4_assets/tilemaps/lvl3.json");
@@ -106,7 +107,7 @@ export default class lvl3Scene extends HW4Scene {
         this.lvlScene = this.addUILayer("lvlScene")
         this.LevelEnd = [new Vec2(2398, 1472), new Vec2(2523, 1472)];//range of where the door is
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music3", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
         this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];

@@ -8,7 +8,7 @@ import Color from "../../../Wolfie2D/Utils/Color";
 export default class ControlScene2 extends Scene {
     protected Controls: Layer;
     protected back: any;
-    protected controlsSprite: any; // Add a member variable to hold the controls sprite
+    protected controlsSprite: any;
 
     public loadScene() {
         this.load.image("controls", "hw4_assets/SceneImages/Controls_Image.png");

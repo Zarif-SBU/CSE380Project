@@ -282,6 +282,11 @@ export default abstract class HW4Scene extends Scene {
                     break;
                 case "quit":
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music1" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music2" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music3" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music4" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music5" });
                     this.sceneManager.changeToScene(MainMenu);
                 case "back":
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });

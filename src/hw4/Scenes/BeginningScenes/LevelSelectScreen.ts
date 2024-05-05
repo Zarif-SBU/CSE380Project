@@ -95,6 +95,7 @@ export default class LevelSelectScene extends Scene {
             case "level5":
                 //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl5Scene);
+                break;
             case "level6":
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl6Scene);
