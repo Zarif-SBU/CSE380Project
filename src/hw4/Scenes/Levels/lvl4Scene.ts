@@ -13,6 +13,7 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -81,6 +82,8 @@ export default class lvl4Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
+
         // Load in the enemy sprites
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
@@ -284,7 +287,7 @@ export default class lvl4Scene extends HW4Scene {
             npc.maxHealth = 5;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+            npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             
             // Play the NPCs "IDLE" animation
             npc.animation.play("IDLE");

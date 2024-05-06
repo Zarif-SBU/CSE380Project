@@ -17,6 +17,8 @@ import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import Position from "../../../GameSystems/Targeting/Position";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import SlimeAttack from "../NPCActions/SlimeAttack";
+import Sprite from "../../../../Wolfie2D/Nodes/Sprites/Sprite";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 
 export default class GuardBehavior extends NPCBehavior {
 
@@ -59,13 +61,16 @@ export default class GuardBehavior extends NPCBehavior {
 
     public update(deltaT: number): void {
         super.update(deltaT);
-        // if(this.owner.position == this.target.position) {
-        //     const randomAngle = Math.random() * Math.PI * 2;
-        //     const randomDirection = new Vec2(Math.cos(randomAngle), Math.sin(randomAngle));
-        //     const randomDistance = Math.random() * 200;
-        //     // console.log("ddsadsa", this.owner.spawnpoint.clone().add(randomDirection.scaled(randomDistance)));
-        //     this.target = this.owner.spawnpoint.clone().add(randomDirection.scaled(randomDistance));
-        // }
+        if(this.owner.health == 0) {
+            this.owner.destroy();
+        } else {
+            if(!this.owner.animation.isPlaying("Attack_Left") && !this.owner.animation.isPlaying("DAMAGED_RIGHT")) {
+                let direction = this.owner.getLastVelocity().x;
+                if(direction !== 0) {
+                    (<Sprite>this.owner).invertX = MathUtils.sign(direction) < 0;
+                }
+            }
+        }
     }
 
 

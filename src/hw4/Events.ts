@@ -5,7 +5,7 @@ export enum BattlerEvent {
     BATTLER_CHANGE = "BATTLER_CHANGE",
     CONSUME = "CONSUME",
     HIT = "HIT",
-    ATTACK = "ATTACK"
+    ATTACK = "ATTACK",
 }
 
 
@@ -14,7 +14,7 @@ export enum PlayerEvent{
     HEAVY_ATTACK = "HEAVY_ATTACK",
     BLOCK = "BLOCK",
     HIT = "HIT",
-    PLAYER_MOVE = "PLAYER_MOVE"
+    PLAYER_MOVE = "PLAYER_MOVE",
 }
 
 
@@ -23,7 +23,8 @@ export enum HudEvent {
 }
 
 export enum PlayerEvent {
-    PLAYER_KILLED = "PLAYER_KILLED"
+    PLAYER_KILLED = "PLAYER_KILLED",
+    PLAYER_ATTACKING = "PLAYER_ATTACKING"
 }
 
 export enum LevelEvent{

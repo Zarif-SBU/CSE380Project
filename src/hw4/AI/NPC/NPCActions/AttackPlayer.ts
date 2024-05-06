@@ -12,6 +12,8 @@ import { BattlerEvent, PlayerEvent } from "../../../Events";
 import HW4Scene from "../../../Scenes/HW4Scene";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import { TweenableProperties } from "../../../../Wolfie2D/Nodes/GameNode";
+import Sprite from "../../../../Wolfie2D/Nodes/Sprites/Sprite";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 export default class AttackPlayer extends NPCAction {
     public scene: HW4Scene;
     public range: number;
@@ -49,7 +51,7 @@ export default class AttackPlayer extends NPCAction {
                 ]
             });
             this.actor.tweens.play("attack");
-            (this.target.position.x - this.actor.position.x) < 0? this.actor.animation.play("Attack_Right") : this.actor.animation.play("Attack_Left");
+            this.actor.animation.play("Attack_Left");
             // Send a laser fired event
             // this.emitter.fireEvent(BattlerEvent.ATTACK, {
             //     actorId: this.actor.id,
@@ -88,57 +90,72 @@ export default class AttackPlayer extends NPCAction {
     //     super.update(deltaT);
     // }
     public update(deltaT: number): void {
-        if (this.target !== null && this.path !== null && !this.path.isDone()) {
-            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
-                this.performAction(this.target);
-                if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
-                    if(this.checkOverlap() && this.timer2.isStopped()) {
-                        this.scene.getBattlers()[0].health -= 1;
-                        this.timer2.start();
-                    }
+        if (this.actor != null && !this.actor.animation.isPlaying("Attack_Left") && 
+            !this.actor.animation.isPlaying("DAMAGED_RIGHT")) {
+            // Actor is not performing any attack or getting damaged
+    
+            // If there's a target and a path, and the path is not done
+            if (this.target !== null && this.path !== null && !this.path.isDone()) {
+                this.actor.animation.playIfNotAlready("MOVING_RIGHT");
+                // Check if the target is within a certain range
+                if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                    Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
+                    this.performAction(this.target);
+                    this.finished();
                 } else {
-                    if(!this.actor.animation.isPlaying("IDLE") && this.timer2.isStopped()) {
-                        this.actor.animation.play("IDLE");
+                    // Check if target position has changed significantly
+                    if (Math.pow(this.target.position.x - this.oldx, 2) + 
+                        Math.pow(this.target.position.y - this.oldy, 2) > 10000 && 
+                        Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) < 150000) {
+                        this.actor.setTarget(this.target);
+                        this.path = this.actor.getPath(this.actor.position, this.target.position);
+                        this.oldx = this.target.position.x;
+                        this.oldy = this.target.position.y;
+                    }
+                    // Move towards the target if it's far away
+                    if (Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
+                        this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
                     }
                 }
-                this.finished();
             } else {
-                // console.log(this.target.position.x , "das", this.oldx);
-                if(Math.pow(this.target.position.x - this.oldx, 2) + Math.pow(this.target.position.y - this.oldy, 2)> 10000 && Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)< 150000) {
-                    // this.target = this.scene.getBattlers()[0];
-                    this.actor.setTarget(this.target);
-                    this.path = this.actor.getPath(this.actor.position, this.target.position);
-                    this.oldx = this.target.position.x;
-                    this.oldy = this.target.position.y;
-                }
-                // this.path = this.actor.getPath(this.actor.position, this.target.position);
-                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
-                    // if(!this.actor.animation.isPlaying("IDLE")) {
-                    //     this.actor.animation.play("IDLE");
-                    // }
-                    
-                    this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
-                }
+                // No target or path, or path is done
+                this.finished();
             }
         } else {
-            this.finished();
+
+            if (this.actor != null && this.checkOverlap() && this.timer2.isStopped()) {
+                // Decrease target's health
+                this.scene.getBattlers()[0].health -= 1;
+                // Start the timer to prevent continuous damage
+                this.timer2.start();
+            }
         }
+        // if(this.actor.health == 0) {
+        //     this.actor.destroy();
+        //     this.finished();
+        // }
     }
     public onExit(): Record<string, any> {
-        this.actor.speed = 10;
+        if(this.actor == null) {
+            this.actor.speed = 10;
+        }
         // this.actor.animation.play("IDLE");
         // Clear the reference to the lasergun
         return super.onExit();
     }
 
     protected checkOverlap() {
-		let distx = this.actor.position.x - this.target.position.x;
-        let disty = this.actor.position.y - this.target.position.y;
-        if(Math.abs(distx) > this.actor.collisionShape.hw + 32) {
-            return false;
-        }
-        if(Math.abs(disty) > this.actor.collisionShape.hh + 64) {
-            return false;
+        if(this.actor != null) {
+            let distx = this.actor.position.x - this.target.position.x;
+            let disty = this.actor.position.y - this.target.position.y;
+            if(Math.abs(distx) > this.actor.collisionShape.hw + 32) {
+                return false;
+            }
+            if(Math.abs(disty) > this.actor.collisionShape.hh + 64) {
+                return false;
+            }
         }
         // console.log("hit");
         return true;

@@ -115,7 +115,7 @@ export default class MoveToPlayer extends NPCAction {
                 if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
                     this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
                 }
-                if(this.target.position.x - this.actor.position.x <0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {
+                if(this.target.position.x - this.actor.position.x < 0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {
                     this.actor.animation.play("WALKING_LEFT");
                 } else if(this.target.position.x - this.actor.position.x >= 0 && !this.actor.animation.isPlaying("WALKING_RIGHT")) {
                     this.actor.animation.play("WALKING_RIGHT");
