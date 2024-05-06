@@ -111,7 +111,7 @@
       ]
     },
     {
-      "name": "Moving Right",
+      "name": "MOVING_RIGHT",
       "repeat": true,
       "frames": [
         {
@@ -475,8 +475,8 @@
       ]
     },
     {
-      "name": "Damaged Right",
-      "repeat": true,
+      "name": "DAMAGED_RIGHT",
+      "repeat": false,
       "frames": [
         {
           "index": 180,

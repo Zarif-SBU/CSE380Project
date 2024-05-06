@@ -45,7 +45,7 @@
         {
             "name": "BOOST_RIGHT",
             "repeat": false,
-            "frames":[{"index": 34, "duration": 12},{"index": 35, "duration": 11},{"index": 36, "duration": 10},{"index": 37, "duration": 9},{"index": 38, "duration": 8}]
+            "frames":[{"index": 34, "duration": 6},{"index": 35, "duration": 6},{"index": 36, "duration": 5},{"index": 37, "duration": 4},{"index": 38, "duration": 4}]
         },
         {
             "name": "ATTACK_LEFT",
@@ -55,7 +55,7 @@
         {
             "name": "ATTACK_RIGHT",
             "repeat": false,
-            "frames":[{"index": 48, "duration": 17},{"index": 49, "duration": 14},{"index": 50, "duration": 14},{"index": 51, "duration": 14},{"index": 52, "duration": 14},{"index": 53, "duration": 14},{"index": 54, "duration": 14},{"index": 55, "duration": 14},{"index": 56, "duration": 14}]
+            "frames":[{"index": 48, "duration": 5},{"index": 49, "duration": 5},{"index": 50, "duration": 5},{"index": 51, "duration": 5},{"index": 52, "duration": 5},{"index": 53, "duration": 5},{"index": 54, "duration": 5},{"index": 55, "duration": 5},{"index": 56, "duration": 5}]
         },
         {
             "name": "DYING_LEFT",

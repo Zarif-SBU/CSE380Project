@@ -309,8 +309,8 @@
 			]
 		},
 		{
-			"name": "DAMAGE_RIGHT",
-			"repeat": true,
+			"name": "DAMAGED_RIGHT",
+			"repeat": false,
 			"frames": [
 				{
 					"index": 9,

@@ -8,19 +8,19 @@
     "durationType": "time",
     "animations": [
         {"name": "RIGHT_SLASH",
-        "repeat": true,
+        "repeat": false,
         "frames": [ {"index": 0, "duration": 15},{"index": 1, "duration": 15},{"index": 2, "duration": 15}]
         },
         {"name": "UP_SLASH",
-        "repeat": true,
+        "repeat": false,
         "frames": [ {"index": 3, "duration": 15},{"index": 4, "duration": 15},{"index": 5, "duration": 15}]
         },
         {"name": "LEFT_SLASH",
-        "repeat": true,
+        "repeat": false,
         "frames": [ {"index": 6, "duration": 15},{"index": 7, "duration": 15},{"index": 8, "duration": 15}]
         },
         {"name": "DOWN_SLASH",
-        "repeat": true,
+        "repeat": false,
         "frames": [ {"index": 9, "duration": 15},{"index": 10, "duration": 15},{"index": 11, "duration": 15}]
         }
         
