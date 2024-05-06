@@ -118,20 +118,20 @@ export default abstract class PlayerState extends State {
         //     console.log("Shitty animation played")
             
         // }
-        // if (this.parent.controller.lightAttack) {
-        //     //console.log(this.owner.position);
-        //     if(this.lightTimer.isStopped()){
-        //         //console.log("Light Attack");
-        //         this.lightTimer.start()
+        if (this.parent.controller.lightAttack) {
+            //console.log(this.owner.position);
+            if(this.lightTimer.isStopped()){
+                //console.log("Light Attack");
+                this.lightTimer.start()
                 
 
-        //         this.emitter.fireEvent(PlayerEvent.LIGHT_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.moveDir.clone()});
-        //     }
-        //     else{
-        //         console.log("Light Attack on cooldown");
-        //     }
+                this.emitter.fireEvent(PlayerEvent.LIGHT_ATTACK, {start:this.owner.position.clone(), dir:this.parent.controller.moveDir.clone()});
+            }
+            else{
+                console.log("Light Attack on cooldown");
+            }
             
-        // }
+        }
         if (this.parent.controller.heavyAttack) {
             if(this.heavyTimer.isStopped()){
                 console.log("Heavy Attack");

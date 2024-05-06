@@ -83,19 +83,19 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
-            // case PlayerEvent.LIGHT_ATTACK: {
-            //     this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
-            //     console.log("light attacked")
-            //     // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
+            case PlayerEvent.LIGHT_ATTACK: {
+                this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+                console.log("light attacked")
+                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
                 
-            //     break;
-            // }
-            // case PlayerEvent.HEAVY_ATTACK: {
-            //     this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
-            //     console.log("heavy attacked")
-            //     // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "heavy", loop: false, holdReference: false})
-            //     break;
-            // }
+                break;
+            }
+            case PlayerEvent.HEAVY_ATTACK: {
+                this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
+                console.log("heavy attacked")
+                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "heavy", loop: false, holdReference: false})
+                break;
+            }
             case PlayerEvent.BLOCK: {
                 this.handleBlockEvent(event.data.get("start"), event.data.get("dir"));
                 break;

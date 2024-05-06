@@ -13,13 +13,18 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import IdleBehavior from "../../AI/NPC/NPCBehavior/IdleBehavior";
+import DragonBehavior from "../../AI/NPC/NPCBehavior/DragonBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
+import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
 import { BattlerEvent, PlayerEvent } from "../../Events";
 import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
+import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
+import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
 
@@ -49,6 +54,14 @@ export default class lvl6Scene extends HW4Scene {
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];
 
+    //I am legit pulling out all of the stops on this one
+    protected dragon:NPCActor
+    protected phase:number
+    protected addsleft:number
+    protected count1:number
+    protected count2:number
+    protected count3:number
+    protected count4:number
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
 
@@ -77,6 +90,9 @@ export default class lvl6Scene extends HW4Scene {
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
+        //this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
+        this.load.spritesheet("Dragon", "hw4_assets/spritesheets/Enemies/dragon/dragon.json");
+        this.load.spritesheet("Firebreath", "hw4_assets/spritesheets/Enemies/dragon/fire1.json")
         this.load.audio("level_music6", "hw4_assets/Audio/lvl3.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
         
@@ -87,7 +103,8 @@ export default class lvl6Scene extends HW4Scene {
         // Load the enemy locations
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
         this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
-        this.load.object("blue", "hw4_assets/data/enemies/blue.json");
+        //this.load.object("blue", "hw4_assets/data/enemies/blue.json");
+        this.load.object("dragons", "hw4_assets/data/enemies/dragon.json");
     }
     /**
      * @see Scene.startScene
@@ -151,8 +168,423 @@ export default class lvl6Scene extends HW4Scene {
                 
             }
         });
+        this.phase = 1
+        this.addsleft = 0
+        this.count1 = 0
+        this.count2 = 0
+        this.count3 = 0
+        this.count4 = 0
+        this.dragonStart();
         
-        
+    }
+    async dragonStart(){
+        await this.dragonBehavior()
+    }
+    async dragonBehavior(){ //ironic
+        let slime = this.load.getObject("slimes");
+        let moondog = this.load.getObject("moondogs");
+        let firebreath = this.load.getSpritesheet("Firebreath");
+        let projectiles: NPCActor[] = []
+        while(true){
+            await this.delay(600);
+            //await console.log(this.dragon);
+            if(this.phase == 1){
+                
+                if(this.dragon.health <= 75){
+                    this.phase = 2;
+                }
+                else{
+                    if(this.count2 < 1 || this.count4 == 2){
+                        let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
+                        npc.position.set(1250+this.count2*50, 1670);
+                        //npc.rotation = 120
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        console.log(npc)
+                        npc.animation.play("START");
+                        projectiles.push(npc)
+                        this.count2+=1
+                        this.count3=0
+                        this.count4=0
+                    }
+                    
+                    
+                }
+                console.log(projectiles)
+                for(const projectile of projectiles){
+                    console.log(projectile.animation.isPlaying("START"))
+                    if(!projectile.animation.isPlaying("START")){
+                        projectile.animation.playIfNotAlready("CONTINUOUS");
+                    }
+                    this.count3 +=1
+                    let aabb 
+                    console.log(projectile.collisionShape.getBoundingRect())
+                    console.log(this.player.collisionShape.getBoundingRect())
+                    if(this.intersectAABB(projectile.collisionShape.getBoundingRect(), this.player.collisionShape.getBoundingRect())){
+                        console.log("in fire breath")
+                        this.player.health -= 1
+                    }
+                    
+                    if(this.count3 >= 10){
+                        projectile.destroy();
+                        projectiles.splice(projectiles.indexOf(projectile), 1)
+                        this.count4 = 1
+                    }
+                    
+                    console.log(this.count3)
+                }
+                if(this.count4 == 1){
+                    this.count3 -= 2
+                    if(this.count3 <= 0){
+                        this.count4 = 2
+                        this.count2 = 0
+                    }
+                }
+                
+            }
+            else if(this.phase == 2){
+                if(this.dragon.health <= 50){
+                    this.phase = 3;
+                    this.count1 = 0;
+                    this.count2 = 0;
+                    //this.count3 = 0;
+                    //this.count4 = 0;
+                }
+                
+                if(this.count1 == 0){
+                    this.dragon.animation.play("SUMMON");
+                    await this.delay(2000);
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
+                        npc.position.set(1050+i*50, 1150+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
+                        npc.position.set(1050+i*50, 1350+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    this.count1 = 1;
+                }
+                else{
+                    if(this.count2 < 1 || this.count4 == 2){
+                        let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
+                        npc.position.set(1250+this.count2*50, 1670);
+                        //npc.rotation = 120
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        console.log(npc)
+                        npc.animation.play("START");
+                        projectiles.push(npc)
+                        this.count2+=1
+                        this.count3=0
+                        this.count4=0
+                    }
+                    
+                    
+                }
+                console.log(projectiles)
+                for(const projectile of projectiles){
+                    console.log(projectile.animation.isPlaying("START"))
+                    if(!projectile.animation.isPlaying("START") && !projectile.animation.isPlaying("SUMMON") ){
+                        projectile.animation.playIfNotAlready("CONTINUOUS");
+                    }
+                    this.count3 +=1
+                    let aabb 
+                    console.log(projectile.collisionShape.getBoundingRect())
+                    console.log(this.player.collisionShape.getBoundingRect())
+                    if(this.intersectAABB(projectile.collisionShape.getBoundingRect(), this.player.collisionShape.getBoundingRect())){
+                        console.log("in fire breath")
+                        this.player.health -= 1
+                    }
+                    
+                    if(this.count3 >= 10){
+                        projectile.destroy();
+                        projectiles.splice(projectiles.indexOf(projectile), 1)
+                        this.count4 = 1
+                    }
+                    
+                    console.log(this.count3)
+                }
+                if(this.count4 == 1){
+                    this.count3 -= 2
+                    if(this.count3 <= 0){
+                        this.count4 = 2
+                        this.count2 = 0
+                    }
+                }
+            }
+            else if(this.phase == 3){
+                if(this.dragon.health <= 25){
+                    this.phase = 4;
+                    this.count1 = 0;
+                    this.count2 = 0;
+                    //this.count3 = 0;
+                    //this.count4 = 0;
+                }
+                if(this.count1 == 0){
+                    this.dragon.animation.play("SUMMON");
+                    await this.delay(2000);
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
+                        npc.position.set(1050+i*50, 1150+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
+                        npc.position.set(1050+i*50, 1350+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    this.count1 = 1;
+                }
+                else{
+                    if(this.count2 < 1 || this.count4 == 2){
+                        let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
+                        npc.position.set(1250+this.count2*50, 1670);
+                        //npc.rotation = 120
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        console.log(npc)
+                        npc.animation.play("START");
+                        projectiles.push(npc)
+                        this.count2+=1
+                        this.count3=0
+                        this.count4=0
+                    }
+                    
+                    
+                }
+                console.log(projectiles)
+                for(const projectile of projectiles){
+                    console.log(projectile.animation.isPlaying("START"))
+                    if(!projectile.animation.isPlaying("START") && !projectile.animation.isPlaying("SUMMON") ){
+                        projectile.animation.playIfNotAlready("CONTINUOUS");
+                    }
+                    this.count3 +=1
+                    let aabb 
+                    console.log(projectile.collisionShape.getBoundingRect())
+                    console.log(this.player.collisionShape.getBoundingRect())
+                    if(this.intersectAABB(projectile.collisionShape.getBoundingRect(), this.player.collisionShape.getBoundingRect())){
+                        console.log("in fire breath")
+                        this.player.health -= 1
+                    }
+                    
+                    if(this.count3 >= 10){
+                        projectile.destroy();
+                        projectiles.splice(projectiles.indexOf(projectile), 1)
+                        this.count4 = 1
+                    }
+                    
+                    console.log(this.count3)
+                }
+                if(this.count4 == 1){
+                    this.count3 -= 2
+                    if(this.count3 <= 0){
+                        this.count4 = 2
+                        this.count2 = 0
+                    }
+                }
+            }
+            else if(this.phase == 4){
+                if(this.dragon.health <= 0){
+                    this.phase = 5;
+                    this.count1 = 0;
+                    this.count2 = 0;
+                    //this.count3 = 0;
+                    //this.count4 = 0;
+                }
+                if(this.count1 == 0){
+                    this.dragon.animation.play("SUMMON");
+                    await this.delay(2000);
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
+                        npc.position.set(1050+i*50, 1150+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    
+                    for (let i = 0; i < 4; i++) {
+                        let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
+                        npc.position.set(1050+i*50, 1350+i*50);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        this.TotalEnemies += 1;
+                
+                        // Give the NPC a healthbar
+                        let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+                        this.healthbars.set(npc.id, healthbar);
+                        
+                        // Set the NPCs stats
+                        npc.battleGroup = 1;
+                        npc.speed = 5;
+                        npc.health = 5;
+                        npc.maxHealth = 5;
+                        npc.navkey = "navmesh";
+                        npc.spawnpoint = npc.position.clone();
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        
+                        // Play the NPCs "IDLE" animation
+                        npc.animation.play("IDLE");
+                        // Add the NPC to the battlers array
+                        this.battlers.push(npc);
+                        this.enemies.push(npc);
+                    }
+                    this.count1 = 1;
+                }
+                else{
+                    if(this.count2 < 1 || this.count4 == 2){
+                        let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
+                        npc.position.set(1250+this.count2*50, 1670);
+                        //npc.rotation = 120
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        console.log(npc)
+                        npc.animation.play("START");
+                        projectiles.push(npc)
+                        this.count2+=1
+                        this.count3=0
+                        this.count4=0
+                    }
+                    
+                    
+                }
+                console.log(projectiles)
+                for(const projectile of projectiles){
+                    console.log(projectile.animation.isPlaying("START"))
+                    if(!projectile.animation.isPlaying("START") && !projectile.animation.isPlaying("SUMMON") ){
+                        projectile.animation.playIfNotAlready("CONTINUOUS");
+                    }
+                    this.count3 +=1
+                    let aabb 
+                    console.log(projectile.collisionShape.getBoundingRect())
+                    console.log(this.player.collisionShape.getBoundingRect())
+                    if(this.intersectAABB(projectile.collisionShape.getBoundingRect(), this.player.collisionShape.getBoundingRect())){
+                        console.log("in fire breath")
+                        this.player.health -= 1
+                    }
+                    
+                    if(this.count3 >= 10){
+                        projectile.destroy();
+                        projectiles.splice(projectiles.indexOf(projectile), 1)
+                        this.count4 = 1
+                    }
+                    
+                    console.log(this.count3)
+                }
+                if(this.count4 == 1){
+                    this.count3 -= 2
+                    if(this.count3 <= 0){
+                        this.count4 = 2
+                        this.count2 = 0
+                    }
+                }
+            }
+            else if(this.phase == 5){
+                this.dragon.destroy();
+                projectiles.splice(0, projectiles.length)
+            }
+        }
+    }
+    async delay(ms: number): Promise<void> {
+        return new Promise<void>((resolve) => {
+            setTimeout(resolve, ms);
+        });
     }
     /**
      * @see Scene.updateScene
@@ -221,6 +653,30 @@ export default class lvl6Scene extends HW4Scene {
      * Initialize the NPCs 
      */
     protected initializeNPCs(): void {
+        let dragon = this.load.getObject("dragons");
+        
+            let npc = this.add.animatedSprite(NPCActor, "Dragon", "primary");
+            npc.position.set(dragon.dragons[0][0], dragon.dragons[0][1]);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(200, 300)), null, false);
+            this.TotalEnemies += 1;
+    
+            // Give the NPC a healthbar
+            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
+            this.healthbars.set(npc.id, healthbar);
+            
+            // Set the NPCs stats
+            npc.battleGroup = 1;
+            npc.speed = 5;
+            npc.health = 100;
+            npc.maxHealth = 100;
+            npc.navkey = "navmesh";
+            npc.spawnpoint = npc.position.clone();
+            npc.addAI(DragonBehavior, {});
+
+            npc.animation.play("IDLE");
+            this.battlers.push(npc);
+            this.enemies.push(npc);
+            this.dragon = npc
         
     }
 
@@ -340,4 +796,68 @@ export default class lvl6Scene extends HW4Scene {
         }
 		return false;
     }
+    public intersectAABB(box: AABB, box2:AABB): Hit | null {
+        const dx = box.center.x - box2.center.x;
+        const px = (box.halfSize.x + box2.halfSize.x) - abs(dx);
+        if (px <= 0) {
+          return null;
+        }
+    
+        const dy = box.center.y - box2.center.y;
+        const py = (box.halfSize.y + box2.halfSize.y) - abs(dy);
+        if (py <= 0) {
+          return null;
+        }
+    
+        const hit = new Hit(box2);
+        if (px < py) {
+          const sx = sign(dx);
+          hit.delta.x = px * sx;
+          hit.normal.x = sx;
+          hit.pos.x = box2.center.x + (box2.halfSize.x * sx);
+          hit.pos.y = box.center.y;
+        } else {
+          const sy = sign(dy);
+          hit.delta.y = py * sy;
+          hit.normal.y = sy;
+          hit.pos.x = box.center.x;
+          hit.pos.y = box2.center.y + (box2.halfSize.y * sy);
+        }
+        return hit;
+      }
+    
+   
 }
+type Collider = AABB;
+ class Point{
+    public x: number;
+    public y: number;
+  
+    constructor(x: number = 0, y: number = 0) {
+    this.x = x;
+    this.y = y;
+    }
+}
+export function abs(value: number): number {
+    return value < 0 ? -value : value;
+  }
+export function sign(value: number): number {
+    return value < 0 ? -1 : 1;
+}
+
+ class Hit {
+    
+    public collider: Collider;
+    public pos: Point;
+    public delta: Point;
+    public normal: Point;
+    public time: number;
+  
+    constructor(collider: Collider) {
+      this.collider = collider;
+      this.pos = new Point();
+      this.delta = new Point();
+      this.normal = new Point();
+      this.time = 0;
+    }
+  }
