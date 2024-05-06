@@ -21,6 +21,7 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
+import { default as Potion } from "../../GameSystems/ItemSystem/Potion";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
@@ -33,11 +34,13 @@ const BattlerGroups = {
 } as const;
 
 export default class lvl1Scene extends HW4Scene {
+ 
     public level: number;
     protected levelNumber:number= 1;
 
     protected healthSprite:any;
     protected Health:Layer;
+    protected potions: Array<Potion>;
 
     /** GameSystems in the HW4 Scene */
 
@@ -68,6 +71,7 @@ export default class lvl1Scene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
+        this.potions = new Array<Potion>();
     }
     protected timer: Timer;
 
@@ -99,7 +103,9 @@ export default class lvl1Scene extends HW4Scene {
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
 
         //load items
-        this.load.object("chests", "hw4_assets/data/items/healthItems.json")
+        this.load.object("potionData", "hw4_assets/data/items/potions.json")
+        this.load.image("Potion", "hw4_assets/sprites/health_potion.png")
+        
 
        
     }
@@ -118,12 +124,6 @@ export default class lvl1Scene extends HW4Scene {
         this.LevelEnd = [new Vec2(3878, 384), new Vec2(4008, 384)];//range of where the door is
         this.doorAudioPlayed = false;
         
-        this.Health = this.addUILayer("Health");
-        this.healthSprite = this.add.sprite("health", "Health")
-        this.healthSprite.position.set(220,70);
-        
-
-        
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
@@ -137,6 +137,10 @@ export default class lvl1Scene extends HW4Scene {
         
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(1);
+
+        this.Health = this.addUILayer("Health");
+        this.healthSprite = this.add.sprite("health", "Health")
+        this.healthSprite.position.set(220,70);
         
         this.initLayers();
         
@@ -148,6 +152,8 @@ export default class lvl1Scene extends HW4Scene {
         
         // Create the NPCS
         this.initializeNPCs();
+
+        this.initializeItems()
         
         // Subscribe to relevant events
         
@@ -287,8 +293,7 @@ export default class lvl1Scene extends HW4Scene {
             npc.maxHealth = 5;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            // console.log("spawn point", npc.spawnpoint);
-            // npc.spawnPosition = new Vec2(npc.position.x, npc.position.y);
+    
             npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             
             // Play the NPCs "IDLE" animation
@@ -304,16 +309,13 @@ export default class lvl1Scene extends HW4Scene {
      * Initialize the items in the scene (chests and potions)
      */
     protected initializeItems(): void {
-        // Get the object data for the red enemies
-        let chest = this.load.getObject("chests");
-
-        /*for (let i = 0; i < chest.slimes.length; i++) {
-            let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(chest.slimes[i][0], chest.slimes[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-            this.TotalEnemies +=1;
+        let potions = this.load.getObject("potionData");
+        this.potions = new Array <Potion>(potions.potionslvl1.length);
+        for (let i =0; i<potions.potionslvl1.length; i++){
+            let sprite = this.add.sprite("Potion", "primary");
+            this.potions[i] = new Potion(sprite);
+            this.potions[i].position.set(potions.potionslvl1[i][0], potions.potionslvl1[i][1]);
         }
-    */
     }
 
     
@@ -375,7 +377,7 @@ export default class lvl1Scene extends HW4Scene {
 
 
     public getBattlers(): Battler[] { return this.battlers; }
-
+    public getPotions(): Potion[] { return this.potions; }
     public getWalls(): OrthogonalTilemap { return this.walls; }
 
     /**

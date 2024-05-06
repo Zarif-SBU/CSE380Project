@@ -25,7 +25,7 @@ export default class PlayerActor extends AnimatedSprite implements Battler {
         this.receiver.subscribe(PlayerEvent.LIGHT_ATTACK)
         this.receiver.subscribe(PlayerEvent.HEAVY_ATTACK)
         this.receiver.subscribe(PlayerEvent.BLOCK)
-
+        this.receiver.subscribe(PlayerEvent.PLAYER_MOVE);
     }
 
     get battlerActive(): boolean {

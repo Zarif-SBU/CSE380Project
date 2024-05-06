@@ -21,6 +21,7 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
+import Potion from "../../GameSystems/ItemSystem/Potion";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
@@ -38,6 +39,7 @@ export default class lvl5Scene extends HW4Scene {
 
     protected healthSprite:any;
     protected Health:Layer;
+    protected potions: Array<Potion>;
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
@@ -66,6 +68,7 @@ export default class lvl5Scene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
+        this.potions = new Array<Potion>();
     }
 
     protected timer: Timer;
@@ -97,6 +100,10 @@ export default class lvl5Scene extends HW4Scene {
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
         this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
+         //load items
+         this.load.object("potionData", "hw4_assets/data/items/potions.json")
+         this.load.image("Potion", "hw4_assets/sprites/health_potion.png")
+         
     }
     /**
      * @see Scene.startScene
@@ -136,6 +143,8 @@ export default class lvl5Scene extends HW4Scene {
         
         // Create the NPCS
         this.initializeNPCs();
+
+        this.initializeItems()
         
         // Subscribe to relevant events
         
@@ -335,6 +344,15 @@ export default class lvl5Scene extends HW4Scene {
      * Initialize the items in the scene (healthpacks and laser guns)
      */
 
+    protected initializeItems(): void {
+        let potions = this.load.getObject("potionData");
+        this.potions = new Array <Potion>(potions.potionslvl5.length);
+        for (let i =0; i<potions.potionslvl5.length; i++){
+            let sprite = this.add.sprite("Potion", "primary");
+            this.potions[i] = new Potion(sprite);
+            this.potions[i].position.set(potions.potionslvl5[i][0], potions.potionslvl5[i][1]);
+        }
+    }
     /**
      * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
      * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
@@ -454,7 +472,7 @@ export default class lvl5Scene extends HW4Scene {
 
 
     public getBattlers(): Battler[] { return this.battlers; }
-
+    public getPotions(): Potion[] { return this.potions; }
     public getWalls(): OrthogonalTilemap { return this.walls; }
 
     /**
