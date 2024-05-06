@@ -14,13 +14,13 @@ interface Health {
 
 interface HealthBarOptions {
     size: Vec2;
-    offset: Vec2;
+    location: Vec2;
 }
 
 /**
  * A UI component that's suppossed to represent a healthbar
  */
-export default class HealthbarHUD implements Updateable {
+export default class StaticHealthbarHUD implements Updateable {
 
     /** The scene and layer in the scene the healthbar is in */
     protected scene: Scene;
@@ -29,14 +29,16 @@ export default class HealthbarHUD implements Updateable {
     /** The GameNode that owns this healthbar */
     protected owner: Health & Positioned & Unique;
 
-    /** The size and offset of the healthbar from it's owner's position */
+    /** The size and location of the healthbar */
     protected size: Vec2;
-    protected offset: Vec2;
+    protected location: Vec2;
 
     /** The actual healthbar (the part with color) */
     protected healthBar: Label;
     /** The healthbars background (the part with the border) */
     protected healthBarBg: Label;
+
+    protected healthbartemp;
 
     public constructor(scene: Scene, owner: Health & Positioned & Unique, layer: string, options: HealthBarOptions) {
         this.scene = scene;
@@ -44,40 +46,46 @@ export default class HealthbarHUD implements Updateable {
         this.owner = owner;
 
         this.size = options.size;
-        this.offset = options.offset;
+        this.location = options.location;
 
-        this.healthBar = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position: this.owner.position.clone().add(this.offset), text: ""});
+        this.healthBar = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position:this.location , text: ""});
         this.healthBar.size.copy(this.size);
         this.healthBar.backgroundColor = Color.RED;
 
-        this.healthBarBg = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position: this.owner.position.clone().add(this.offset), text: ""});
+        this.healthBarBg = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position:this.location, text: ""});
         this.healthBarBg.backgroundColor = Color.TRANSPARENT;
-        this.healthBarBg.borderColor = Color.BLACK;
-        this.healthBarBg.borderWidth = 1;
         this.healthBarBg.size.copy(this.size);
     }
 
 
-
-    /**
-     * Updates the healthbars position according to the position of it's owner
-     * @param deltaT 
-     */
     public update(deltaT: number): void {
-        
-        this.healthBar.position.copy(this.owner.position).add(this.offset);
-        this.healthBarBg.position.copy(this.owner.position).add(this.offset);
-
         let scale = this.scene.getViewScale();
         this.healthBar.scale.scale(scale);
         this.healthBarBg.scale.scale(scale);
-
+    
         let unit = this.healthBarBg.size.x / this.owner.maxHealth;
-		this.healthBar.size.set(this.healthBarBg.size.x - unit * (this.owner.maxHealth - this.owner.health), this.healthBarBg.size.y);
-		this.healthBar.position.set(this.healthBarBg.position.x - (unit / scale / 2) * (this.owner.maxHealth - this.owner.health), this.healthBarBg.position.y);
-
-		this.healthBar.backgroundColor = this.owner.health < this.owner.maxHealth * 1/4 ? Color.RED : this.owner.health < this.owner.maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
+    
+        // Calculate the new width of the health bar based on the current health
+        let newWidth = this.healthBarBg.size.x - unit * (this.owner.maxHealth - this.owner.health);
+    
+        // Calculate the difference in width
+        let widthDifference = this.healthBar.size.x - newWidth;
+    
+        // Update the size of the health bar
+        this.healthBar.size.set(newWidth, this.healthBarBg.size.y);
+    
+        // Move the health bar to the left by half of the width difference
+        this.healthBar.position.x -= widthDifference / 2;
+    
+        // Change the color of the health bar based on health status
+        this.healthBar.backgroundColor =
+            this.owner.health < this.owner.maxHealth * 1/4 ? Color.YELLOW :
+            this.owner.health < this.owner.maxHealth * 3/4 ? Color.ORANGE :
+            Color.RED;
     }
+    
+
+    
 
     get ownerId(): number { return this.owner.id; }
 

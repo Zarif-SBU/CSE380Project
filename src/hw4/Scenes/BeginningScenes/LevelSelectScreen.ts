@@ -30,6 +30,7 @@ export default class LevelSelectScene extends Scene {
         x.position = new Vec2(center.x, center.y);
         x.scale.set(1,1);
 
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key:"level_music"});
         const back = this.add.uiElement(UIElementType.BUTTON, "levelSelect", {position: new Vec2(center.x-460, center.y - 320), text: "Back"});
         back.size.set(200, 50);
         back.borderWidth = 2;
@@ -94,6 +95,7 @@ export default class LevelSelectScene extends Scene {
             case "level5":
                 //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl5Scene);
+                break;
             case "level6":
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                 this.sceneManager.changeToScene(lvl6Scene);

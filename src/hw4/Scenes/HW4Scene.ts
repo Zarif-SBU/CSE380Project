@@ -7,9 +7,9 @@ import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
-import { BattlerEvent, LevelEvent } from "../Events";
 import Battler from "../GameSystems/BattleSystem/Battler";
 import MainMenu from "./BeginningScenes/MainMenu";
+import DeathScene from "./EndingScenes/DeathScene";
 
 export default abstract class HW4Scene extends Scene {
     public level: number;
@@ -17,10 +17,12 @@ export default abstract class HW4Scene extends Scene {
     protected lvlScene: Layer;
     protected Controls: Layer;
     protected controlsSprite: any;
+    protected levelNumber;
     
     protected gate_label: Label;
     protected player;
     protected healthbars;
+    protected StaticHealthbars;
     protected TotalEnemies: number = 0;
     protected timer: Timer;
     protected pauseCount = 0;
@@ -51,12 +53,12 @@ export default abstract class HW4Scene extends Scene {
         this.load.audio("door", "hw4_assets/Audio/SoundEffects/door_opening.mp3");
         this.load.image("controls", "hw4_assets/SceneImages/Controls_Image.png");
         this.receiver.subscribe("quit");
+        this.load.image("health","hw4_assets/sprites/healthbar_png.png")
     }
 
     public startScene() {
+        console.log("level number: ",this.levelNumber)
         this.enemies_killed = 0;
-
-        this.subscribeToEvents();
         this.Controls = this.addUILayer("Controls");
         this.PauseMenu = this.addUILayer("PauseMenu");
 
@@ -121,13 +123,6 @@ export default abstract class HW4Scene extends Scene {
         console.log("game resumed");
     }
 
-    protected subscribeToEvents() {
-        this.receiver.subscribe([
-            BattlerEvent.BATTLER_KILLED,
-            LevelEvent.PLAYER_ENTERED_LEVEL_END
-        ]);
-    }
-
     protected handleEnemiesKilled() {
         this.enemies = this.enemies.filter(enemy => {
             if (enemy.health === 0) {
@@ -143,7 +138,7 @@ export default abstract class HW4Scene extends Scene {
             return true;
         });
 
-        if (this.enemies_killed === this.TotalEnemies) {
+        if (this.enemies_killed === this.TotalEnemies && this.levelNumber !=6) {
             this.changeDoorTiles();
             while (this.door == false){
                 const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });
@@ -154,13 +149,14 @@ export default abstract class HW4Scene extends Scene {
             }
         
             if (this.PlayerAtDoor()) {
+                //this.levelTransitionScreen.tweens.play("fadeIn");
                 this.sceneManager.changeToScene(this.nextLevel);
             };
 
-        } else {
+        } else if((this.enemies_killed != this.TotalEnemies)) {
             if (this.PlayerAtDoor()) {
                 if (this.gate_label == null) {
-                    const doorClosed = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "Kill All Enemies to Open the Gate" });
+                    const doorClosed = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(700, 50), text: "Kill All Enemies to Open the Gate" });
                     doorClosed.visible = true;
                     doorClosed.textColor = Color.WHITE;
                     doorClosed.font = "Georgia";
@@ -173,6 +169,10 @@ export default abstract class HW4Scene extends Scene {
                     this.gate_label.visible = false;
                 }
             }
+        }else if(this.enemies_killed === this.TotalEnemies && this.levelNumber == 6){
+            console.log("end of lvl6")
+        }else{
+            console.log("error pls solve")
         }
 
     }
@@ -270,7 +270,7 @@ export default abstract class HW4Scene extends Scene {
 
     public updateScene(deltaT: number): void {
         this.handleEnemiesKilled();
-
+        console.log("Player position:", this.player.position.x, this.player.position.y);
         while (this.receiver.hasNextEvent()) {
             let event = this.receiver.getNextEvent();
             switch (event.type) {
@@ -288,6 +288,11 @@ export default abstract class HW4Scene extends Scene {
                     break;
                 case "quit":
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music1" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music2" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music3" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music4" });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music5" });
                     this.sceneManager.changeToScene(MainMenu);
                 case "back":
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
@@ -301,6 +306,10 @@ export default abstract class HW4Scene extends Scene {
                     break;
             }
         }
+        if (this.player.health<=0){
+            this.sceneManager.changeToScene(DeathScene);
+        }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
+        this.StaticHealthbars.forEach(healthbar => healthbar.update(deltaT));
     }
 }
