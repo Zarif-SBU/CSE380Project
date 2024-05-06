@@ -83,13 +83,13 @@ export default class PlayerAI extends StateMachineAI implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
-            case PlayerEvent.LIGHT_ATTACK: {
-                this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
-                console.log("light attacked")
-                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
+            // case PlayerEvent.LIGHT_ATTACK: {
+            //     this.handleLightAttackEvent(event.data.get("start"), event.data.get("dir"));
+            //     console.log("light attacked")
+            //     // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "light", loop: false, holdReference: false})
                 
-                break;
-            }
+            //     break;
+            // }
             // case PlayerEvent.HEAVY_ATTACK: {
             //     this.handleHeavyAttackEvent(event.data.get("start"), event.data.get("dir"));
             //     console.log("heavy attacked")
@@ -113,11 +113,9 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 super.handleEvent(event);
                 break;
             }
-            
         }
         
     }
-    
 
     protected handleLaserFiredEvent(actorId: number, to: Vec2, from: Vec2): void {
         if (this.owner.id !== actorId && this.owner.collisionShape !== undefined ) {
@@ -157,8 +155,6 @@ export default class PlayerAI extends StateMachineAI implements AI {
     protected handleBlockEvent(start:Vec2, dir: Vec2): void {
 
     }
-
-    
 
     protected handleLightAttackEvent(start:Vec2, dir: Vec2): void {
         console.log(start);

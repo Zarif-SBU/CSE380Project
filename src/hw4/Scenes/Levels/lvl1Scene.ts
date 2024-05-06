@@ -318,6 +318,7 @@ export default class lvl1Scene extends HW4Scene {
         }
     }
 
+
     
 
     protected initializeNavmesh(): void {

@@ -8,7 +8,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import Battler from "../GameSystems/BattleSystem/Battler";
-import chest from "../GameSystems/ItemSystem/Potion";
+import Potion from "../GameSystems/ItemSystem/Potion";
 import MainMenu from "./BeginningScenes/MainMenu";
 import DeathScene from "./EndingScenes/DeathScene";
 
@@ -43,7 +43,7 @@ export default abstract class HW4Scene extends Scene {
     protected quitButton;
     protected back;
 
-    public abstract getPotions(): chest[];
+    public abstract getPotions(): Potion[];
 
     public abstract getBattlers(): Battler[];
 
