@@ -63,6 +63,7 @@ export default class GuardBehavior extends NPCBehavior {
         super.update(deltaT);
         if(this.owner.health == 0) {
             this.owner.destroy();
+            this.destroy();
         } else {
             if(!this.owner.animation.isPlaying("Attack_Left") && !this.owner.animation.isPlaying("DAMAGED_RIGHT")) {
                 let direction = this.owner.getLastVelocity().x;

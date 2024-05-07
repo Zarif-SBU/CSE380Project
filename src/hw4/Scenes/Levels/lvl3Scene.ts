@@ -262,7 +262,7 @@ export default class lvl3Scene extends HW4Scene {
         bossdog.scale.set(2,2)
         bossdog.navkey = "navmesh";
         bossdog.spawnpoint = bossdog.position.clone();
-        bossdog.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
+        bossdog.addAI(Wolfbehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
         this.battlers.push(bossdog);
         this.enemies.push(bossdog);
 
