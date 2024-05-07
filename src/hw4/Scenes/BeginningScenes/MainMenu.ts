@@ -7,6 +7,7 @@ import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
 import ControlScene from "./ControlScene";
 import LevelSelectScene from "./LevelSelectScreen";
+import LevelSelectScenecopy from "./LevelSelectScreencopy";
 import Story from "./Story";
 
 
@@ -93,6 +94,9 @@ export default class MainMenu extends Scene {
                 this.sceneManager.changeToScene(ControlScene);
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: false});
                 break;
+            }
+            default:{
+                this.sceneManager.changeToScene(LevelSelectScenecopy);
             }
         }
     }

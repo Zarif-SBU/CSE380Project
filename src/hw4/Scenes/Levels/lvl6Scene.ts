@@ -14,6 +14,7 @@ import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import DragonBehavior from "../../AI/NPC/NPCBehavior/DragonBehavior";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import IdleBehavior from "../../AI/NPC/NPCBehavior/IdleBehavior";
 import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
@@ -23,7 +24,7 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
-import Potion from "../../GameSystems/ItemSystem/Potion";
+import { default as Potion } from "../../GameSystems/ItemSystem/Potion";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
@@ -40,9 +41,10 @@ export default class lvl6Scene extends HW4Scene {
         return []
     }
     public level: number;
-
+    protected levelNumber:number= 6;
     protected healthSprite:any;
     protected Health:Layer;
+    protected potions: Array<Potion>;
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
@@ -69,7 +71,7 @@ export default class lvl6Scene extends HW4Scene {
     protected count4:number
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
-
+    protected doorAudioPlayed: boolean;
     // The position graph for the navmesh
     private graph: PositionGraph;
 
@@ -78,6 +80,7 @@ export default class lvl6Scene extends HW4Scene {
         this.battlers = new Array<Battler & Actor>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
+        this.potions = new Array<Potion>();
     }
 
     protected timer: Timer;
@@ -622,6 +625,17 @@ export default class lvl6Scene extends HW4Scene {
     }
     
         
+    protected handleBattlerKilled(event: GameEvent): void {
+        let id: number = event.data.get("id");
+        let battler = this.battlers.find(b => b.id === id);
+
+        if (battler) {
+            battler.battlerActive = false;
+            this.healthbars.get(id).visible = false;
+            battler.addAI(IdleBehavior, { target: new BasicTargetable(new Position(0, 0)), range: 300});
+        }
+        
+    }
     
 
     /**
@@ -740,7 +754,16 @@ export default class lvl6Scene extends HW4Scene {
 
 
     public getBattlers(): Battler[] { return this.battlers; }
-
+    
+    protected initializeItems(): void {
+        let potions = this.load.getObject("potionData");
+        this.potions = new Array <Potion>(potions.potionslvl1.length);
+        for (let i =0; i<potions.potionslvl1.length; i++){
+            let sprite = this.add.sprite("Potion", "primary");
+            this.potions[i] = new Potion(sprite);
+            this.potions[i].position.set(potions.potionslvl1[i][0], potions.potionslvl1[i][1]);
+        }
+    }
     public getWalls(): OrthogonalTilemap { return this.walls; }
 
     /**

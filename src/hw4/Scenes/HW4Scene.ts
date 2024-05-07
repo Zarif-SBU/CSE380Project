@@ -143,7 +143,7 @@ export default abstract class HW4Scene extends Scene {
             return true;
         });
 
-        if (this.enemies_killed === this.TotalEnemies && this.levelNumber !=6) {
+        if (this.enemies_killed === this.TotalEnemies /*&& this.levelNumber !=6*/) {
             this.changeDoorTiles();
             while (this.door == false){
                 const doorOpen = <Label>this.add.uiElement(UIElementType.LABEL, "lvlScene", { position: new Vec2(600, 50), text: "The Gate is Open" });

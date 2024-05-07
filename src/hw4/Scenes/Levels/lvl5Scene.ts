@@ -27,7 +27,7 @@ import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
-
+import lvl6Scene from "./lvl5Scene";
 const BattlerGroups = {
     RED: 1,
     BLUE: 2
@@ -118,7 +118,7 @@ export default class lvl5Scene extends HW4Scene {
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
         
         this.currentLevel = lvl5Scene;
-        this.nextLevel=lvl5Scene;
+        this.nextLevel=lvl6Scene;
         this.lvlScene = this.addUILayer("lvlScene")
         
         this.LevelEnd = [new Vec2(3422, 384), new Vec2(3566, 384)];//range of where the door is

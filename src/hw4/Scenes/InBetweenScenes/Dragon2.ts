@@ -8,6 +8,14 @@ import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
 import Dragon1 from "./Dragon1";
+//import lvl6Scene from "../Levels/lvl6Scene";
+import lvl1Scene from "../Levels/lvl6Scene";
+import lvl5Scene from "../Levels/lvl5Scene";
+//import TextScenecopy from "../BeginningScenes/TextScenecopy";
+import LevelSelectScreencopy from "../BeginningScenes/LevelSelectScreencopy";
+import lvl6Scene from "../Levels/lvl6Scene";
+import MainMenu from "../BeginningScenes/MainMenu";
+import LevelSelectScreen from "../BeginningScenes/LevelSelectScreen";
 
 export default class Dragon2 extends Scene {
     protected Dragon2 : Layer;
@@ -39,11 +47,11 @@ export default class Dragon2 extends Scene {
     }
     public updateScene(){
         if(Input.isMouseJustPressed()){
-            this.sceneManager.changeToScene(Dragon1);
-        }
+            this.sceneManager.changeToScene(LevelSelectScreen);
+        } 
         while(this.receiver.hasNextEvent()){
             this.handleEvent(this.receiver.getNextEvent());
-        }
+        } 
     }
     public handleEvent(event: GameEvent): void {
 
