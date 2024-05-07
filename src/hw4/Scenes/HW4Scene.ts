@@ -12,6 +12,7 @@ import Potion from "../GameSystems/ItemSystem/Potion";
 import MainMenu from "./BeginningScenes/MainMenu";
 import DeathScene from "./EndingScenes/DeathScene";
 import Dragon_Defeat from "./EndingScenes/DragonDefeat";
+import Knight1 from "./InBetweenScenes/Knight1";
 
 export default abstract class HW4Scene extends Scene {
     public level: number;
@@ -151,12 +152,20 @@ export default abstract class HW4Scene extends Scene {
                 this.door = true;
 
             }
-        
-            if (this.PlayerAtDoor()) {
-                this.stopAllMusic()
-                this.sceneManager.changeToScene(this.nextLevel);
+            if (this.levelNumber === 5){
+                if (this.PlayerAtDoor()) {
+                    this.stopAllMusic()
+                    this.sceneManager.changeToScene(Knight1);
+                }
+            }else{
 
-            };
+                if (this.PlayerAtDoor()) {
+                    this.stopAllMusic()
+                    this.sceneManager.changeToScene(this.nextLevel);
+    
+                };
+            }
+        
 
         } else if((this.enemies_killed != this.TotalEnemies)) {
             if (this.PlayerAtDoor()) {

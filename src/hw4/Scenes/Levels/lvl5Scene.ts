@@ -13,7 +13,7 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
-import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
+import IdleBehavior from "../../AI/NPC/NPCBehavior/IdleBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -22,12 +22,11 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
-import Potion from "../../GameSystems/ItemSystem/Potion";
+import { default as Potion } from "../../GameSystems/ItemSystem/Potion";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
-import lvl6Scene from "./lvl6Scene";
 
 const BattlerGroups = {
     RED: 1,
@@ -35,12 +34,14 @@ const BattlerGroups = {
 } as const;
 
 export default class lvl5Scene extends HW4Scene {
+ 
     public level: number;
-    protected levelNumber: number = 5;
+    protected levelNumber:number= 5;
 
     protected healthSprite:any;
     protected Health:Layer;
     protected potions: Array<Potion>;
+
     /** GameSystems in the HW4 Scene */
 
     /** All the battlers in the HW4Scene (including the player) */
@@ -50,12 +51,13 @@ export default class lvl5Scene extends HW4Scene {
     protected StaticHealthbars: Map<number, StaticHealthbarHUD>;
 
     private bases: BattlerBase[];
-    protected door = false;
 
     protected player:PlayerActor;
 
     protected TotalEnemies: 0;
     protected enemies:Battler[] = [];
+    protected door = false;
+    
 
     // The wall layer of the tilemap
     private walls: OrthogonalTilemap;
@@ -71,7 +73,6 @@ export default class lvl5Scene extends HW4Scene {
         this.StaticHealthbars= new Map<number, StaticHealthbarHUD>;
         this.potions = new Array<Potion>();
     }
-
     protected timer: Timer;
 
     /**
@@ -79,22 +80,19 @@ export default class lvl5Scene extends HW4Scene {
      */
     public loadScene() {
         super.loadScene();
-        // Load the player and enemy spritesheets
-        // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
+        //main character sprites
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
         this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/slash.json");
-
         // Load in the enemy sprites
-       
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
         this.load.spritesheet("Moondog", "hw4_assets/spritesheets/Enemies/Moondog/moondog.json");
         
         //this.load.audio("level_music", "hw4_assets/Audio/FillerMusic.mp3");
         this.load.audio("select", "hw4_assets/Audio/select.mp3");
+        this.load.audio("level_music", "hw4_assets/Audio/lvl1.mp3");
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/heavy_attack.mp3") 
         this.load.audio("heavy","hw4_assets/Audio/SoundEffects/light_attack.mp3") 
-        this.load.audio("level_music5", "hw4_assets/Audio/lvl2.mp3");
 
         // Load the tilemap
         this.load.tilemap("level", "hw4_assets/tilemaps/lvl5.json");
@@ -103,22 +101,30 @@ export default class lvl5Scene extends HW4Scene {
         this.load.object("slimes", "hw4_assets/data/enemies/slime.json");
         this.load.object("moondogs", "hw4_assets/data/enemies/Moondog.json");
         this.load.object("blue", "hw4_assets/data/enemies/blue.json");
-         //load items
-         this.load.object("potionData", "hw4_assets/data/items/potions.json")
-         this.load.image("Potion", "hw4_assets/sprites/health_potion.png")
-         
+
+        //load items
+        this.load.object("potionData", "hw4_assets/data/items/potions.json")
+        this.load.image("Potion", "hw4_assets/sprites/health_potion.png")
+        
+
+       
     }
     /**
      * @see Scene.startScene
      */
     public override startScene() {
-        this.doorAudioPlayed = false;
-        this.currentLevel = lvl5Scene;
-        this.nextLevel=lvl6Scene;
-        this.lvlScene = this.addUILayer("lvlScene")
-        this.LevelEnd = [new Vec2(3422, 384), new Vec2(3566, 384)];//range of where the door is
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
+        this.emitter.fireEvent(GameEventType.PLAY_MUSIC,{key:"level_music", loop: true, holdReference: true})
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "select", loop: false, holdReference: true});
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music5", loop: true, holdReference: true});
+        
+        this.currentLevel = lvl5Scene;
+        this.nextLevel=lvl5Scene;
+        this.lvlScene = this.addUILayer("lvlScene")
+        
+        this.LevelEnd = [new Vec2(3422, 384), new Vec2(3566, 384)];//range of where the door is
+        this.doorAudioPlayed = false;
+        
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         // Add in the tilemap
         let tilemapLayers = this.add.tilemap("level");
         this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0];
@@ -163,6 +169,7 @@ export default class lvl5Scene extends HW4Scene {
             console.log("Timer ended")
         },false)
         
+        
         let pauseCount = 0
         window.addEventListener('keydown', (event) => {
             if (event.key === "Escape" ) {
@@ -187,16 +194,24 @@ export default class lvl5Scene extends HW4Scene {
      */
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
+            // case BattlerEvent.BATTLER_KILLED: {
+            //     this.handleBattlerKilled(event);
+            //     break;
+            // }
         }
     }
+    protected handleBattlerKilled(event: GameEvent): void {
+        let id: number = event.data.get("id");
+        let battler = this.battlers.find(b => b.id === id);
 
-    // handledetections() {
-    //     for(let enemy of this.battlers.slice(1)) {
-    //         if(lvl5Scene.checkifDetected(this.battlers[0], enemy)) {
-    //             enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
-    //         }
-    //     }
-    // }
+        if (battler) {
+            battler.battlerActive = false;
+            this.healthbars.get(id).visible = false;
+            battler.addAI(IdleBehavior, { target: new BasicTargetable(new Position(0, 0)), range: 300});
+        }
+        
+    }
+
     /**
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
@@ -215,27 +230,28 @@ export default class lvl5Scene extends HW4Scene {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
         player.position.set(1320, 272);
         player.battleGroup = 2;
-
+    
         player.health = 10;
         player.maxHealth = 10;
+        console.log(player.health)
         player.speed = 50;
         // Give the player physics
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(32, 64)));
-
-        // Give the player a healthbar
+    
         let healthbar = new StaticHealthbarHUD(this, player, "lvlScene",  {size:new Vec2(300,30), location: new Vec2 (246,68)});
         this.StaticHealthbars.set(player.id, healthbar);
 
         // Give the player PlayerAI
         player.addAI(PlayerAI);
-
+    
         // Start the player in the "IDLE" animation
         player.animation.play("IDLE");
-
+    
         this.battlers.push(player);
         this.viewport.follow(player);
         this.player=player
     }
+    
     /**
      * Initialize the NPCs 
      */
@@ -266,7 +282,7 @@ export default class lvl5Scene extends HW4Scene {
         this.enemies.push(bossSlime);
         bossSlime.animation.play("IDLE");
 
-        let bossdog = this.add.animatedSprite(NPCActor,"Moondog", "primary");
+        /*let bossdog = this.add.animatedSprite(NPCActor,"Moondog", "primary");
         bossdog.position.set(3496, 753);
         bossdog.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 60)));
         this.TotalEnemies += 1; 
@@ -340,83 +356,24 @@ export default class lvl5Scene extends HW4Scene {
             this.battlers.push(npc);
             this.enemies.push(npc);
         }
+        */
     }
-    
 
     /**
-     * Initialize the items in the scene (healthpacks and laser guns)
+     * Initialize the items in the scene (chests and potions)
      */
-
     protected initializeItems(): void {
         let potions = this.load.getObject("potionData");
-        this.potions = new Array <Potion>(potions.potionslvl5.length);
-        for (let i =0; i<potions.potionslvl5.length; i++){
+        this.potions = new Array <Potion>(potions.potionslvl1.length);
+        for (let i =0; i<potions.potionslvl1.length; i++){
             let sprite = this.add.sprite("Potion", "primary");
             this.potions[i] = new Potion(sprite);
-            this.potions[i].position.set(potions.potionslvl5[i][0], potions.potionslvl5[i][1]);
+            this.potions[i].position.set(potions.potionslvl1[i][0], potions.potionslvl1[i][1]);
         }
     }
-    /**
-     * Initializes the navmesh graph used by the NPCs in the HW4Scene. This method is a little buggy, and
-     * and it skips over some of the positions on the tilemap. If you can fix my navmesh generation algorithm,
-     * go for it.
-     * 
-     * - Peter
-     */
-    // protected initializeNavmesh(): void {
-        // Create the graph
-    //     this.graph = new PositionGraph();
 
-    //     let dim: Vec2 = this.walls.getDimensions();
-    //     for (let i = 0; i < dim.y; i++) {
-    //         for (let j = 0; j < dim.x; j++) {
-    //             let tile: AABB = this.walls.getTileCollider(j, i);
-    //             this.graph.addPositionedNode(tile.center);
-    //         }
-    //     }
 
-    //     let rc: Vec2;
-    //     for (let i = 0; i < this.graph.numVertices; i++) {
-    //         rc = this.walls.getTileColRow(i);
-    //         if (!this.walls.isTileCollidable(rc.x, rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), rc.y) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(rc.x, MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y + 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x + 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1)) &&
-    //             !this.walls.isTileCollidable(MathUtils.clamp(rc.x - 1, 0, dim.x - 1), MathUtils.clamp(rc.y - 1, 0, dim.y - 1))
-
-    //         ) {
-    //             // Create edge to the left
-    //             rc = this.walls.getTileColRow(i + 1);
-    //             if ((i + 1) % dim.x !== 0 && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + 1);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + 1)})
-    //             }
-    //             // Create edge below
-    //             rc = this.walls.getTileColRow(i + dim.x);
-    //             if (i + dim.x < this.graph.numVertices && !this.walls.isTileCollidable(rc.x, rc.y)) {
-    //                 this.graph.addEdge(i, i + dim.x);
-    //                 // this.add.graphic(GraphicType.LINE, "graph", {start: this.graph.getNodePosition(i), end: this.graph.getNodePosition(i + dim.x)})
-    //             }
-    //         }
-    //     }
-
-    //     // Set this graph as a navigable entity
-    //     let navmesh = new Navmesh(this.graph);
-        
-    //     // Add different strategies to use for this navmesh
-    //     navmesh.registerStrategy("direct", new DirectStrategy(navmesh));
-    //     navmesh.registerStrategy("astar", new AstarStrategy(navmesh));
-
-    //     // TODO set the strategy to use A* pathfinding
-    //     navmesh.setStrategy("astar");
-
-    //     // Add this navmesh to the navigation manager
-    //     this.navManager.addNavigableEntity("navmesh", navmesh);
-    // }
+    
 
     protected initializeNavmesh(): void {
             // Create the graph

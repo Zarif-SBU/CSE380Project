@@ -28,6 +28,7 @@
     "watchify": "^3.11.1"
   },
   "dependencies": {
+    "global": "^4.4.0",
     "seed-random": "^2.2.0"
   }
 }

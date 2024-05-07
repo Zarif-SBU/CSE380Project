@@ -7,7 +7,7 @@ import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
-import lvl1Scene from "../Levels/lvl1Scene";
+import lvl6Scene from "../Levels/lvl6Scene";
 
 export default class TextScene extends Scene {
     protected text_scene : Layer;
@@ -33,7 +33,7 @@ export default class TextScene extends Scene {
     public updateScene(){
         if(Input.isMouseJustPressed()){
             this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-            this.sceneManager.changeToScene(lvl1Scene);
+            this.sceneManager.changeToScene(lvl6Scene);
         }
         while(this.receiver.hasNextEvent()){
             this.handleEvent(this.receiver.getNextEvent());

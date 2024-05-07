@@ -12,9 +12,9 @@ import Layer from "../../../Wolfie2D/Scene/Layer";
 import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
-import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
-import IdleBehavior from "../../AI/NPC/NPCBehavior/IdleBehavior";
 import DragonBehavior from "../../AI/NPC/NPCBehavior/DragonBehavior";
+import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -23,13 +23,11 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
+import Potion from "../../GameSystems/ItemSystem/Potion";
 import BasicTargetable from "../../GameSystems/Targeting/BasicTargetable";
 import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
-import Potion from "../../GameSystems/ItemSystem/Potion";
-import WolfAttack from "../../AI/NPC/NPCActions/WolfAttack";
-import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 
 const BattlerGroups = {
     RED: 1,
