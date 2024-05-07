@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Input from "../../../Wolfie2D/Input/Input";
 import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
@@ -12,6 +13,7 @@ export default class Dragon_Defeat extends Scene {
     protected dragon_defeated : Layer;
     public loadScene(){
         this.load.image("defeat","hw4_assets/SceneImages/Dragon_Dialogue.png");
+        this.load.audio("growl", "hw4_assets/Audio/SoundEffects/DragonGrowl.mp3")
     }
 
     public startScene(){
@@ -33,8 +35,7 @@ export default class Dragon_Defeat extends Scene {
         const line3= <Label>this.add.uiElement(UIElementType.LABEL, "dragon_defeated", {position: new Vec2(center.x, center.y+220), text: text3});
         line3.textColor = Color.WHITE;
 
-
-
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "growl", loop: false, holdReference: true});
     }
     public updateScene(){
         if(Input.isMouseJustPressed()){

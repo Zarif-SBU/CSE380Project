@@ -244,7 +244,7 @@ export default class lvl5Scene extends HW4Scene {
         let moondog = this.load.getObject("moondogs");
 
         let bossSlime = this.add.animatedSprite(NPCActor, "Slime", "primary");
-        bossSlime.position.set(3474, 1558);
+        bossSlime.position.set(2149, 1122);
         bossSlime.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
         this.TotalEnemies += 1; 
 

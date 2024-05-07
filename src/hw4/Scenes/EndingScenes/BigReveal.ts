@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Input from "../../../Wolfie2D/Input/Input";
 import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
@@ -12,6 +13,7 @@ export default class BigReveal extends Scene {
     protected big_reveal : Layer;
     public loadScene(){
         this.load.image("reveal","hw4_assets/SceneImages/BigReveal.png");
+        this.load.audio("reveal", "hw4_assets/Audio/SoundEffects/dogReveal.mp3")
     }
 
     public startScene(){
@@ -25,6 +27,9 @@ export default class BigReveal extends Scene {
         const text1 = "Press Anywhere to Continue";
         const line1 = <Label>this.add.uiElement(UIElementType.LABEL, "big_reveal", {position: new Vec2(center.x-200, center.y-310), text: text1});
         line1.textColor = Color.BLACK;
+        this.emitter.fireEvent(GameEventType.STOP_SOUND,{key:"suspense"})
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "reveal", loop: false, holdReference: true});
+        
     }
     public updateScene(){
         if(Input.isMouseJustPressed()){

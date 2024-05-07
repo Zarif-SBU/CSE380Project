@@ -279,11 +279,12 @@ export default abstract class HW4Scene extends Scene {
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music3" });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music4" });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music5" });
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music6" });
     }
 
     public updateScene(deltaT: number): void {
         this.handleEnemiesKilled();
-        //console.log("Player position:", this.player.position.x, this.player.position.y);
+        console.log("Player position:", this.player.position.x, this.player.position.y);
         while (this.receiver.hasNextEvent()) {
             let event = this.receiver.getNextEvent();
             switch (event.type) {
