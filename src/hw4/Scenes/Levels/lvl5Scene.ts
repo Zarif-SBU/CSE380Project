@@ -13,6 +13,7 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -189,13 +190,13 @@ export default class lvl5Scene extends HW4Scene {
         }
     }
 
-    handledetections() {
-        for(let enemy of this.battlers.slice(1)) {
-            if(lvl5Scene.checkifDetected(this.battlers[0], enemy)) {
-                enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
-            }
-        }
-    }
+    // handledetections() {
+    //     for(let enemy of this.battlers.slice(1)) {
+    //         if(lvl5Scene.checkifDetected(this.battlers[0], enemy)) {
+    //             enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
+    //         }
+    //     }
+    // }
     /**
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
@@ -282,7 +283,7 @@ export default class lvl5Scene extends HW4Scene {
         bossdog.scale.set(2,2)
         bossdog.navkey = "navmesh";
         bossdog.spawnpoint = bossdog.position.clone();
-        bossdog.addAI(GuardBehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
+        bossdog.addAI(Wolfbehavior, { target: new BasicTargetable(new Position(bossdog.position.x, bossdog.position.y)), range: 300 });
         this.battlers.push(bossdog);
         this.enemies.push(bossdog);
     
@@ -331,7 +332,7 @@ export default class lvl5Scene extends HW4Scene {
             npc.maxHealth = 5;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
-            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+            npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
             
             // Play the NPCs "IDLE" animation
             npc.animation.play("IDLE");

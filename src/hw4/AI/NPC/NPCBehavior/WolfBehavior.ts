@@ -61,6 +61,10 @@ export default class Wolfbehavior extends NPCBehavior {
 
     public update(deltaT: number): void {
         super.update(deltaT);
+        if(this.owner.health == 0) {
+            this.owner.destroy();
+            this.destroy();
+        } 
         // if(this.owner.position == this.target.position) {
         //     const randomAngle = Math.random() * Math.PI * 2;
         //     const randomDirection = new Vec2(Math.cos(randomAngle), Math.sin(randomAngle));
