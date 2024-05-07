@@ -43,7 +43,7 @@ export default class Moving extends PlayerState {
         for (let i = 0; i < potions.length; i++) {
             const potion = potions[i];
             const potionBox: AABB = new AABB(potion.position, new Vec2(30, 10));
-            const playerBox: AABB = new AABB(new Vec2(start.x + (dir.x * 120), start.y + (dir.y * 120)), new Vec2(60,10));
+            const playerBox: AABB = new AABB(new Vec2(start.x + (dir.x * 120), start.y + (dir.y * 120)), new Vec2(50,10));
             
             // Check for collision between player and potion
             if (this.intersectAABB(playerBox, potionBox)) {
