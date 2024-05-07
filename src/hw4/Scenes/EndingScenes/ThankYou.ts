@@ -9,18 +9,18 @@ import MainMenu from "../BeginningScenes/MainMenu";
 export default class ThankYou extends Scene {
     protected thank_you : Layer;
     public loadScene(){
-        this.load.image("defeat","hw4_assets/SceneImages/Dragon_Dialogue.png");
+        this.load.image("thanks","hw4_assets/SceneImages/ThankYou.png");
     }
 
     public startScene(){
         this.loadScene();
         const center = this.viewport.getCenter();
         this.thank_you = this.addUILayer("thank_you");
-        let x = this.add.sprite("defeat", "thank_you")
+        let x = this.add.sprite("thanks", "thank_you")
         x.position = new Vec2(center.x, center.y);
         x.scale.set(1,1);
 
-        const levelSelect = this.add.uiElement(UIElementType.BUTTON, "thank_you", {position: new Vec2(center.x, center.y + 50), text: "Restart"});
+        const levelSelect = this.add.uiElement(UIElementType.BUTTON, "thank_you", {position: new Vec2(center.x, center.y + 250), text: "Play Again"});
         levelSelect.size.set(200, 50);
         levelSelect.borderWidth = 2;
         levelSelect.borderColor = Color.WHITE;

@@ -20,6 +20,7 @@ import Battler from "../../GameSystems/BattleSystem/Battler";
 import BattlerBase from "../../GameSystems/BattleSystem/BattlerBase";
 import HealthbarHUD from "../../GameSystems/HUD/HealthbarHUD";
 import StaticHealthbarHUD from "../../GameSystems/HUD/StaticHealthbarHUD";
+import Potion from "../../GameSystems/ItemSystem/Potion";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
 
@@ -29,6 +30,9 @@ const BattlerGroups = {
 } as const;
 
 export default class lvl6Scene extends HW4Scene {
+    public getPotions(): Potion[] {
+        throw new Error("Method not implemented.");
+    }
     public level: number;
     protected levelNumber: number = 6;
 

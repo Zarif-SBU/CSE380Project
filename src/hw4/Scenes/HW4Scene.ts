@@ -11,6 +11,7 @@ import Battler from "../GameSystems/BattleSystem/Battler";
 import Potion from "../GameSystems/ItemSystem/Potion";
 import MainMenu from "./BeginningScenes/MainMenu";
 import DeathScene from "./EndingScenes/DeathScene";
+import Dragon_Defeat from "./EndingScenes/DragonDefeat";
 
 export default abstract class HW4Scene extends Scene {
     public level: number;
@@ -174,7 +175,7 @@ export default abstract class HW4Scene extends Scene {
                 }
             }
         }else if(this.enemies_killed === this.TotalEnemies && this.levelNumber == 6){
-            //this.sceneManager.changeToScene(Dragon_Defeat);
+            this.sceneManager.changeToScene(Dragon_Defeat);
         }else{
             console.log("error pls solve")
         }

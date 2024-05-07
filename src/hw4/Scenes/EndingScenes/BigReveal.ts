@@ -1,24 +1,30 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import Input from "../../../Wolfie2D/Input/Input";
+import Label from "../../../Wolfie2D/Nodes/UIElements/Label";
+import { UIElementType } from "../../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../../Wolfie2D/Scene/Layer";
 import Scene from "../../../Wolfie2D/Scene/Scene";
+import Color from "../../../Wolfie2D/Utils/Color";
 import EndingText from "./EndingText";
 
 export default class BigReveal extends Scene {
     protected big_reveal : Layer;
     public loadScene(){
-        this.load.image("defeat","hw4_assets/SceneImages/Dragon_Dialogue.png");
+        this.load.image("reveal","hw4_assets/SceneImages/BigReveal.png");
     }
 
     public startScene(){
         this.loadScene();
         const center = this.viewport.getCenter();
         this.big_reveal = this.addUILayer("big_reveal");
-        let x = this.add.sprite("defeat", "big_reveal")
+        let x = this.add.sprite("reveal", "big_reveal")
         x.position = new Vec2(center.x, center.y);
         x.scale.set(1,1);
 
+        const text1 = "Press Anywhere to Continue";
+        const line1 = <Label>this.add.uiElement(UIElementType.LABEL, "big_reveal", {position: new Vec2(center.x-200, center.y-310), text: text1});
+        line1.textColor = Color.BLACK;
     }
     public updateScene(){
         if(Input.isMouseJustPressed()){
