@@ -32,13 +32,14 @@ export default abstract class PlayerState extends State {
     heavyTimer: any;
     protected _smoke: Line
     protected system: ParticleSystem
+    protected invincible;
     public constructor(parent: PlayerAI, owner: PlayerActor) {
         super(parent);
         this.owner = owner;
+        this.invincible = false;
         this.lightTimer = new Timer(1000)
         this.heavyTimer = new Timer(2000)
         this.system = new ParticleSystem(100, new Vec2((5 * 32), (10 * 32)), 2000, 3, 1, 100);
-        
         this.owner.tweens.add("dodge", {
             startDelay: 0,
             duration: 500,
@@ -92,6 +93,11 @@ export default abstract class PlayerState extends State {
 
         if (Input.isJustPressed("LIGHT_ATTACK") && !this.inAction()) {
             let attack;
+            if(Input.isJustPressed('i')) {
+                this.invincible = !this.invincible;
+                console.log(this.invincible);
+    
+            }
             if(Input.isKeyPressed('w')) {
                 let slash = this.owner.getScene().add.animatedSprite(SlashActor, "Slash", "primary");
                 slash.position.set(this.owner.position.x, this.owner.position.y - 85);
@@ -174,6 +180,7 @@ export default abstract class PlayerState extends State {
 		const actions = [
             "BOOST_RIGHT",
 			"ATTACK_RIGHT",
+            "DAMAGE_LEFT"
 		]
 		return actions.some(attack => this.owner.animation.isPlaying(attack))
 	}

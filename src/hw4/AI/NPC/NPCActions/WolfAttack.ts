@@ -22,7 +22,7 @@ export default class WolfAttack extends NPCAction {
     public constructor(parent: NPCBehavior, actor: NPCActor) {
         super(parent, actor);
         this._target = null;
-        this.timer = new Timer(6000);
+        this.timer = new Timer(2000);
         this.timer2 = new Timer(1500);
     }
 
@@ -49,7 +49,7 @@ export default class WolfAttack extends NPCAction {
                 ]
             });
             this.actor.tweens.play("attack");
-            (this.target.position.x - this.actor.position.x) < 0? this.actor.animation.play("Attack_Right") : this.actor.animation.play("Attack_Left");
+            this.actor.animation.playIfNotAlready("Attack_Right");
             // Send a laser fired event
             // this.emitter.fireEvent(BattlerEvent.ATTACK, {
             //     actorId: this.actor.id,
@@ -88,43 +88,60 @@ export default class WolfAttack extends NPCAction {
     //     super.update(deltaT);
     // }
     public update(deltaT: number): void {
-        if (this.target !== null && this.path !== null && !this.path.isDone()) {
-            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 80004) {
-                this.performAction(this.target);
-                if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
-                    if(this.checkOverlap() && this.timer2.isStopped()) {
-                        this.scene.getBattlers()[0].health -= 1;
-                        this.timer2.start();
-                    }
-                } else {
-                    if(!this.actor.animation.isPlaying("IDLE") && this.timer2.isStopped()) {
-                        this.actor.animation.play("IDLE");
-                    }
-                }
-                console.log("hek");
-                this.finished();
-            } else {
-                // console.log(this.target.position.x , "das", this.oldx);
-                if(Math.pow(this.target.position.x - this.oldx, 2) + Math.pow(this.target.position.y - this.oldy, 2)> 10000) {
-                    // this.target = this.scene.getBattlers()[0];
-                    this.actor.setTarget(this.target);
-                    this.path = this.actor.getPath(this.actor.position, this.target.position);
-                    this.oldx = this.target.position.x;
-                    this.oldy = this.target.position.y;
-                }
-                // this.path = this.actor.getPath(this.actor.position, this.target.position);
-                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 80000) {
-                    this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
-                }
-                if(this.target.position.x - this.actor.position.x <0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {
-                    this.actor.animation.play("WALKING_LEFT");
-                } else if(this.target.position.x - this.actor.position.x >= 0 && !this.actor.animation.isPlaying("WALKING_RIGHT")) {
-                    this.actor.animation.play("WALKING_RIGHT");
-                }
-            }
-        } else {
+        if(this.actor.health == 0) {
             this.finished();
         }
+        if (this.actor != null && !this.actor.animation.isPlaying("Attack_Right") && 
+            !this.actor.animation.isPlaying("DAMAGED_RIGHT")) {
+            // Actor is not performing any attack or getting damaged
+    
+            // If there's a target and a path, and the path is not done
+            if (this.target !== null && this.path !== null && !this.path.isDone()) {
+                this.actor.animation.playIfNotAlready("WALKING_RIGHT");
+                // Check if the target is within a certain range
+                if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                    Math.pow(this.target.position.y - this.actor.position.y, 2)) < 30004) {
+                    this.performAction(this.target);
+                    this.finished();
+                } else {
+                    // Check if target position has changed significantly
+                    if (Math.pow(this.target.position.x - this.oldx, 2) + 
+                        Math.pow(this.target.position.y - this.oldy, 2) > 10000 && 
+                        Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) < 150000) {
+                        this.actor.setTarget(this.target);
+                        this.path = this.actor.getPath(this.actor.position, this.target.position);
+                        this.oldx = this.target.position.x;
+                        this.oldy = this.target.position.y;
+                    }
+                    // Move towards the target if it's far away
+                    if (Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) > 30000) {
+                        this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
+                    }
+                }
+            } else {
+                // No target or path, or path is done
+                this.finished();
+            }
+        } else {
+            if (this.actor != null && this.timer2.isStopped()) {
+                // Decrease target's health
+                this.emitter.fireEvent(BattlerEvent.BATTLER_ATTACKING, {
+                    actorId: this.actor.id,
+                    center: this.actor.position,
+                    AABB: this.actor.collisionShape.getBoundingRect(),
+                });
+                // Start the timer to prevent continuous damage
+                this.timer2.start();
+            }
+        }
+    
+        
+        // if(this.actor.health == 0) {
+        //     this.actor.destroy();
+        //     this.finished();
+        // }
     }
     public onExit(): Record<string, any> {
         this.actor.speed = 10;
@@ -133,21 +150,6 @@ export default class WolfAttack extends NPCAction {
         return super.onExit();
     }
 
-    protected checkOverlap() {
-        if(this.actor == null || this.actor.position == null) {
-            return false;
-        }
-		let distx = this.actor.position.x - this.target.position.x;
-        let disty = this.actor.position.y - this.target.position.y;
-        if(Math.abs(distx) > this.actor.collisionShape.hw + 32) {
-            return false;
-        }
-        if(Math.abs(disty) > this.actor.collisionShape.hh + 64) {
-            return false;
-        }
-        // console.log("hit");
-        return true;
-    }
 
     protected attackhit(walls: OrthogonalTilemap, start: Vec2, dir: Vec2): Vec2 {
         let end = start.clone().add(dir.scaled(900));

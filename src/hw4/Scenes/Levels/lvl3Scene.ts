@@ -82,7 +82,7 @@ export default class lvl3Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/slash.json");
 
         // Load in the enemy sprites
        
@@ -246,7 +246,7 @@ export default class lvl3Scene extends HW4Scene {
         //level moondog boss
         let bossdog = this.add.animatedSprite(NPCActor,"Moondog", "primary");
         bossdog.position.set(2435, 1774);
-        bossdog.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        bossdog.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 60)));
         this.TotalEnemies += 1; 
 
         // Give the boss dog NPC a healthbar
@@ -268,7 +268,7 @@ export default class lvl3Scene extends HW4Scene {
         for (let i = 0; i <moondog.moondogs.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
             npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
             this.TotalEnemies +=1;
 
             // Give the NPC a healthbar
@@ -278,8 +278,8 @@ export default class lvl3Scene extends HW4Scene {
             // Set the NPCs stats
             npc.battleGroup = 1;
             npc.speed = 5;
-            npc.health = 5;
-            npc.maxHealth = 5;
+            npc.health = 2;
+            npc.maxHealth = 2;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
             // console.log("spawn point", npc.spawnpoint);
@@ -296,7 +296,7 @@ export default class lvl3Scene extends HW4Scene {
         for (let i = 0; i < moondog.moondogs.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
             npc.position.set(moondog.moondogs[i][0], moondog.moondogs[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
             this.TotalEnemies += 1;
     
             // Give the NPC a healthbar
@@ -306,8 +306,8 @@ export default class lvl3Scene extends HW4Scene {
             // Set the NPCs stats
             npc.battleGroup = 1;
             npc.speed = 5;
-            npc.health = 5;
-            npc.maxHealth = 5;
+            npc.health = 2;
+            npc.maxHealth = 2;
             npc.navkey = "navmesh";
             npc.spawnpoint = npc.position.clone();
             npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});

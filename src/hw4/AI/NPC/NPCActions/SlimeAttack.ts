@@ -115,7 +115,6 @@ export default class SlimeAttack extends NPCAction {
     
     public onExit(): Record<string, any> {
         // this.actor.speed = 10;
-        this.actor.animation.play("IDLE");
         // Clear the reference to the lasergun
         return super.onExit();
     }

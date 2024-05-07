@@ -61,7 +61,8 @@ export default class GuardBehavior extends NPCBehavior {
 
     public update(deltaT: number): void {
         super.update(deltaT);
-        if(this.owner.health == 0) {
+        if(this.owner.health <= 0) {
+            this.owner.aiActive = false;
             this.owner.destroy();
             this.destroy();
         } else {

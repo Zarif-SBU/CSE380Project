@@ -20,6 +20,8 @@ import Position from "../../../GameSystems/Targeting/Position";
 import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import MoveToPlayer from "../NPCActions/MoveToPlayer";
 import WolfAttack from "../NPCActions/WolfAttack";
+import { PlayerEvent } from "../../../Events";
+import AABB from "../../../../Wolfie2D/DataTypes/Shapes/AABB";
 /**
  * Idle behavior for an NPC. The idle behavior can be given to an NPC to tell it to do... nothing!
  */
@@ -31,6 +33,7 @@ export default class DragonBehavior extends NPCBehavior  {
     /** Initialize the NPC AI */
     public initializeAI(owner: NPCActor, opts: Record<string, any>): void {
         this.owner = owner;
+        this.receiver.subscribe(PlayerEvent.PLAYER_ATTACKING);
 
 
         // Add the goal status
@@ -59,6 +62,11 @@ export default class DragonBehavior extends NPCBehavior  {
     }
     public handleEvent(event: GameEvent): void {
         switch(event.type) {
+            case PlayerEvent.PLAYER_ATTACKING: {
+                // console.log("Catching and handling lasergun fired event!!!");
+                this.handlePlayerAttack(event.data.get("actorId"), event.data.get("center"), event.data.get("hh"), event.data.get("hw"));
+            break;
+            }
             default: {
                 super.handleEvent(event);
                 break;
@@ -67,7 +75,24 @@ export default class DragonBehavior extends NPCBehavior  {
     }
     public update(deltaT: number): void {
         super.update(deltaT);
+        if(!this.owner.animation.isPlaying("DAMAGE") && !this.owner.animation.isPlaying("SUMMON") && !this.owner.animation.isPlaying("DIZZY") && !this.owner.animation.isPlaying("WIND") && !this.owner.animation.isPlaying("FIREBREATH") && !this.owner.animation.isPlaying("FIREBREATH") ) {
+            this.owner.animation.playIfNotAlready("IDLE")
+        }
 
+    }
+
+    handlePlayerAttack(actorId: number, center: Vec2, SlashCollision: AABB, hw: number) {
+        if( this.owner != null && this.owner.collisionShape.getBoundingRect().overlapArea(SlashCollision) > 0 && !this.owner.animation.isPlaying("DAMAGE") && !this.owner.animation.isPlaying("SUMMON")) {
+            this.owner.animation.playIfNotAlready("DAMAGE");
+            // if(this.owner.health - 1 == 0) {
+                // this.owner.destroy();
+            // } else {
+                this.owner.health -= 1;
+                if(this.owner.health < 0) {
+                    this.owner.health = 0;
+                }
+            // }
+        }
     }
     protected initializeStatuses(): void {
 

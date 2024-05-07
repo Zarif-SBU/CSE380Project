@@ -54,6 +54,9 @@ export default abstract class NPCBehavior extends StateMachineGoapAI<NPCAction> 
                 // this.owner.destroy();
             // } else {
                 this.owner.health -= 1;
+                if(this.owner.health < 0) {
+                    this.owner.health = 0;
+                }
             // }
         }
     }

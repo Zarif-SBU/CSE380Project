@@ -19,6 +19,8 @@ import { EaseFunctionType } from "../../../../Wolfie2D/Utils/EaseFunctions";
 import SlimeAttack from "../NPCActions/SlimeAttack";
 import MoveToPlayer from "../NPCActions/MoveToPlayer";
 import WolfAttack from "../NPCActions/WolfAttack";
+import Sprite from "../../../../Wolfie2D/Nodes/Sprites/Sprite";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 
 export default class Wolfbehavior extends NPCBehavior {
 
@@ -61,10 +63,18 @@ export default class Wolfbehavior extends NPCBehavior {
 
     public update(deltaT: number): void {
         super.update(deltaT);
-        if(this.owner.health == 0) {
+        if(this.owner.health <= 0) {
+            this.owner.aiActive = false;
             this.owner.destroy();
             this.destroy();
-        } 
+        } else {
+            if(!this.owner.animation.isPlaying("Attack_Right") && !this.owner.animation.isPlaying("DAMAGED_RIGHT")) {
+                let direction = this.owner.getLastVelocity().x;
+                if(direction != 0) {
+                    (<Sprite>this.owner).invertX = MathUtils.sign(direction) < 0;
+                }
+            }
+        }
         // if(this.owner.position == this.target.position) {
         //     const randomAngle = Math.random() * Math.PI * 2;
         //     const randomDirection = new Vec2(Math.cos(randomAngle), Math.sin(randomAngle));

@@ -88,43 +88,42 @@ export default class MoveToPlayer extends NPCAction {
     //     super.update(deltaT);
     // }
     public update(deltaT: number): void {
-        if (this.target !== null && this.path !== null && !this.path.isDone()) {
-            if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
-                if(!this.actor.animation.isPlaying("IDLE")) {
-                    this.actor.animation.play("IDLE");
-                } 
-                // this.performAction(this.target);
-                // if(this.actor.animation.isPlaying("Attack_Left") || this.actor.animation.isPlaying("Attack_Right")) {
-                //     if(this.checkOverlap() && this.timer2.isStopped()) {
-                //         this.scene.getBattlers()[0].health -= 1;
-                //         this.timer2.start();
-                //     }
-                // }
-                console.log("breh");
-                this.finished();
-            } else {
-                // console.log(this.target.position.x , "das", this.oldx);
-                if(Math.pow(this.target.position.x - this.oldx, 2) + Math.pow(this.target.position.y - this.oldy, 2)> 10000) {
-                    // this.target = this.scene.getBattlers()[0];
-                    this.actor.setTarget(this.target);
-                    this.path = this.actor.getPath(this.actor.position, this.target.position);
-                    this.oldx = this.target.position.x;
-                    this.oldy = this.target.position.y;
-                }
-                // this.path = this.actor.getPath(this.actor.position, this.target.position);
-                if(Math.pow(this.target.position.x - this.actor.position.x, 2) + Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
-                    this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
-                }
-                if(this.target.position.x - this.actor.position.x < 0 && !this.actor.animation.isPlaying("WALKING_LEFT")) {
-                    this.actor.animation.play("WALKING_LEFT");
-                } else if(this.target.position.x - this.actor.position.x >= 0 && !this.actor.animation.isPlaying("WALKING_RIGHT")) {
-                    this.actor.animation.play("WALKING_RIGHT");
-                }
-            }
-        } else {
+        if(this.actor.health == 0) {
             this.finished();
         }
+        if (this.actor != null && !this.actor.animation.isPlaying("Attack_Left") && 
+            !this.actor.animation.isPlaying("DAMAGED_RIGHT")) {
+            // Actor is not performing any attack or getting damaged
+    
+            // If there's a target and a path, and the path is not done
+            if (this.target !== null && this.path !== null && !this.path.isDone()) {
+                this.actor.animation.playIfNotAlready("WALKING_RIGHT");
+                // Check if the target is within a certain range
+                if ((Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                    Math.pow(this.target.position.y - this.actor.position.y, 2)) < 40004) {
+                    this.finished();
+                } else {
+                    if (Math.pow(this.target.position.x - this.oldx, 2) + 
+                        Math.pow(this.target.position.y - this.oldy, 2) > 10000 && 
+                        Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) < 150000) {
+                        this.actor.setTarget(this.target);
+                        this.path = this.actor.getPath(this.actor.position, this.target.position);
+                        this.oldx = this.target.position.x;
+                        this.oldy = this.target.position.y;
+                    }
+                    if (Math.pow(this.target.position.x - this.actor.position.x, 2) + 
+                        Math.pow(this.target.position.y - this.actor.position.y, 2) > 40000) {
+                        this.actor.moveOnPath(this.actor.speed * deltaT * 5, this.path);
+                    }
+                }
+            } else {
+                // No target or path, or path is done
+                this.finished();
+            }
+        }
     }
+    
     public onExit(): Record<string, any> {
         this.actor.speed = 10;
         // this.actor.animation.play("IDLE");

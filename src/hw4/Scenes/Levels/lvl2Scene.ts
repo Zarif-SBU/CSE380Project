@@ -84,7 +84,7 @@ export default class lvl2Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/slash.json");
 
         // Load in the enemy sprites
        
@@ -247,7 +247,7 @@ export default class lvl2Scene extends HW4Scene {
         for (let i = 0; i < slime.slimeslvl2.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimeslvl2[i][0], slime.slimeslvl2[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 40)));
             this.TotalEnemies +=1;
 
             // Give the NPC a healthbar

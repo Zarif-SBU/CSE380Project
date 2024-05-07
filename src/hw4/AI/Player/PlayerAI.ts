@@ -3,9 +3,10 @@ import AI from "../../../Wolfie2D/DataTypes/Interfaces/AI";
 import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import Input from "../../../Wolfie2D/Input/Input";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import PlayerActor from "../../Actors/PlayerActor";
-import { PlayerEvent } from "../../Events";
+import { BattlerEvent, PlayerEvent } from "../../Events";
 import PlayerController from "./PlayerController";
 import Dodge from "./PlayerStates/Dodge";
 import { Dead, Idle, Invincible, Moving, PlayerStateType } from "./PlayerStates/PlayerState";
@@ -54,13 +55,13 @@ export default class PlayerAI extends StateMachineAI implements AI {
     public controller: PlayerController;
     /** The inventory object associated with the player */
     /** The players held item */
-    
+    // public invincible;
 
     public initializeAI(owner: PlayerActor, opts: Record<string, any>): void {
         this.timer = new Timer(2000);
         this.owner = owner;
         this.controller = new PlayerController(owner);
-
+        // this.invincible = false;
         // Add the players states to it's StateMachine
         this.addState(PlayerStateType.IDLE, new Idle(this, this.owner));
         this.addState(PlayerStateType.INVINCIBLE, new Invincible(this, this.owner));
@@ -70,13 +71,13 @@ export default class PlayerAI extends StateMachineAI implements AI {
         
         // Initialize the players state to Idle
         this.initialize(PlayerStateType.IDLE);
+        this.receiver.subscribe(BattlerEvent.BATTLER_ATTACKING);
     }
 
     public activate(options: Record<string, any>): void { }
 
     public update(deltaT: number): void {
         super.update(deltaT);
-        
     }
 
     public destroy(): void {}
@@ -104,10 +105,12 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 if(this.timer.isStopped()) {
                     this.owner.health -= 1;
                     this.timer.start();
-                    
                 }
                 // console.log("breh");
                 break;
+            }
+            case BattlerEvent.BATTLER_ATTACKING: {
+                this.handleBattlerAttack(event.data.get("AABB"));
             }
             default: {
                 super.handleEvent(event);
@@ -123,6 +126,19 @@ export default class PlayerAI extends StateMachineAI implements AI {
                 console.log(this.owner.collisionShape.getBoundingRect())
                 this.owner.health -= 1;
             }
+        }
+    }
+    protected handleBattlerAttack(AABB: AABB) {
+        if( this.owner != null && this.owner.collisionShape.getBoundingRect().overlapArea(AABB) > 0 && !this.owner.animation.isPlaying("DAMAGE_LEFT")) {
+            this.owner.animation.playIfNotAlready("DAMAGE_LEFT");
+            // if(this.owner.health - 1 == 0) {
+                // this.owner.destroy();
+            // } else {
+                this.owner.health -= 1;
+                if(this.owner.health < 0) {
+                    this.owner.health = 0;
+                }
+            // }
         }
     }
     protected handleHeavyAttackEvent(start:Vec2, dir: Vec2): void {

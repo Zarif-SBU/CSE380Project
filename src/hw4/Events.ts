@@ -6,6 +6,7 @@ export enum BattlerEvent {
     CONSUME = "CONSUME",
     HIT = "HIT",
     ATTACK = "ATTACK",
+    BATTLER_ATTACKING = "BATTLER_ATTACKING",
 }
 
 

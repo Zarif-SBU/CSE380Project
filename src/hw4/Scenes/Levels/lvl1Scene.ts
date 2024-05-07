@@ -13,6 +13,7 @@ import SceneManager from "../../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import GuardBehavior from "../../AI/NPC/NPCBehavior/GaurdBehavior";
+import IdleBehavior from "../../AI/NPC/NPCBehavior/IdleBehavior";
 import PlayerAI from "../../AI/Player/PlayerAI";
 import NPCActor from "../../Actors/NPCActor";
 import PlayerActor from "../../Actors/PlayerActor";
@@ -82,7 +83,7 @@ export default class lvl1Scene extends HW4Scene {
         super.loadScene();
         //main character sprites
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/slash.json");
         // Load in the enemy sprites
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
         this.load.spritesheet("Slime", "hw4_assets/spritesheets/Enemies/BlackPudding/black_pudding.json");
@@ -194,16 +195,24 @@ export default class lvl1Scene extends HW4Scene {
      */
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
+            // case BattlerEvent.BATTLER_KILLED: {
+            //     this.handleBattlerKilled(event);
+            //     break;
+            // }
         }
+    }
+    protected handleBattlerKilled(event: GameEvent): void {
+        let id: number = event.data.get("id");
+        let battler = this.battlers.find(b => b.id === id);
+
+        if (battler) {
+            battler.battlerActive = false;
+            this.healthbars.get(id).visible = false;
+            battler.addAI(IdleBehavior, { target: new BasicTargetable(new Position(0, 0)), range: 300});
+        }
+        
     }
 
-    handledetections() {
-        for(let enemy of this.battlers.slice(1)) {
-            if(lvl1Scene.checkifDetected(this.battlers[0], enemy)) {
-                enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
-            }
-        }
-    }
     /**
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
@@ -256,7 +265,7 @@ export default class lvl1Scene extends HW4Scene {
         //level slime boss
         let bossSlime = this.add.animatedSprite(NPCActor, "Slime", "primary");
         bossSlime.position.set(3970, 901);
-        bossSlime.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+        bossSlime.addPhysics(new AABB(Vec2.ZERO, new Vec2(110, 110)));
         this.TotalEnemies += 1; 
 
         // Give the boss slime NPC a healthbar
@@ -279,7 +288,7 @@ export default class lvl1Scene extends HW4Scene {
         for (let i = 0; i < slime.slimes.length; i++) {
             let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
             npc.position.set(slime.slimes[i][0], slime.slimes[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 40)));
             this.TotalEnemies +=1;
 
             // Give the NPC a healthbar

@@ -28,6 +28,8 @@ import Position from "../../GameSystems/Targeting/Position";
 import AstarStrategy from "../../Pathfinding/AstarStrategy";
 import HW4Scene from "../HW4Scene";
 import Potion from "../../GameSystems/ItemSystem/Potion";
+import WolfAttack from "../../AI/NPC/NPCActions/WolfAttack";
+import Wolfbehavior from "../../AI/NPC/NPCBehavior/WolfBehavior";
 
 const BattlerGroups = {
     RED: 1,
@@ -90,7 +92,7 @@ export default class lvl6Scene extends HW4Scene {
         // Load the player and enemy spritesheets
         // this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
         this.load.spritesheet("player1", "hw4_assets/spritesheets/MainCharacter/MainCharacter1.json");
-        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/Slash.json");
+        this.load.spritesheet("Slash", "hw4_assets/spritesheets/MainCharacter/slash.json");
         // Load in the enemy sprites
        
         // this.load.spritesheet("Slime", "hw4_assets/spritesheets/RedEnemy.json");
@@ -205,7 +207,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.position.set(1250+this.count2*50, 1790);
                         npc.scale.set(2,1.5)
                         //npc.rotation = 120
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(200, 360)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(200, 360)));
                         console.log(npc)
                         npc.animation.play("START");
                         projectiles.push(npc)
@@ -263,7 +265,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
                         npc.position.set(1050+i*50, 1150+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 40)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -277,7 +279,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 700});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -289,7 +291,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
                         npc.position.set(1050+i*50, 1350+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -303,7 +305,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -318,7 +320,7 @@ export default class lvl6Scene extends HW4Scene {
                         let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
                         npc.position.set(1250+this.count2*50, 1670);
                         //npc.rotation = 120
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)));
                         console.log(npc)
                         npc.animation.play("START");
                         projectiles.push(npc)
@@ -374,7 +376,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
                         npc.position.set(1050+i*50, 1150+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 40)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -388,7 +390,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 700});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -400,7 +402,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
                         npc.position.set(1050+i*50, 1350+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -414,7 +416,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 700});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -429,7 +431,7 @@ export default class lvl6Scene extends HW4Scene {
                         let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
                         npc.position.set(1250+this.count2*50, 1670);
                         //npc.rotation = 120
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)));
                         console.log(npc)
                         npc.animation.play("START");
                         projectiles.push(npc)
@@ -485,7 +487,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
                         npc.position.set(1050+i*50, 1150+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 40)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -499,7 +501,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 700});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -511,7 +513,7 @@ export default class lvl6Scene extends HW4Scene {
                     for (let i = 0; i < 4; i++) {
                         let npc = this.add.animatedSprite(NPCActor, "Moondog", "primary");
                         npc.position.set(1050+i*50, 1350+i*50);
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)));
                         this.TotalEnemies += 1;
                 
                         // Give the NPC a healthbar
@@ -525,7 +527,7 @@ export default class lvl6Scene extends HW4Scene {
                         npc.maxHealth = 5;
                         npc.navkey = "navmesh";
                         npc.spawnpoint = npc.position.clone();
-                        npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
+                        npc.addAI(Wolfbehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
                         
                         // Play the NPCs "IDLE" animation
                         npc.animation.play("IDLE");
@@ -540,7 +542,7 @@ export default class lvl6Scene extends HW4Scene {
                         let npc = this.add.animatedSprite(NPCActor, "Firebreath", "primary");
                         npc.position.set(1250+this.count2*50, 1670);
                         //npc.rotation = 120
-                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)), null, false);
+                        npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 240)));
                         console.log(npc)
                         npc.animation.play("START");
                         projectiles.push(npc)
@@ -609,13 +611,6 @@ export default class lvl6Scene extends HW4Scene {
         }
     }
 
-    handledetections() {
-        for(let enemy of this.battlers.slice(1)) {
-            if(lvl6Scene.checkifDetected(this.battlers[0], enemy)) {
-                enemy.addAI(GuardBehavior, {target: this.battlers[0], range: 10});
-            }
-        }
-    }
     /**
      * Handles an NPC being killed by unregistering the NPC from the scenes subsystems
      * @param event an NPC-killed event
@@ -667,7 +662,7 @@ export default class lvl6Scene extends HW4Scene {
         
             let npc = this.add.animatedSprite(NPCActor, "Dragon", "primary");
             npc.position.set(dragon.dragons[0][0], dragon.dragons[0][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(200, 300)), null, false);
+            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(200, 300)));
             this.TotalEnemies += 1;
     
             // Give the NPC a healthbar
