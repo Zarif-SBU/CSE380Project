@@ -48,7 +48,7 @@ export default class Moving extends PlayerState {
             // Check for collision between player and potion
             if (this.intersectAABB(playerBox, potionBox)) {
                 if (this.owner.health < 10) {
-                    this.owner.health++;
+                    this.owner.health+=2;
                 }
                 console.log("Player collided with potion!");
                 

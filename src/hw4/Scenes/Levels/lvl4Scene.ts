@@ -243,31 +243,7 @@ export default class lvl4Scene extends HW4Scene {
         let moondog = this.load.getObject("moondogs");
     
         // Initialize Slime NPCs
-        for (let i = 0; i < slime.slimeslvl4.length; i++) {
-            let npc = this.add.animatedSprite(NPCActor, "Slime", "primary");
-            npc.position.set(slime.slimeslvl4[i][0], slime.slimeslvl4[i][1]);
-            npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(50, 30)), null, false);
-            this.TotalEnemies += 1;
-    
-            // Give the NPC a healthbar
-            let healthbar = new HealthbarHUD(this, npc, "primary", {size: npc.size.clone().scaled(1, 1/10), offset: npc.size.clone().scaled(0, -1/3)});
-            this.healthbars.set(npc.id, healthbar);
-            
-            // Set the NPCs stats
-            npc.battleGroup = 1;
-            npc.speed = 5;
-            npc.health = 5;
-            npc.maxHealth = 5;
-            npc.navkey = "navmesh";
-            npc.spawnpoint = npc.position.clone();
-            npc.addAI(GuardBehavior, {target: new BasicTargetable(new Position(npc.position.x, npc.position.y)), range: 300});
-            
-            // Play the NPCs "IDLE" animation
-            npc.animation.play("IDLE");
-            // Add the NPC to the battlers array
-            this.battlers.push(npc);
-            this.enemies.push(npc);
-        }
+       
     
         // Initialize Moondog NPCs
         for (let i = 0; i < moondog.moondogslvl4.length; i++) {
